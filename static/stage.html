@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>จอแสดงผลหน้างานจริง | Ceremony Stage Monitor</title>
+    <!-- Modern Thai & Digital Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800;900&family=Outfit:wght@500;700;800;900&family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        :root {
+            --stage-font-scale: 1;
+            --bg-color: #F6EEF8;
+            --card-bg: #FFFFFF;
+            --text-dark: #2A122D;
+            --green-primary: #059669;
+            --green-light: #DEF7EC;
+            --green-text: #03543F;
+            --red-primary: #C81E1E;
+            --red-light: #FDE8E8;
+            --blue-primary: #0284C7;
+            --yellow-badge: #F59E0B;
+        }
+
+        body {
+            background-color: #F6EEF8 !important;
+            font-family: 'Kanit', 'Sarabun', sans-serif !important;
+            color: #2A122D !important;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 5px 16px 4px 16px;
+            user-select: none;
+        }
+
+        /* ธีมม่วง-ราชภัฏบุรีรัมย์ */
+        body.theme-purple-yellow, body {
+            background: #F6EEF8 !important;
+            color: #2A122D !important;
+        }
+
+        /* 1. Top Header Banner */
+        .top-banner {
+            background: #FFFFFF !important;
+            border-top: 5px solid #8E3890 !important;
+            border-bottom: 2px solid #F59E0B !important;
+            box-shadow: 0 4px 16px rgba(142, 56, 144, 0.15) !important;
+            border-radius: 14px;
+            padding: 5px 18px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            position: relative;
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        .ceremony-main-title {
+            font-family: 'Kanit', sans-serif !important;
+            font-size: calc(clamp(40px, 4.2vw, 62px) * var(--stage-font-scale, 1)) !important;
+            font-weight: 900;
+            color: #6E2271 !important;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+        }
+
+        .ceremony-sub-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(6px, 1.1vw, 16px);
+            font-size: calc(clamp(14px, 1.35vw, 22px) * var(--stage-font-scale, 1)) !important;
+            font-weight: 800;
+            flex-wrap: nowrap;
+            white-space: nowrap;
+            width: 100%;
+            overflow: hidden;
+            font-family: 'Kanit', sans-serif !important;
+        }
+
+        .sub-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .sub-item.green { color: #059669; }
+        .sub-item.red { color: #DC2626; }
+        .sub-item.dark { color: #334155; }
+        .sub-item.blue { color: #0284C7; }
+
+        .divider {
+            color: #CBD5E1;
+            font-weight: 400;
+            font-size: 20px;
+            padding: 0 4px;
+        }
+
+        /* Real-time Break Batches Strip */
+        .break-progress-strip {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 5px 16px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+            margin-top: 4px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 14px;
+            align-items: center;
+            flex-shrink: 0;
+            width: 100%;
+            font-family: 'Kanit', sans-serif !important;
+        }
+
+        .break-col {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .break-col-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .break-tag {
+            font-size: clamp(15px, 1.4vw, 22px);
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .break-tag.tag-green { color: #059669; }
+        .break-tag.tag-red { color: #DC2626; }
+
+        .break-stat-text {
+            font-size: calc(clamp(14px, 1.35vw, 21px) * var(--stage-font-scale, 1)) !important;
+            color: #334155;
+            font-weight: 800;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: right;
+        }
+
+        .break-track-bar {
+            height: 10px;
+            background: #E2E8F0;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .break-fill-bar {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.35s ease-out;
+        }
+
+        .fill-green {
+            background: linear-gradient(90deg, #34D399, #059669);
+        }
+
+        .fill-red {
+            background: linear-gradient(90deg, #F87171, #DC2626);
+        }
+
+        .break-checkpoint-pill {
+            background: #F8FAFC;
+            border: 2px dashed #94A3B8;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: clamp(16px, 1.55vw, 20px);
+            font-weight: 800;
+            color: #475569;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 95px;
+            text-align: center;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .break-checkpoint-pill.active {
+            background: #FEF3C7;
+            border-color: #F59E0B;
+            color: #B45309;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+            transform: scale(1.05);
+        }
+
+        /* 2. Main 2 Hero KPI Cards (Left: Conferred, Right: Remaining) */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr;
+            gap: 14px;
+            flex: 1 1 0%;
+            margin: 6px 0;
+            min-height: 0;
+            min-width: 0;
+        }
+
+        .hero-card {
+            background: #FFFFFF !important;
+            border: 2px solid rgba(142, 56, 144, 0.22) !important;
+            box-shadow: 0 8px 24px rgba(142, 56, 144, 0.08) !important;
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            position: relative;
+            padding: 8px 16px 8px 16px;
+            min-height: 0;
+            min-width: 0;
+        }
+
+        .hero-card:first-child {
+            border-top: 6px solid #059669 !important;
+        }
+
+        .hero-card:last-child {
+            border-top: 6px solid #F59E0B !important;
+        }
+
+        .hero-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Kanit', sans-serif !important;
+            font-size: calc(clamp(24px, 3.2vw, 54px) * var(--stage-font-scale, 1)) !important;
+            font-weight: 900;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .hero-card.left .hero-header {
+            color: #059669;
+        }
+
+        .hero-card.right .hero-header {
+            color: #C81E1E;
+        }
+
+        .hero-num-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1 1 0%;
+            min-height: 0;
+            min-width: 0;
+            overflow: hidden;
+            container-type: size;
+        }
+
+        .hero-num {
+            font-family: 'Outfit', 'Kanit', sans-serif !important;
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -2px;
+            text-align: center;
+            white-space: nowrap;
+            /* Adaptive container query: 80% of card box height up to 285px */
+            font-size: clamp(60px, min(25vh, 24vw), 285px);
+            font-size: calc(clamp(60px, min(80cqh, 42cqw), 285px) * var(--stage-font-scale, 1)) !important;
+            will-change: transform;
+        }
+
+        .hero-card.left .hero-num {
+            color: #059669 !important;
+        }
+
+        .hero-card.right .hero-num {
+            color: #D97706 !important;
+        }
+
+        .hero-footer-bar {
+            border-radius: 10px;
+            padding: 6px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-family: 'Kanit', sans-serif !important;
+            font-size: calc(clamp(16px, 1.8vw, 30px) * var(--stage-font-scale, 1)) !important;
+            font-weight: 800;
+            flex-shrink: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .hero-card.left .hero-footer-bar {
+            background: #DEF7EC;
+            color: #03543F;
+        }
+
+        .hero-card.right .hero-footer-bar {
+            background: #FDE8E8;
+            color: #991B1B;
+        }
+
+        /* 3. Bottom 3 Small KPI Cards */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr;
+            gap: 12px;
+            margin-bottom: 4px;
+            flex-shrink: 0;
+        }
+
+        .bottom-card {
+            background: #FFFFFF;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            padding: 6px 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            text-align: center;
+            min-width: 0;
+        }
+
+        .bottom-card-title {
+            font-family: 'Kanit', sans-serif !important;
+            font-size: calc(clamp(15px, 1.5vw, 24px) * var(--stage-font-scale, 1)) !important;
+            font-weight: 800;
+            color: #1E293B;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bottom-card-val {
+            font-family: 'Outfit', 'Kanit', sans-serif !important;
+            font-size: calc(clamp(42px, 4.8vw, 76px) * var(--stage-font-scale, 1)) !important;
+            font-weight: 900;
+            line-height: 1.05;
+            white-space: nowrap;
+        }
+
+        .bottom-card-sub {
+            font-family: 'Kanit', sans-serif !important;
+            font-size: calc(clamp(14px, 1.35vw, 21px) * var(--stage-font-scale, 1)) !important;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .val-clock { color: #E02424; }
+        .val-eta { color: #0284C7; }
+        .val-rate { color: #2563EB; }
+
+        /* 4. Bottom Status Pills */
+        .status-bar-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            flex-shrink: 0;
+            min-height: 28px;
+            font-family: 'Kanit', sans-serif !important;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 18px;
+            border-radius: 10px;
+            font-size: calc(clamp(15px, 1.4vw, 18px) * var(--stage-font-scale, 1)) !important;
+            font-weight: 800;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+            transition: background 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .pill-pause {
+            background: #F59E0B;
+            color: #000000;
+        }
+
+        .pill-pause.active {
+            background: #EF4444;
+            color: #FFFFFF;
+            animation: pulse-pause 1.2s infinite;
+        }
+
+        @keyframes pulse-pause {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.88; transform: scale(1.03); }
+        }
+
+        .pill-mode {
+            background: linear-gradient(135deg, #8E3890, #6E2271) !important;
+            border: 1px solid rgba(245, 158, 11, 0.5) !important;
+            color: #FFFFFF;
+        }
+
+        .btn-toggle-font {
+            background: rgba(142, 56, 144, 0.15);
+            color: #6E2271;
+            border: 1px solid rgba(142, 56, 144, 0.3);
+            padding: 5px 12px;
+            border-radius: 9px;
+            font-size: clamp(14px, 1.35vw, 17px);
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-right: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-family: 'Kanit', sans-serif !important;
+        }
+
+        .btn-fullscreen {
+            position: absolute;
+            right: 0;
+            background: rgba(142, 56, 144, 0.15);
+            color: #6E2271;
+            border: 1px solid rgba(142, 56, 144, 0.3);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: clamp(14px, 1.35vw, 17px);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: 'Kanit', sans-serif !important;
+        }
+
+        .btn-fullscreen:hover {
+            background: rgba(142, 56, 144, 0.3);
+        }
+
+        .btn-back-admin {
+            position: absolute;
+            left: 0;
+            color: #64748B;
+            text-decoration: none;
+            font-size: clamp(14px, 1.35vw, 17px);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+            font-family: 'Kanit', sans-serif !important;
+        }
+
+        .btn-back-admin:hover {
+            color: #94A3B8;
+        }
+
+        .bump-anim {
+            animation: bump 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes bump {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+
+        #offline-alert {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #EF4444;
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+            z-index: 999;
+            font-family: 'Kanit', sans-serif !important;
+        }
+    </style>
+</head>
+<body class="theme-purple-yellow">
+
+    <div id="offline-alert">⚠️ ขาดการเชื่อมต่อกับเซิร์ฟเวอร์ (กำลังเชื่อมต่อใหม่...)</div>
+
+    <!-- 1. Top Header Banner -->
+    <div class="top-banner">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 16px;">
+            <img src="/static/logo.png" alt="ตรามหาวิทยาลัยราชภัฏบุรีรัมย์" style="height: 62px; width: auto; object-fit: contain; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.25));">
+            <h1 class="ceremony-main-title" id="ceremony-title">ม.ราชภัฏบุรีรัมย์</h1>
+        </div>
+        <div id="uni-queue-badge" style="display: none; justify-content: center; align-items: center; gap: 10px; margin-top: 3px; margin-bottom: 4px; flex-wrap: wrap;">
+            <span style="background: linear-gradient(135deg, #0284C7, #0369A1); color: #fff; font-size: calc(20px * var(--stage-font-scale, 1)); font-weight: 800; padding: 4px 16px; border-radius: 20px; box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);" id="uni-queue-text">
+                🏫 สถาบันที่ 1/4: ม.ราชภัฏบุรีรัมย์ (1 - 1,000)
+            </span>
+            <span style="background: rgba(245, 158, 11, 0.15); border: 1.5px solid rgba(245, 158, 11, 0.4); color: #D97706; font-size: calc(18px * var(--stage-font-scale, 1)); font-weight: 800; padding: 4px 14px; border-radius: 20px;" id="uni-queue-subcount">
+                รับแล้วในสถาบันนี้: 0 / 1,000 คน (0%)
+            </span>
+        </div>
+        <div class="ceremony-sub-row">
+            <div class="sub-item green">
+                <span>✅ ก่อนพัก:</span> <span id="pre-break-range">1-1,500</span>
+                <span id="pre-break-mini-badge" style="background: rgba(16,185,129,0.18); color:#059669; padding: 2px 7px; border-radius: 6px; font-size: 19px; font-weight: 800; padding: 2px 9px;">0/1,500</span>
+            </div>
+            <div class="divider">|</div>
+            <div class="sub-item red">
+                <span>⏰ หลังพัก:</span> <span id="post-break-range">1,501-2,500</span>
+                <span id="post-break-mini-badge" style="background: rgba(239,68,68,0.14); color:#DC2626; padding: 2px 7px; border-radius: 6px; font-size: 19px; font-weight: 800; padding: 2px 9px;">รอเริ่ม</span>
+            </div>
+            <div class="divider">|</div>
+            <div class="sub-item dark">
+                <span>รอบการรับ:</span> <span id="session-name">รอบเช้า</span> <span id="session-time" style="color: #0284C7; font-weight: 800;">(08:30 - 11:50 น.)</span>
+            </div>
+            <div class="divider">|</div>
+            <div class="sub-item blue">
+                <span>เป้าหมาย:</span> <span id="total-target-text" style="font-weight: 900;">2,500</span> คน
+            </div>
+        </div>
+    </div>
+
+    <!-- Real-time Break Progress Banner -->
+    <div class="break-progress-strip">
+        <!-- Phase 1: Pre-break -->
+        <div class="break-col pre" id="col-pre-break">
+            <div class="break-col-header">
+                <div class="break-tag tag-green">
+                    <span>✅ ช่วงก่อนพัก (<span id="track-pre-range">1-1,500</span>)</span>
+                    <span id="badge-pre-phase" style="font-size: 18px; padding: 3px 10px; border-radius: 8px; background: rgba(16,185,129,0.2); color: #059669; font-weight: 800;">กำลังรับ</span>
+                </div>
+                <div class="break-stat-text">
+                    รับแล้ว <b id="pre-count-live" style="color:#059669; font-size:28px; font-weight:900;">0</b> / <span id="pre-target-live">1,500</span> คน 
+                    (<span id="pre-pct-live" style="font-weight:800;">0.0%</span>) • <span id="pre-rem-live" style="color:#DC2626; font-weight:800;">เหลืออีก 1,500</span>
+                    <span id="pre-eta-live" style="color:#0284C7; font-weight:800; margin-left:4px;"></span>
+                </div>
+            </div>
+            <div class="break-track-bar">
+                <div class="break-fill-bar fill-green" id="bar-pre-fill" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <!-- Center Checkpoint Badge -->
+        <div class="break-checkpoint-pill" id="checkpoint-pill">
+            <span id="checkpoint-icon" style="font-size: 18px;">⏸️</span>
+            <span id="checkpoint-label">จุดพักแถว</span>
+        </div>
+
+        <!-- Phase 2: Post-break -->
+        <div class="break-col post" id="col-post-break">
+            <div class="break-col-header">
+                <div class="break-tag tag-red">
+                    <span>⏰ ช่วงหลังพัก (<span id="track-post-range">1,501-2,500</span>)</span>
+                    <span id="badge-post-phase" style="font-size: 18px; padding: 3px 10px; border-radius: 8px; background: rgba(148,163,184,0.2); color: #64748B; font-weight: 800;">รอเริ่ม</span>
+                </div>
+                <div class="break-stat-text">
+                    รับแล้ว <b id="post-count-live" style="color:#DC2626; font-size:28px; font-weight:900;">0</b> / <span id="post-target-live">1,000</span> คน 
+                    (<span id="post-pct-live" style="font-weight:800;">0.0%</span>) • <span id="post-rem-live" style="color:#64748B; font-weight:800;">เหลือ 1,000</span>
+                </div>
+            </div>
+            <div class="break-track-bar">
+                <div class="break-fill-bar fill-red" id="bar-post-fill" style="width: 0%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Main 2 Hero KPI Cards -->
+    <div class="hero-grid">
+        <!-- Left: รับแล้ว -->
+        <div class="hero-card left">
+            <div class="hero-header">
+                <span>✅</span> รับแล้ว( <span id="percent-done">0%</span> )
+            </div>
+            <div class="hero-num-box">
+                <div class="hero-num" id="conferred-count">0</div>
+            </div>
+            <div class="hero-footer-bar">
+                <span>⏱️</span> เวลาที่ใช้ <span id="elapsed-time">0:00:00</span>
+            </div>
+        </div>
+
+        <!-- Right: คงเหลือ -->
+        <div class="hero-card right">
+            <div class="hero-header">
+                <span>⏳</span> คงเหลือ( <span id="percent-left">100.0%</span> )
+            </div>
+            <div class="hero-num-box">
+                <div class="hero-num" id="remaining-count">2,500</div>
+            </div>
+            <div class="hero-footer-bar">
+                <span>⌛</span> <span id="target-finish-text">กำหนดการตามแผน: 11:50 น.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Bottom 3 Small KPI Cards -->
+    <div class="bottom-grid">
+        <div class="bottom-card">
+            <div class="bottom-card-title">
+                <span>🕒</span> ปัจจุบันเวลา
+            </div>
+            <div class="bottom-card-val val-clock" id="current-clock">--:--:--</div>
+        </div>
+        <div class="bottom-card">
+            <div class="bottom-card-title">
+                <span>🎯</span> คาดการณ์เวลาเสร็จสิ้น (คำนวณตามจริง)
+            </div>
+            <div class="bottom-card-val val-eta" id="eta-time">--:--:--</div>
+            <div class="bottom-card-sub" style="color: #0284C7;" id="eta-sub">อีก -- นาที</div>
+        </div>
+        <div class="bottom-card">
+            <div class="bottom-card-title">
+                <span>📈</span> ความเร็วบัณฑิตต่อนาที
+            </div>
+            <div class="bottom-card-val val-rate" id="cadence-rate">17.1 คน/นาที</div>
+            <div class="bottom-card-sub" style="color: #64748B;" id="cadence-sub">3.5 วินาที/คน</div>
+        </div>
+    </div>
+
+    <!-- 4. Bottom Status Bar -->
+    <div class="status-bar-row">
+        <a href="/admin" class="btn-back-admin" title="กลับสู่หน้า Control Center">
+            <span>⚙️</span> แผงควบคุม (Admin)
+        </a>
+
+        <div style="display: inline-flex; align-items: center; gap: 8px;">
+            <div class="status-pill pill-pause" id="pill-pause" style="background: #10B981; color: #FFFFFF;">
+                <span id="pause-icon">🟢</span>
+                <span id="pause-text">กำลังดำเนินพิธี</span>
+            </div>
+            <div class="status-pill pill-mode" id="pill-mode">
+                <span>🖥️</span>
+                <span id="mode-text">mode อัตโนมัติ (AI)</span>
+            </div>
+        </div>
+
+                <div style="position: absolute; right: 0; display: flex; align-items: center; gap: 8px;">
+            <button class="btn-toggle-font" id="btn-stage-font-trigger" onclick="cycleAppScale()" title="คลิกเพื่อสลับขนาดตัวหนังสือและตัวเลข (ปกติ ➔ ใหญ่ ➔ ใหญ่มาก ➔ ใหญ่ที่สุด)" style="background: rgba(255,255,255,0.92); color: #6E2271; border: 1.5px solid rgba(142, 56, 144, 0.35); padding: 5px 14px; border-radius: 10px; font-size: clamp(14px, 1.35vw, 17px); font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(142, 56, 144, 0.12);">
+                <span>🔤 ขนาด:</span>
+                <span id="stage-scale-badge" style="background: #FAF5FF; color: #6E2271; border: 1px solid #D8B4FE; padding: 2px 8px; border-radius: 6px; font-weight: 900;">100%</span>
+            </button>
+            <button class="btn-fullscreen" onclick="toggleFullScreen()" title="กด F11 หรือคลิกเพื่อเต็มจอ" style="position: static;">
+                ⛶ เต็มจอ
+            </button>
+        </div>
+
+    <script>
+        let prevCount = -1;
+
+        function setTextSize(isXl) {
+            const btn = document.getElementById('btn-toggle-font');
+            if (btn) btn.innerHTML = '🔍 ขนาด: ใหญ่พิเศษ (XL) ✓';
+        }
+
+        function toggleTextSize() {
+            // Already locked to Extra-Large mode matching reference image
+        }
+
+        // 1. Digital Clock (ticks every second)
+        function updateClock() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('current-clock').textContent = `${h}:${m}:${s}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 2. Optimized Fullscreen Toggle (Smooth HTML5 Fullscreen with 0 GPU hang)
+        function toggleFullScreen() {
+            try {
+                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                    const el = document.documentElement;
+                    if (el.requestFullscreen) {
+                        el.requestFullscreen().catch(() => {});
+                    } else if (el.webkitRequestFullscreen) {
+                        el.webkitRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen().catch(() => {});
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    }
+                }
+            } catch (err) {
+                console.warn('Fullscreen toggle:', err);
+            }
+        }
+
+        // Handle fullscreen keys without deadlocking browser native F11
+        window.addEventListener('keydown', (e) => {
+            // DO NOT intercept F11 with preventDefault - let native browser fullscreen run with 0 hang
+            if ((e.key === 'f' || e.key === 'F') && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                toggleFullScreen();
+            }
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+            const btn = document.querySelector('.btn-fullscreen');
+            if (btn) {
+                btn.textContent = document.fullscreenElement ? '✕ ออกเต็มจอ' : '⛶ เต็มจอ';
+            }
+        });
+
+        // 3. WebSocket Connection for live updates
+        function connectWS() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
+            const offlineAlert = document.getElementById('offline-alert');
+
+            ws.onopen = () => {
+                offlineAlert.style.display = 'none';
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const msg = JSON.parse(event.data);
+                    if (msg.type === "STATS_UPDATE") {
+                        updateStageUI(msg.data);
+                    }
+                } catch (e) {
+                    console.error("Error parsing WS stats:", e);
+                }
+            };
+
+            ws.onclose = () => {
+                offlineAlert.style.display = 'block';
+                setTimeout(connectWS, 2000);
+            };
+
+            ws.onerror = () => {
+                ws.close();
+            };
+        }
+
+        function updateStageUI(data) {
+            const total = Number(data.total_target) || 2500;
+            const current = Number(data.current_count) || 0;
+            const remaining = Number(data.remaining) || (total - current);
+            const pctDone = data.progress_percent !== undefined ? data.progress_percent : ((current / total) * 100).toFixed(0);
+            const pctLeft = Math.max(0, (100 - parseFloat(pctDone))).toFixed(1);
+
+            // Ceremony Metadata
+            if (data.ceremony_title) {
+                document.getElementById('ceremony-title').textContent = data.ceremony_title;
+            }
+            if (data.pre_break_range) {
+                document.getElementById('pre-break-range').textContent = data.pre_break_range;
+            }
+            if (data.post_break_range) {
+                document.getElementById('post-break-range').textContent = data.post_break_range;
+            }
+            if (data.session_name) {
+                document.getElementById('session-name').textContent = data.session_name;
+            }
+            if (data.session_time_range) {
+                document.getElementById('session-time').textContent = `(${data.session_time_range} น.)`;
+            }
+
+            // Multi-University Queue Badge Update
+            const uniBadge = document.getElementById('uni-queue-badge');
+            if (uniBadge) {
+                if (data.active_university && data.universities_queue && data.universities_queue.length > 1) {
+                    uniBadge.style.display = 'flex';
+                    const au = data.active_university;
+                    document.getElementById('uni-queue-text').textContent = `🏫 สถาบันที่ ${au.index}/${au.total_units}: ${au.name} (${au.range_str})`;
+                    document.getElementById('uni-queue-subcount').textContent = `รับแล้วในสถาบันนี้: ${Number(au.sub_count).toLocaleString()} / ${Number(au.target).toLocaleString()} คน (${au.sub_percent}%)`;
+                } else {
+                    uniBadge.style.display = 'none';
+                }
+            }
+
+            // Real-time Break Batches Update
+            const preRange = data.pre_break_range || '1-1,500';
+            const postRange = data.post_break_range || '1,501-2,500';
+            const preCur = Number(data.pre_break_current) || 0;
+            const preTar = Number(data.pre_break_target) || 1500;
+            const preRem = Number(data.pre_break_remaining) || (preTar - preCur);
+            const prePct = Number(data.pre_break_percent) || 0;
+
+            const postCur = Number(data.post_break_current) || 0;
+            const postTar = Number(data.post_break_target) || 1000;
+            const postRem = Number(data.post_break_remaining) || (postTar - postCur);
+            const postPct = Number(data.post_break_percent) || 0;
+
+            document.getElementById('track-pre-range').textContent = preRange;
+            document.getElementById('track-post-range').textContent = postRange;
+
+            document.getElementById('pre-count-live').textContent = preCur.toLocaleString();
+            document.getElementById('pre-target-live').textContent = preTar.toLocaleString();
+            document.getElementById('pre-pct-live').textContent = `${prePct.toFixed(1)}%`;
+            document.getElementById('bar-pre-fill').style.width = `${Math.min(100, prePct)}%`;
+
+            document.getElementById('post-count-live').textContent = postCur.toLocaleString();
+            document.getElementById('post-target-live').textContent = postTar.toLocaleString();
+            document.getElementById('post-pct-live').textContent = `${postPct.toFixed(1)}%`;
+            document.getElementById('bar-post-fill').style.width = `${Math.min(100, postPct)}%`;
+
+            const preMini = document.getElementById('pre-break-mini-badge');
+            const postMini = document.getElementById('post-break-mini-badge');
+            const chkPill = document.getElementById('checkpoint-pill');
+            const preBadge = document.getElementById('badge-pre-phase');
+            const postBadge = document.getElementById('badge-post-phase');
+            const preEta = document.getElementById('pre-eta-live');
+
+            const isBreakDone = !!data.break_taken;
+
+            if (!isBreakDone) {
+                if (preRem > 0) {
+                    document.getElementById('pre-rem-live').textContent = `เหลืออีก ${preRem.toLocaleString()}`;
+                    preBadge.textContent = '🟢 กำลังรับ';
+                    preBadge.style.background = 'rgba(16,185,129,0.2)';
+                    preBadge.style.color = '#059669';
+
+                    if (preMini) {
+                        preMini.textContent = `${preCur.toLocaleString()}/${preTar.toLocaleString()}`;
+                    }
+                    if (data.break_est_time) {
+                        preEta.textContent = `(พักเวลา ~${data.break_est_time} น.)`;
+                    } else {
+                        preEta.textContent = '';
+                    }
+                } else {
+                    document.getElementById('pre-rem-live').textContent = `ขยาย (${preCur.toLocaleString()})`;
+                    preBadge.textContent = '⚡ ขยาย';
+                    preBadge.style.background = 'rgba(245, 158, 11, 0.2)';
+                    preBadge.style.color = '#D97706';
+                }
+
+                postBadge.textContent = 'รอเริ่ม';
+                postBadge.style.background = 'rgba(148,163,184,0.2)';
+                postBadge.style.color = '#64748B';
+                document.getElementById('post-rem-live').textContent = `เหลือ ${postTar.toLocaleString()}`;
+                if (postMini) {
+                    postMini.textContent = `รอเริ่ม`;
+                }
+                chkPill.className = 'break-checkpoint-pill';
+                document.getElementById('checkpoint-label').textContent = 'จุดพักแถว';
+            } else {
+                document.getElementById('pre-rem-live').textContent = `ตัดยอดแล้ว (${preTar.toLocaleString()}) ✅`;
+                preBadge.textContent = '✅ ครบแล้ว';
+                preBadge.style.background = '#059669';
+                preBadge.style.color = '#ffffff';
+
+                if (postRem > 0) {
+                    postBadge.textContent = '🟢 กำลังรับ';
+                    postBadge.style.background = 'rgba(239,68,68,0.2)';
+                    postBadge.style.color = '#DC2626';
+                    document.getElementById('post-rem-live').textContent = `เหลือ ${postRem.toLocaleString()}`;
+                    if (postMini) {
+                        postMini.textContent = `${postCur.toLocaleString()}/${postTar.toLocaleString()}`;
+                    }
+                    chkPill.className = 'break-checkpoint-pill';
+                    document.getElementById('checkpoint-label').textContent = 'ผ่านจุดพักแล้ว';
+                }
+            }
+
+            document.getElementById('total-target-text').textContent = total.toLocaleString();
+
+            // Count bump animation
+            const countEl = document.getElementById('conferred-count');
+            if (prevCount >= 0 && current > prevCount) {
+                countEl.classList.remove('bump-anim');
+                void countEl.offsetWidth;
+                countEl.classList.add('bump-anim');
+            }
+            prevCount = current;
+
+            // Numbers
+            countEl.textContent = current.toLocaleString();
+            document.getElementById('remaining-count').textContent = remaining.toLocaleString();
+            document.getElementById('percent-done').textContent = `${pctDone}%`;
+            document.getElementById('percent-left').textContent = `${pctLeft}%`;
+
+            // Elapsed time
+            document.getElementById('elapsed-time').textContent = data.elapsed_time || '0:00:00';
+
+            // ETA
+            const etaTime = data.estimated_finish_time || '--:--:--';
+            if (remaining > 0) {
+                document.getElementById('eta-time').textContent = `${etaTime} น.`;
+                const remText = data.estimated_remaining_time || '';
+                const paceText = `${data.avg_duration_sec || 3.5}s/คน`;
+                document.getElementById('eta-sub').textContent = remText ? `${remText} (เฉลี่ยจริง ${paceText})` : '';
+            } else {
+                document.getElementById('eta-time').textContent = 'เสร็จสิ้นครบแล้ว 🎉';
+                document.getElementById('eta-sub').textContent = 'บัณฑิตเข้ารับครบตามเป้าหมาย 100%';
+            }
+
+            // Planned deadline
+            const targetEl = document.getElementById('target-finish-text');
+            if (data.planned_finish_time) {
+                const diffLabel = data.schedule_text ? ` [${data.schedule_text}]` : '';
+                targetEl.innerHTML = `กำหนดการตามแผน: <b>${data.planned_finish_time} น.</b> <span style="font-size: clamp(18px, 1.7vw, 24px); font-weight: 600; opacity: 0.95;">${diffLabel}</span>`;
+            } else if (remaining > 0) {
+                targetEl.textContent = `คาดการณ์เสร็จจริง: ${etaTime} น.`;
+            } else {
+                targetEl.textContent = `เสร็จสิ้นพิธีสมบูรณ์`;
+            }
+
+            // Cadence rate
+            const rate = data.rate_per_min || 17.1;
+            document.getElementById('cadence-rate').textContent = `${rate} คน/นาที`;
+            document.getElementById('cadence-sub').textContent = `${data.avg_duration_sec || 3.5} วินาที/คน`;
+
+            // Status Pills
+            const pausePill = document.getElementById('pill-pause');
+            const pauseText = document.getElementById('pause-text');
+            const pauseIcon = document.getElementById('pause-icon');
+            if (data.is_paused) {
+                pausePill.className = 'status-pill pill-pause active';
+                pauseIcon.textContent = '⏸️';
+                pauseText.textContent = 'หยุดพักพิธีชั่วคราว';
+            } else {
+                pausePill.className = 'status-pill pill-pause';
+                pauseIcon.textContent = '🟢';
+                pauseText.textContent = 'กำลังดำเนินพิธี';
+                pausePill.style.background = '#10B981';
+                pausePill.style.color = '#FFFFFF';
+            }
+
+            const modePill = document.getElementById('pill-mode');
+            const modeText = document.getElementById('mode-text');
+            if (data.manual_pace_sec !== null && data.manual_pace_sec !== undefined) {
+                modeText.textContent = `mode กำหนดเอง (${data.manual_pace_sec}s/คน)`;
+            } else {
+                modeText.textContent = 'mode อัตโนมัติ (AI)';
+            }
+        }
+
+        connectWS();
+    
+
+// ==========================================
+// Universal Font & Number Scale Controller (Clean, No Overlap)
+// ==========================================
+const FONT_SCALE_KEY = 'graduation_app_scale';
+const SCALE_PRESETS = [1.0, 1.15, 1.30, 1.50];
+const SCALE_LABELS = {
+    1.0: '100% (ปกติ)',
+    1.15: '115% (ใหญ่)',
+    1.30: '130% (ใหญ่มาก)',
+    1.50: '150% (ใหญ่ที่สุด)'
+};
+let currentScale = 1.0;
+
+function getStoredScale() {
+    try {
+        const val = parseFloat(localStorage.getItem(FONT_SCALE_KEY));
+        if (!isNaN(val) && val >= 0.8 && val <= 2.0) {
+            return Math.round(val * 100) / 100;
+        }
+    } catch (e) {}
+    return 1.0;
+}
+
+function getScaleLabel(scale) {
+    for (let k in SCALE_LABELS) {
+        if (Math.abs(parseFloat(k) - scale) < 0.04) {
+            return SCALE_LABELS[k];
+        }
+    }
+    return Math.round(scale * 100) + '%';
+}
+
+function updateScaleUI(scale) {
+    const label = getScaleLabel(scale);
+    
+    const d1 = document.getElementById('app-scale-display');
+    if (d1) d1.textContent = label;
+    const d2 = document.getElementById('settings-scale-display');
+    if (d2) d2.textContent = label;
+    const d3 = document.getElementById('stage-scale-badge');
+    if (d3) d3.textContent = label;
+
+    // Highlight any preset buttons in settings page
+    document.querySelectorAll('.btn-scale-preset-setting').forEach(btn => {
+        const s = parseFloat(btn.getAttribute('data-scale'));
+        if (Math.abs(s - scale) < 0.04) {
+            btn.style.background = 'linear-gradient(135deg, #8E3890, #6E2271)';
+            btn.style.color = '#FFFFFF';
+            btn.style.borderColor = '#6E2271';
+            btn.style.boxShadow = '0 2px 8px rgba(142, 56, 144, 0.35)';
+        } else {
+            btn.style.background = '#FFFFFF';
+            btn.style.color = '#475569';
+            btn.style.borderColor = '#CBD5E1';
+            btn.style.boxShadow = 'none';
+        }
+    });
+}
+
+function applyAppScale(scale, save) {
+    if (typeof save === 'undefined') save = true;
+    currentScale = Math.round(Math.max(0.85, Math.min(1.80, scale)) * 100) / 100;
+    
+    const isStagePage = !!document.getElementById('stage-scale-badge') || (document.body && document.body.classList.contains('theme-purple-yellow'));
+    if (isStagePage) {
+        if (document.body) {
+            document.body.style.zoom = '';
+        }
+        document.documentElement.style.setProperty('--stage-font-scale', currentScale);
+    } else {
+        if (document.body) {
+            document.body.style.zoom = currentScale;
+        }
+        document.documentElement.style.setProperty('--app-font-scale', currentScale);
+    }
+
+    updateScaleUI(currentScale);
+
+    if (save) {
+        try {
+            localStorage.setItem(FONT_SCALE_KEY, currentScale.toFixed(2));
+            if (window.BroadcastChannel) {
+                const bc = new BroadcastChannel('app_scale_channel');
+                bc.postMessage({ scale: currentScale });
+                bc.close();
+            }
+        } catch(e) {}
+    }
+}
+
+function setAppScale(scale) {
+    applyAppScale(scale, true);
+}
+
+function changeAppScale(delta) {
+    applyAppScale(currentScale + delta, true);
+}
+
+function resetAppScale() {
+    applyAppScale(1.0, true);
+}
+
+function cycleAppScale() {
+    let nextScale = SCALE_PRESETS[0];
+    for (let i = 0; i < SCALE_PRESETS.length; i++) {
+        if (currentScale < SCALE_PRESETS[i] - 0.04) {
+            nextScale = SCALE_PRESETS[i];
+            break;
+        }
+    }
+    if (currentScale >= SCALE_PRESETS[SCALE_PRESETS.length - 1] - 0.04) {
+        nextScale = SCALE_PRESETS[0];
+    }
+    applyAppScale(nextScale, true);
+}
+
+window.applyAppScale = applyAppScale;
+window.setAppScale = setAppScale;
+window.changeAppScale = changeAppScale;
+window.resetAppScale = resetAppScale;
+window.cycleAppScale = cycleAppScale;
+
+(function initAppScale() {
+    const initialScale = getStoredScale();
+    applyAppScale(initialScale, false);
+
+    window.addEventListener('storage', (e) => {
+        if (e.key === FONT_SCALE_KEY && e.newValue) {
+            const newScale = parseFloat(e.newValue);
+            if (!isNaN(newScale)) applyAppScale(newScale, false);
+        }
+    });
+
+    try {
+        if (window.BroadcastChannel) {
+            const bc = new BroadcastChannel('app_scale_channel');
+            bc.onmessage = (ev) => {
+                if (ev.data && typeof ev.data.scale === 'number') {
+                    applyAppScale(ev.data.scale, false);
+                }
+            };
+        }
+    } catch(e) {}
+})();
+
+    </script>
+</body>
+</html>

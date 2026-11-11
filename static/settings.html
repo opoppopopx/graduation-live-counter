@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>ตั้งค่าขั้นสูง & เครื่องมือวิเคราะห์ | Ceremony Advanced Tools</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700;800;900&family=Outfit:wght@500;700;800;900&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/static/logo.png">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #FFFFFF;
+            --border-color: rgba(142, 56, 144, 0.2);
+            --text-main: #2A122D;
+            --text-muted: #6B4E70;
+            --accent-purple: #8E3890;
+            --accent-gold: #F59E0B;
+            --accent-blue: #0284C7;
+            --accent-green: #10B981;
+            --accent-red: #EF4444;
+        }
+
+        body {
+            background-color: #F6EEF8 !important;
+            color: #2A122D !important;
+            font-family: 'Kanit', 'Sarabun', sans-serif;
+            margin: 0;
+            padding: 24px 32px;
+            min-height: 100vh;
+            box-sizing: border-box;
+            font-size: 18px;
+        }
+
+        * { box-sizing: border-box; }
+
+        /* Top Header */
+        .top-header {
+            background: #FFFFFF;
+            border-top: 6px solid #8E3890;
+            border-bottom: 3px solid #F59E0B;
+            border-radius: 18px;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 6px 24px rgba(142, 56, 144, 0.15);
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-brand img {
+            height: 48px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-brand h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 900;
+            color: #6E2271;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-brand p {
+            margin: 0;
+            font-size: 13px;
+            color: #8A658F;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-nav {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 900;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-family: 'Kanit', sans-serif;
+            min-height: 52px;
+        }
+
+        .btn-nav-primary {
+            background: linear-gradient(135deg, #8E3890, #6E2271);
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(142, 56, 144, 0.25);
+        }
+
+        .btn-nav-primary:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-nav-outline {
+            background: #FFFFFF;
+            color: #6E2271;
+            border: 1.5px solid rgba(142, 56, 144, 0.35);
+        }
+
+        .btn-nav-green {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+
+        /* Tabs Navigation */
+        .tabs-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+            border-bottom: 2px solid rgba(142, 56, 144, 0.15);
+            padding-bottom: 6px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: #FFFFFF;
+            border: 2.5px solid rgba(142, 56, 144, 0.28);
+            padding: 16px 26px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 900;
+            color: #5B185D;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-family: 'Kanit', sans-serif;
+            min-height: 62px;
+        }
+
+        .tab-btn:hover {
+            background: #FAF4FA;
+            border-color: #8E3890;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #8E3890, #6E2271);
+            color: #FFFFFF;
+            border-color: #6E2271;
+            box-shadow: 0 4px 14px rgba(142, 56, 144, 0.3);
+        }
+
+        /* Card container */
+        .settings-card {
+            background: #FFFFFF;
+            border-radius: 20px;
+            border: 2px solid rgba(142, 56, 144, 0.25);
+            box-shadow: 0 8px 28px rgba(142, 56, 144, 0.12);
+            padding: 30px 34px;
+            margin-bottom: 24px;
+        }
+
+        .card-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            border-bottom: 1.5px solid rgba(142, 56, 144, 0.12);
+            padding-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .card-title {
+            font-size: 26px;
+            font-weight: 900;
+            color: #5B185D;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+        }
+
+        .input-field {
+            background: #FAF4FA;
+            border: 2.5px solid rgba(142, 56, 144, 0.35);
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-size: 18px;
+            font-weight: 800;
+            color: #2A122D;
+            font-family: 'Kanit', sans-serif;
+            outline: none;
+            transition: all 0.2s;
+            min-height: 52px;
+        }
+
+        .input-field:focus {
+            border-color: #8E3890;
+            box-shadow: 0 0 0 3px rgba(142, 56, 144, 0.15);
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, #0284C7, #0369A1);
+            color: #FFFFFF;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Kanit', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            min-height: 52px;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Cadence Strip */
+        .cadence-strip {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 10px 4px;
+            min-height: 54px;
+            align-items: center;
+        }
+
+        .cadence-pill {
+            background: #FAF4FA;
+            border: 2.5px solid rgba(142, 56, 144, 0.3);
+            padding: 10px 20px;
+            border-radius: 14px;
+            font-size: 17px;
+            font-weight: 900;
+            white-space: nowrap;
+            color: #2A122D;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 60px;
+            justify-content: center;
+        }
+
+        .cadence-pill.normal { border-color: #10B981; color: #059669; background: #ECFDF5; }
+        .cadence-pill.fast { border-color: #0284C7; color: #0284C7; background: #F0F9FF; }
+        .cadence-pill.slow { border-color: #F59E0B; color: #D97706; background: #FFFBEB; }
+        .cadence-pill.pause { border-color: #8E3890; color: #7B247D; background: #FAF4FA; }
+
+        /* OBS Controller Buttons */
+        .obs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            max-width: 560px;
+        }
+
+        .btn-obs-pos {
+            background: #FAF4FA;
+            border: 2.5px solid rgba(142, 56, 144, 0.35);
+            color: #5B185D;
+            padding: 16px 14px;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Kanit', sans-serif;
+            min-height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-obs-pos.active {
+            background: #8E3890;
+            color: #FFFFFF;
+            border-color: #6E2271;
+            box-shadow: 0 4px 10px rgba(142, 56, 144, 0.3);
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #2A122D;
+            color: #FFFFFF;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 9999;
+        }
+
+        /* Table styles */
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 17px;
+        }
+        .report-table th, .report-table td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 2px solid rgba(142, 56, 144, 0.15);
+        }
+        .report-table th {
+            background: #F3E8F5;
+            color: #5B185D;
+            font-weight: 900;
+            font-size: 18px;
+        }
+        .report-table td {
+            font-weight: 600;
+            color: #2A122D;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast"></div>
+
+    <!-- Header Navigation -->
+    <header class="top-header">
+        <div class="header-brand">
+            <img src="/static/logo.png?v=2" alt="ตรามหาวิทยาลัยราชภัฏบุรีรัมย์" style="height: 76px; width: auto; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));">
+            <div>
+                <h1 style="font-size: 30px; font-weight: 900; color: #5B185D; line-height: 1.2;">⚙️ เครื่องมือ & ตั้งค่าขั้นสูง <span style="font-size: 14px; font-weight: 900; background: #FEF3C7; color: #B45309; padding: 5px 12px; border-radius: 10px;">ADVANCED TOOLS</span></h1>
+                <p style="font-size: 17px; color: #6B4E70; font-weight: 700; margin-top: 4px;">วิเคราะห์จังหวะก้าว, จัดการรอบเช้า-บ่าย, เพิ่มคิวมหาวิทยาลัย, ปรับ OBS, และสรุปรายงาน Excel</p>
+            </div>
+        </div>
+        <div class="header-actions">
+<!-- Clean Non-Overlapping Font Scale Button -->
+            <button type="button" id="btn-font-scale-trigger-settings" class="btn-nav btn-nav-outline" onclick="cycleAppScale()" style="min-height: 52px; font-size: 16px; padding: 10px 20px; font-weight: 900; border-radius: 14px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: 2px solid #8E3890; background: #FFFFFF; color: #5B185D; box-shadow: 0 4px 12px rgba(142, 56, 144, 0.15);" title="คลิกเพื่อสลับขนาด: ปกติ (100%) ➔ ใหญ่ (115%) ➔ ใหญ่มาก (130%) ➔ ใหญ่ที่สุด (150%)">
+                <span>🔤 ขนาด:</span>
+                <span id="settings-scale-display" style="background: #FAF5FF; color: #6E2271; padding: 3px 10px; border-radius: 8px; font-size: 15px; font-weight: 900; border: 1.5px solid #D8B4FE;">100% (ปกติ)</span>
+            </button>
+                    </div>
+                </div>
+            
+            <button class="btn-nav btn-nav-green" onclick="switchSettingsTab('report')">
+                📊 สรุปรายงาน & ส่งออก Excel
+            </button>
+            <a href="/admin" class="btn-nav btn-nav-primary">
+                ⬅️ กลับหน้าคุมงานสด (Admin Live Monitor)
+            </a>
+            <a href="/live" target="_blank" class="btn-nav btn-nav-outline">
+                📺 ดูจอเวทีสด (Stage)
+            </a>
+            <a href="/overlay" target="_blank" class="btn-nav btn-nav-outline">
+                🎦 ดูป้าย OBS
+            </a>
+        </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <div class="tabs-bar">
+        <button class="tab-btn active" id="tab-nav-cadence" onclick="switchSettingsTab('cadence')">
+            ⚡ 1. วิเคราะห์จังหวะก้าว (Cadence & Pacing)
+        </button>
+        <button class="tab-btn" id="tab-nav-sessions" onclick="switchSettingsTab('sessions')">
+            🎛️ 2. จัดการรอบพิธี & เพิ่มสถาบัน (Sessions & Queue)
+        </button>
+        <button class="tab-btn" id="tab-nav-obs" onclick="switchSettingsTab('obs')">
+            📺 3. ควบคุมตำแหน่ง OBS Overlay
+        </button>
+        <button class="tab-btn" id="tab-nav-ai" onclick="switchSettingsTab('ai')">
+            🎯 4. ปรับจูนความไว AI & พื้นที่ ROI
+        </button>
+        <button class="tab-btn" id="tab-nav-report" onclick="switchSettingsTab('report')">
+            📊 5. รายงานสรุปพิธี & Export Excel
+        </button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 1: CADENCE & PACING ANALYTICS -->
+    <!-- ========================================== -->
+    <div id="tab-content-cadence" class="tab-content">
+        <div class="settings-card">
+            <div class="card-header-row">
+                <div class="card-title">
+                    <span>⚡</span> วิเคราะห์จังหวะก้าว & กำหนดเวลาจริง (Cadence & Pacing)
+                </div>
+                <div id="pacing-badge-tag" style="font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 20px; background: #DEF7EC; color: #03543F; border: 1.5px solid #10B981;">
+                    ✅ จังหวะมาตรฐาน (เหมาะสม)
+                </div>
+            </div>
+
+            <!-- Pace Comparison Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px;">
+                <div style="background: #FAF4FA; padding: 14px 18px; border-radius: 12px; border: 1.5px solid rgba(142, 56, 144, 0.2);">
+                    <div style="font-size: 18px; color: #5B185D; font-weight: 900;">จังหวะก้าวที่เสถียร (Steady Pace สำหรับคำนวณ ETA)</div>
+                    <div style="font-size: 54px; font-weight: 900; color: #7B247D; margin: 8px 0; line-height: 1.1;" id="steady-pace-val">3.5s <span style="font-size: 14px; font-weight: 600; color: #8A658F;">/ คน</span></div>
+                    <div style="font-size: 16px; color: #6B4E70; font-weight: 800;" id="pace-trend-text">แนวโน้ม: คงที่ (STABLE)</div>
+                </div>
+                <div style="background: #FAF4FA; padding: 14px 18px; border-radius: 12px; border: 1.5px solid rgba(142, 56, 144, 0.2);">
+                    <div style="font-size: 18px; color: #5B185D; font-weight: 900;">สปีดเฉพาะหน้า (Instant 5-person Pace)</div>
+                    <div style="font-size: 54px; font-weight: 900; color: #D97706; margin: 8px 0; line-height: 1.1;" id="instant-pace-val">3.5s <span style="font-size: 14px; font-weight: 600; color: #8A658F;">/ คน</span></div>
+                    <div style="font-size: 16px; color: #B45309; font-weight: 800;" id="instant-rate-val">~17.1 คน/นาที</div>
+                </div>
+            </div>
+
+            <!-- Cadence Strip (20 Recent Confers) -->
+            <div style="margin-bottom: 20px; background: #FFFFFF; border: 1.5px solid rgba(142, 56, 144, 0.2); border-radius: 12px; padding: 14px 18px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <div style="font-size: 18px; font-weight: 900; color: #5B185D;">ไทม์ไลน์จังหวะ 20 คนล่าสุด (Cadence Strip):</div>
+                    <div style="font-size: 15px; color: #6B4E70; font-weight: 800;">เขียว = ปกติ | ฟ้า = เร็ว | ส้ม = ช้า | เทา = พักแถว</div>
+                </div>
+                <div class="cadence-strip" id="cadence-strip">
+                    <div style="font-size: 12px; color: #8A658F; padding: 6px;">รอตรวจพบบัณฑิต...</div>
+                </div>
+            </div>
+
+            <!-- Target Schedule Comparison -->
+            <div style="background: #FAF4FA; padding: 16px 18px; border-radius: 12px; border: 1.5px solid rgba(142, 56, 144, 0.2); margin-bottom: 18px;">
+                <div style="font-size: 14px; font-weight: 800; color: #5B185D; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                    <span>⏱️ กำหนดการตามแผน (สำหรับดูเทียบ/อ้างอิง)</span>
+                    <span id="schedule-drift-badge" style="font-size: 12px; color: #8A658F; font-weight: 700;">ยังไม่ระบุแผน</span>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <input type="time" id="planned-finish-input" class="input-field" style="max-width: 180px; padding: 12px 18px; font-size: 22px; font-weight: 900; text-align: center; min-height: 56px;">
+                    <button class="btn-action" style="min-height: 56px; font-size: 18px; font-weight: 900; background: linear-gradient(135deg, #0284C7, #0369A1);" onclick="applyPlannedFinish()">บันทึกเวลาเป้าหมาย</button>
+                    <button class="btn-action" style="min-height: 56px; font-size: 18px; font-weight: 900; background: #EDE0EF; color: #6E2271;" onclick="clearPlannedFinish()">ล้าง</button>
+                </div>
+                <div id="schedule-hint-text" style="font-size: 12px; color: #6B4E70; margin-top: 8px; font-weight: 600;">
+                    💡 เวลาตามแผนนี้มีไว้สำหรับ <b>ดูเทียบ/อ้างอิง</b> เท่านั้น (ระบบจะคำนวณเวลาเสร็จจริงจากความเร็ว AI ต่อคนเสมอ)
+                </div>
+            </div>
+
+            <!-- Manual Pace Override -->
+            <div style="background: #FAF4FA; padding: 16px 18px; border-radius: 12px; border: 1.5px solid rgba(142, 56, 144, 0.2); margin-bottom: 18px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 13px; color: #5B185D; font-weight: 800;">⏱️ ปรับเวลาเฉลี่ยโดยประมาณ (วินาที/คน):</span>
+                    <div id="pace-mode-badge" style="font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 12px; background: #DEF7EC; color: #03543F; border: 1px solid #10B981;">
+                        🤖 AUTO — คำนวณอัตโนมัติ (AI)
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <input type="number" id="pace-input" class="input-field" value="3.5" step="0.1" min="0.5" max="60" style="padding: 12px 18px; font-size: 24px; max-width: 160px; font-weight: 900; text-align: center; min-height: 56px;">
+                    <button class="btn-action" style="background: #8B5CF6; min-height: 56px; font-size: 18px; font-weight: 900;" onclick="applyCustomPace()">ตั้งเองแบบ Manual</button>
+                    <button class="btn-action" id="btn-clear-pace" style="background: #10B981; min-height: 56px; font-size: 18px; font-weight: 900; display: none;" onclick="clearPace()">↩ คืนสู่อัตโนมัติ</button>
+                </div>
+            </div>
+
+            <!-- Sound feedback chime -->
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #5B185D; padding: 10px 4px; font-weight: 700;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <input type="checkbox" id="chk-sound" checked style="accent-color: #8E3890; width: 26px; height: 26px; cursor: pointer;">
+                    <span style="font-size: 18px; font-weight: 800;">🔔 ส่งเสียงเตือน (Chime) เมื่อนับสำเร็จ</span>
+                </label>
+                <button class="btn-action" style="background: #EDE0EF; color: #6E2271; min-height: 50px; font-size: 17px; font-weight: 800;" onclick="playConferChime()">🔊 ทดสอบเสียง</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: SESSIONS & MULTI-UNIVERSITY QUEUE -->
+    <!-- ========================================== -->
+    <div id="tab-content-sessions" class="tab-content" style="display: none;">
+        <div class="settings-card">
+            <div class="card-header-row">
+                <div class="card-title">
+                    <span>🎛️</span> จัดการรอบพิธี & คิวมหาวิทยาลัย/คณะ (รอบเช้า / รอบบ่าย)
+                </div>
+                <div id="session-badge-tag" style="font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 20px; background: #FEF3C7; color: #92400E; border: 1.5px solid #F59E0B;">
+                    ☀️ กำลังแสดง: รอบเช้า
+                </div>
+            </div>
+
+            <!-- Session Switcher Buttons -->
+            <div style="display: flex; gap: 10px; margin-bottom: 18px;">
+                <button type="button" class="btn-nav" id="btn-sess-m" style="background: linear-gradient(135deg, #F59E0B, #D97706); color: #fff; padding: 10px 22px; font-size: 14px; font-weight: 800;" onclick="switchSessionConfigTab('m')">
+                    ☀️ จัดการรอบเช้า (Morning Session)
+                </button>
+                <button type="button" class="btn-nav" id="btn-sess-a" style="background: #FAF4FA; border: 1.5px solid rgba(142,56,144,0.3); color: #6E2271; padding: 10px 22px; font-size: 14px; font-weight: 800;" onclick="switchSessionConfigTab('a')">
+                    ⛅ จัดการรอบบ่าย (Afternoon Session)
+                </button>
+            </div>
+
+            <!-- Day Split Quick Calculator -->
+            <div style="background: #FAF4FA; border: 1.5px solid rgba(142, 56, 144, 0.2); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px;">
+                <div style="font-size: 14px; font-weight: 800; color: #5B185D; margin-bottom: 8px;">
+                    ⚡ เครื่องมือแบ่งยอดบัณฑิตทั้งวัน (Day Split Helper)
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <span style="font-size: 13px; color: #6B4E70; font-weight: 700;">ยอดรวมทั้งวัน:</span>
+                    <input type="number" id="split-total-input" class="input-field" value="2500" style="max-width: 140px; font-weight: 800; font-size: 14px;">
+                    <button class="btn-action" style="background: linear-gradient(135deg, #0284C7, #0369A1);" onclick="triggerSplitDay(50)">แบ่งเท่ากัน (50 / 50%)</button>
+                    <button class="btn-action" style="background: #EDE0EF; color: #6E2271;" onclick="triggerSplitDay(60)">เช้า 60% / บ่าย 40%</button>
+                </div>
+            </div>
+
+            <!-- MORNING SESSION CONFIG PANEL -->
+            <div id="panel-morning-config" style="display: block;">
+                <!-- General Info -->
+                <div style="background: #FFFFFF; border: 1.5px solid rgba(142, 56, 144, 0.25); border-radius: 12px; padding: 20px; margin-bottom: 18px;">
+                    <div style="font-size: 16px; font-weight: 800; color: #D97706; margin-bottom: 14px;">
+                        ☀️ ข้อมูลรอบเช้า (Morning Session)
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 16px;">
+                        <div>
+                            <label style="font-size: 12px; font-weight: 700; color: #6B4E70; display: block; margin-bottom: 4px;">ชื่อพิธี / สถาบันหลัก:</label>
+                            <input type="text" id="m-title" class="input-field" value="ม.ราชภัฏบุรีรัมย์" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; font-weight: 700; color: #6B4E70; display: block; margin-bottom: 4px;">เป้าหมายรวมรอบเช้า (คน):</label>
+                            <input type="number" id="m-target" class="input-field" value="1500" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; font-weight: 700; color: #6B4E70; display: block; margin-bottom: 4px;">เวลาเริ่ม (เช่น 08:30):</label>
+                            <input type="text" id="m-start" class="input-field" value="08:30" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; font-weight: 700; color: #6B4E70; display: block; margin-bottom: 4px;">เวลาจบตามแผน (เช่น 11:50):</label>
+                            <input type="text" id="m-finish" class="input-field" value="11:50" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; font-weight: 700; color: #6B4E70; display: block; margin-bottom: 4px;">ช่วงก่อนพัก (เช่น 1-1,000):</label>
+                            <input type="text" id="m-pre-break" class="input-field" value="1-1,000" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; font-weight: 700; color: #6B4E70; display: block; margin-bottom: 4px;">ช่วงหลังพัก (เช่น 1,001-1,500):</label>
+                            <input type="text" id="m-post-break" class="input-field" value="1,001-1,500" style="width: 100%;">
+                        </div>
+                    </div>
+                    <button class="btn-action" style="background: linear-gradient(135deg, #10B981, #059669); font-size: 14px; padding: 10px 24px; font-weight: 800;" onclick="saveSessionMeta('m')">
+                        💾 บันทึกข้อมูลรอบเช้า
+                    </button>
+                </div>
+
+                <!-- MULTI-UNIVERSITY QUEUE (MORNING) -->
+                <div style="background: #FFFFFF; border: 1.5px solid #F59E0B; border-radius: 12px; padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                        <div style="font-size: 22px; font-weight: 900; color: #5B185D;">
+                            🏫 คิวมหาวิทยาลัย / คณะในรอบเช้า (Multi-University Queue)
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <span id="m-uni-total-badge" style="font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 20px; background: #FEF3C7; color: #B45309;">ยอดรวมคิว: 0 คน</span>
+                            <button type="button" class="btn-action" style="background: linear-gradient(135deg, #F59E0B, #D97706); font-size: 18px; font-weight: 900; min-height: 54px; padding: 12px 24px;" onclick="addUniversityRow('m')">
+                                ➕ เพิ่มสถาบัน / คณะในรอบเช้า
+                            </button>
+                            <button type="button" class="btn-action" style="background: #EDE0EF; color: #6E2271; font-size: 16px; font-weight: 800; min-height: 54px; padding: 12px 20px;" onclick="loadSampleMultiUni('m')">
+                                🪄 โหลดตัวอย่าง 3 สถาบัน
+                            </button>
+                        </div>
+                    </div>
+                    <div style="font-size: 12px; color: #6B4E70; margin-bottom: 12px;">
+                        💡 ป้ายสถาบันจะแสดงผลบนหน้าจอเวที (/live) และ OBS (/overlay) โดยอัตโนมัติตามลำดับและช่วงยอดที่ระบุ
+                    </div>
+                    <div id="m-uni-table-container">
+                        <!-- Injected by renderUniversityTable('m') -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- AFTERNOON SESSION CONFIG PANEL -->
+            <div id="panel-afternoon-config" style="display: none;">
+                <!-- General Info -->
+                <div style="background: #FFFFFF; border: 1.5px solid rgba(142, 56, 144, 0.25); border-radius: 12px; padding: 20px; margin-bottom: 18px;">
+                    <div style="font-size: 16px; font-weight: 800; color: #0284C7; margin-bottom: 14px;">
+                        ⛅ ข้อมูลรอบบ่าย (Afternoon Session)
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 16px;">
+                        <div>
+                            <label style="font-size: 12px; font-weight: 700; color: #6B4E70; display: block; margin-bottom: 4px;">ชื่อพิธี / สถาบันหลัก:</label>
+                            <input type="text" id="a-title" class="input-field" value="ม.ราชภัฏสุรินทร์" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; font-weight: 700; color: #6B4E70; display: block; margin-bottom: 4px;">เป้าหมายรวมรอบบ่าย (คน):</label>
+                            <input type="number" id="a-target" class="input-field" value="1000" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; font-weight: 700; color: #6B4E70; display: block; margin-bottom: 4px;">เวลาเริ่ม (เช่น 13:30):</label>
+                            <input type="text" id="a-start" class="input-field" value="13:30" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; font-weight: 700; color: #6B4E70; display: block; margin-bottom: 4px;">เวลาจบตามแผน (เช่น 16:45):</label>
+                            <input type="text" id="a-finish" class="input-field" value="16:45" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; font-weight: 700; color: #6B4E70; display: block; margin-bottom: 4px;">ช่วงก่อนพัก (เช่น 1-600):</label>
+                            <input type="text" id="a-pre-break" class="input-field" value="1-600" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; font-weight: 700; color: #6B4E70; display: block; margin-bottom: 4px;">ช่วงหลังพัก (เช่น 601-1,000):</label>
+                            <input type="text" id="a-post-break" class="input-field" value="601-1,000" style="width: 100%;">
+                        </div>
+                    </div>
+                    <button class="btn-action" style="background: linear-gradient(135deg, #0284C7, #0369A1); font-size: 14px; padding: 10px 24px; font-weight: 800;" onclick="saveSessionMeta('a')">
+                        💾 บันทึกข้อมูลรอบบ่าย
+                    </button>
+                </div>
+
+                <!-- MULTI-UNIVERSITY QUEUE (AFTERNOON) -->
+                <div style="background: #FFFFFF; border: 1.5px solid #0284C7; border-radius: 12px; padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                        <div style="font-size: 22px; font-weight: 900; color: #5B185D;">
+                            🏫 คิวมหาวิทยาลัย / คณะในรอบบ่าย (Multi-University Queue)
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <span id="a-uni-total-badge" style="font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 20px; background: #E0F2FE; color: #0369A1;">ยอดรวมคิว: 0 คน</span>
+                            <button type="button" class="btn-action" style="background: linear-gradient(135deg, #0284C7, #0369A1); font-size: 18px; font-weight: 900; min-height: 54px; padding: 12px 24px;" onclick="addUniversityRow('a')">
+                                ➕ เพิ่มสถาบัน / คณะในรอบบ่าย
+                            </button>
+                            <button type="button" class="btn-action" style="background: #EDE0EF; color: #6E2271; font-size: 16px; font-weight: 800; min-height: 54px; padding: 12px 20px;" onclick="loadSampleMultiUni('a')">
+                                🪄 โหลดตัวอย่าง 3 สถาบัน
+                            </button>
+                        </div>
+                    </div>
+                    <div style="font-size: 12px; color: #6B4E70; margin-bottom: 12px;">
+                        💡 ป้ายสถาบันจะแสดงผลบนหน้าจอเวที (/live) และ OBS (/overlay) โดยอัตโนมัติตามลำดับและช่วงยอดที่ระบุ
+                    </div>
+                    <div id="a-uni-table-container">
+                        <!-- Injected by renderUniversityTable('a') -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: OBS OVERLAY LIVE CONTROLLER -->
+    <!-- ========================================== -->
+    <div id="tab-content-obs" class="tab-content" style="display: none;">
+        <div class="settings-card">
+            <div class="card-header-row">
+                <div class="card-title">
+                    <span>📺</span> ควบคุมตำแหน่ง & ขนาดของ OBS Overlay (สด)
+                </div>
+                <div id="obs-pos-badge" style="font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 20px; background: #FEF3C7; color: #92400E; border: 1.5px solid #F59E0B;">
+                    📌 ตำแหน่งปัจจุบัน: ล่างขวา
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; flex-wrap: wrap;">
+                <!-- Position Matrix -->
+                <div style="background: #FAF4FA; padding: 18px; border-radius: 14px; border: 1.5px solid rgba(142, 56, 144, 0.2);">
+                    <div style="font-size: 14px; font-weight: 800; color: #5B185D; margin-bottom: 12px;">
+                        🎯 เลือกตำแหน่งมุมจอใน OBS:
+                    </div>
+                    <div class="obs-grid">
+                        <button type="button" class="btn-obs-pos" id="btn-pos-top-left" onclick="setObsPosition('top-left')">↖️ บนซ้าย</button>
+                        <button type="button" class="btn-obs-pos" id="btn-pos-top-center" onclick="setObsPosition('top-center')">⬆️ บนกลาง</button>
+                        <button type="button" class="btn-obs-pos" id="btn-pos-top-right" onclick="setObsPosition('top-right')">↗️ บนขวา</button>
+                        <button type="button" class="btn-obs-pos" id="btn-pos-bottom-left" onclick="setObsPosition('bottom-left')">↙️ ล่างซ้าย</button>
+                        <button type="button" class="btn-obs-pos" id="btn-pos-bottom-center" onclick="setObsPosition('bottom-center')">⬇️ ล่างกลาง</button>
+                        <button type="button" class="btn-obs-pos active" id="btn-pos-bottom-right" onclick="setObsPosition('bottom-right')">↘️ ล่างขวา</button>
+                    </div>
+                    <div style="font-size: 12px; color: #8A658F; margin-top: 12px; font-weight: 600;">
+                        💡 คลิกที่ตำแหน่งเพื่อย้ายป้ายใน OBS สดทันทีแบบเรียลไทม์ (ไม่ต้องรีสตาร์ต OBS)
+                    </div>
+                </div>
+
+                <!-- Scale and Padding Sliders -->
+                <div style="background: #FAF4FA; padding: 18px; border-radius: 14px; border: 1.5px solid rgba(142, 56, 144, 0.2);">
+                    <div style="font-size: 14px; font-weight: 800; color: #5B185D; margin-bottom: 12px;">
+                        🔍 ขนาดและระยะขอบ (Scale & Offsets):
+                    </div>
+                    <div style="margin-bottom: 14px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: #6B4E70; margin-bottom: 4px;">
+                            <span>ขนาดป้าย (Scale):</span>
+                            <span id="lbl-obs-scale" style="color: #D97706; font-weight: 900; font-size: 26px;">100%</span>
+                        </div>
+                        <input type="range" id="slider-obs-scale" min="0.6" max="1.5" step="0.05" value="1.0" style="width: 100%; accent-color: #8E3890;" oninput="onObsScaleSliderChange(this.value)">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #6B4E70; margin-bottom: 4px;">
+                                <span>ขอบแนวนอน (X):</span>
+                                <span id="lbl-obs-pad-x" style="color: #0284C7; font-weight: 900; font-size: 24px;">48px</span>
+                            </div>
+                            <input type="range" id="slider-obs-pad-x" min="10" max="150" step="2" value="48" style="width: 100%; accent-color: #0284C7;" oninput="onObsPadChange('x', this.value)">
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #6B4E70; margin-bottom: 4px;">
+                                <span>ขอบแนวตั้ง (Y):</span>
+                                <span id="lbl-obs-pad-y" style="color: #0284C7; font-weight: 900; font-size: 24px;">36px</span>
+                            </div>
+                            <input type="range" id="slider-obs-pad-y" min="10" max="120" step="2" value="36" style="width: 100%; accent-color: #0284C7;" oninput="onObsPadChange('y', this.value)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OBS URL Generator & Copy -->
+            <div style="background: #FFFFFF; border: 1.5px solid rgba(142, 56, 144, 0.25); border-radius: 12px; padding: 18px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                    <span style="font-size: 14px; font-weight: 800; color: #D97706;">🔗 ลิงก์ Browser Source สำหรับใส่ใน OBS Studio:</span>
+                    <button class="btn-action" style="background: #10B981; font-weight: 900; font-size: 18px; min-height: 56px; padding: 12px 26px;" onclick="copyObsGeneratedLink()">📋 คัดลอกลิงก์ OBS</button>
+                </div>
+                <input type="text" id="obs-generated-url" class="input-field" readonly style="width: 100%; font-family: monospace; font-size: 18px; font-weight: 800; color: #0284C7; min-height: 56px;" value="http://localhost:8000/overlay">
+                <div style="font-size: 12px; color: #8A658F; margin-top: 8px; font-weight: 600;">
+                    💡 ตั้งค่าใน OBS Studio: เพิ่ม <b>Browser Source</b> > วางลิงก์นี้ > กำหนด <b>Width: 1920</b>, <b>Height: 1080</b>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: AI TUNING & ROI ZONES -->
+    <!-- ========================================== -->
+    <div id="tab-content-ai" class="tab-content" style="display: none;">
+        <div class="settings-card">
+            <div class="card-header-row">
+                <div class="card-title">
+                    <span>🎯</span> ปรับจูนความไว AI & พื้นที่ ROI (AI Calibration)
+                </div>
+                <div style="font-size: 12px; color: #059669; font-weight: 800;">
+                    ● ซิงก์ค่ากับระบบกล้องทันที ไม่ต้องรีสตาร์ต
+                </div>
+            </div>
+
+            <!-- Detection Mode Selector -->
+            <div style="background: #FAF4FA; padding: 16px 20px; border-radius: 12px; border: 1.5px solid rgba(142, 56, 144, 0.2); margin-bottom: 18px;">
+                <div style="font-size: 14px; font-weight: 800; color: #5B185D; margin-bottom: 10px;">
+                    🤖 โหมดตรวจจับการรับปริญญาบัตร (Detection Engine Mode):
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="tab-btn active" id="mode-hand_priority" onclick="setDetectionMode('hand_priority')">✋ มือเป็นหลัก (เร็ว มาตรฐาน แนะนำ)</button>
+                    <button class="tab-btn" id="mode-arm_raise" onclick="setDetectionMode('arm_raise')">🦾 แขนยกขึ้น-ลง (แม่นยำสูง)</button>
+                    <button class="tab-btn" id="mode-dual" onclick="setDetectionMode('dual')">👥 คน + มือ (เข้มงวด)</button>
+                    <button class="tab-btn" id="mode-tripwire" onclick="setDetectionMode('tripwire')">🚶 คนเดินผ่าน (Tripwire)</button>
+                </div>
+            </div>
+
+            <!-- Tuning Sliders -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px;">
+                <div style="background: #FAF4FA; padding: 16px; border-radius: 12px; border: 1.5px solid rgba(142, 56, 144, 0.2);">
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: #5B185D; margin-bottom: 6px;">
+                        <span>ความไวการตรวจจับ (Sensitivity):</span>
+                        <span id="lbl-sens" style="color: #7B247D; font-weight: 900;">2.0</span>
+                    </div>
+                    <input type="range" id="slider-sens" min="0.5" max="5.0" step="0.1" value="2.0" style="width: 100%; accent-color: #8E3890;" oninput="onTuningSliderChange('sens', this.value)">
+                    <div style="font-size: 11px; color: #8A658F; margin-top: 4px;">ค่าน้อย = ไวมาก | ค่ามาก = ป้องกันการนับเบิ้ล</div>
+                </div>
+                <div style="background: #FAF4FA; padding: 16px; border-radius: 12px; border: 1.5px solid rgba(142, 56, 144, 0.2);">
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: #5B185D; margin-bottom: 6px;">
+                        <span>ระยะคูลดาวน์กันนับเบิ้ล (Cooldown):</span>
+                        <span id="lbl-cool" style="color: #0284C7; font-weight: 900;">1.8s</span>
+                    </div>
+                    <input type="range" id="slider-cool" min="0.5" max="5.0" step="0.1" value="1.8" style="width: 100%; accent-color: #0284C7;" oninput="onTuningSliderChange('cool', this.value)">
+                    <div style="font-size: 11px; color: #8A658F; margin-top: 4px;">ช่วงเวลาหน่วงขั้นต่ำก่อนนับคนถัดไป (วินาที)</div>
+                </div>
+            </div>
+
+            <!-- Handover ROI Zone Sliders -->
+            <div style="background: #FAF4FA; padding: 18px; border-radius: 14px; border: 1.5px solid rgba(142, 56, 144, 0.2);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div style="font-size: 14px; font-weight: 800; color: #5B185D;">
+                        🎯 ปรับตำแหน่งกล่องตรวจจับการรับปริญญา (Handover ROI Zone):
+                    </div>
+                    <button class="btn-action" style="padding: 6px 14px; font-size: 12px;" onclick="saveRoiCoordinates()">บันทึกพิกัด ROI</button>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #6B4E70; margin-bottom: 4px;">
+                            <span>ซ้าย (X Min):</span> <span id="lbl-xmin" style="color: #D97706; font-weight: 800;">60%</span>
+                        </div>
+                        <input type="range" id="s_xmin" min="0" max="100" value="60" style="width: 100%;" oninput="onRoiSliderChange()">
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #6B4E70; margin-bottom: 4px;">
+                            <span>ขวา (X Max):</span> <span id="lbl-xmax" style="color: #D97706; font-weight: 800;">88%</span>
+                        </div>
+                        <input type="range" id="s_xmax" min="0" max="100" value="88" style="width: 100%;" oninput="onRoiSliderChange()">
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #6B4E70; margin-bottom: 4px;">
+                            <span>บน (Y Min):</span> <span id="lbl-ymin" style="color: #0284C7; font-weight: 800;">45%</span>
+                        </div>
+                        <input type="range" id="s_ymin" min="0" max="100" value="45" style="width: 100%;" oninput="onRoiSliderChange()">
+                    </div>
+                    <div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #6B4E70; margin-bottom: 4px;">
+                            <span>ล่าง (Y Max):</span> <span id="lbl-ymax" style="color: #0284C7; font-weight: 800;">75%</span>
+                        </div>
+                        <input type="range" id="s_ymax" min="0" max="100" value="75" style="width: 100%;" oninput="onRoiSliderChange()">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 5: EXECUTIVE REPORT & EXCEL EXPORT -->
+    <!-- ========================================== -->
+    <div id="tab-content-report" class="tab-content" style="display: none;">
+        <div class="settings-card">
+            <div class="card-header-row">
+                <div class="card-title">
+                    <span>📊</span> รายงานสรุปสถิติพิธีพระราชทานปริญญาบัตร (Executive Analytics)
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <a href="/api/report/export_csv" class="btn-action" style="background: linear-gradient(135deg, #10B981, #059669); font-size: 14px; font-weight: 800; padding: 10px 20px; text-decoration: none;">
+                        📥 ส่งออกไฟล์ Excel (CSV)
+                    </a>
+                    <button class="btn-action" style="background: #EDE0EF; color: #6E2271; font-weight: 900; font-size: 18px; min-height: 60px; padding: 14px 24px; border-radius: 14px;" onclick="window.print()">
+                        🖨️ พิมพ์รายงาน
+                    </button>
+                </div>
+            </div>
+
+            <!-- Report KPI Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px;">
+                <div style="background: #FAF4FA; border: 1.5px solid #F59E0B; border-radius: 12px; padding: 14px 18px;">
+                    <div style="font-size: 18px; color: #5B185D; font-weight: 900;">บัณฑิตที่รับแล้ว</div>
+                    <div style="font-size: 52px; font-weight: 900; color: #D97706; line-height: 1.1;" id="rep-count">0</div>
+                    <div style="font-size: 11px; color: #8A658F;" id="rep-count-sub">เป้าหมาย: -- คน (0%)</div>
+                </div>
+                <div style="background: #FAF4FA; border: 1.5px solid #0284C7; border-radius: 12px; padding: 14px 18px;">
+                    <div style="font-size: 18px; color: #5B185D; font-weight: 900;">สปีดเฉลี่ยต่อคน (Cadence)</div>
+                    <div style="font-size: 52px; font-weight: 900; color: #0284C7; line-height: 1.1;" id="rep-avg-pace">0.0s</div>
+                    <div style="font-size: 11px; color: #8A658F;" id="rep-rate-sub">อัตรา: -- คน/นาที</div>
+                </div>
+                <div style="background: #FAF4FA; border: 1.5px solid #10B981; border-radius: 12px; padding: 14px 18px;">
+                    <div style="font-size: 18px; color: #5B185D; font-weight: 900;">เวลาที่รับจริง (Active Time)</div>
+                    <div style="font-size: 52px; font-weight: 900; color: #059669; line-height: 1.1;" id="rep-active-time">00:00:00</div>
+                    <div style="font-size: 11px; color: #8A658F;" id="rep-speed-range">เร็วสุด: -- | ช้าสุด: --</div>
+                </div>
+                <div style="background: #FAF4FA; border: 1.5px solid #8E3890; border-radius: 12px; padding: 14px 18px;">
+                    <div style="font-size: 18px; color: #5B185D; font-weight: 900;">จุดพักแถว (Intermission)</div>
+                    <div style="font-size: 52px; font-weight: 900; color: #7B247D; line-height: 1.1;" id="rep-pause-time">00:00:00</div>
+                    <div style="font-size: 11px; color: #8A658F;" id="rep-pause-count">จุดพัก/สลับรอบ: 0 ครั้ง</div>
+                </div>
+            </div>
+
+            <!-- Conferment Log Table -->
+            <div style="background: #FFFFFF; border: 1.5px solid rgba(142, 56, 144, 0.2); border-radius: 12px; padding: 18px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                    <div style="font-size: 15px; font-weight: 800; color: #5B185D;">
+                        📋 ไทม์ไลน์บันทึกบัณฑิตทุกคน (Conferment Log)
+                    </div>
+                    <input type="text" id="report-search" placeholder="🔍 ค้นหาลำดับ เช่น #10..." class="input-field" style="max-width: 260px; padding: 10px 18px; font-size: 17px; font-weight: 800; min-height: 52px;" oninput="filterReportTable(this.value)">
+                </div>
+                <div style="max-height: 400px; overflow-y: auto; border: 1px solid rgba(142, 56, 144, 0.15); border-radius: 8px;">
+                    <table class="report-table" id="report-table">
+                        <thead>
+                            <tr>
+                                <th>ลำดับ</th>
+                                <th>เวลาที่รับ</th>
+                                <th>เวลาต่อคน</th>
+                                <th>สถาบัน / คณะ</th>
+                                <th>สถานะจังหวะ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-table-body">
+                            <tr><td colspan="5" style="text-align: center; color: #8A658F; padding: 20px;">กำลังโหลดข้อมูลรายงาน...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            if (!t) return;
+            t.textContent = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 3000);
+        }
+
+        // Tab Switching
+        function switchSettingsTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+            
+            const btn = document.getElementById(`tab-nav-${tabId}`);
+            if (btn) btn.classList.add('active');
+            
+            const content = document.getElementById(`tab-content-${tabId}`);
+            if (content) content.style.display = 'block';
+
+            if (tabId === 'report') {
+                loadReportData();
+            }
+        }
+
+        // ==========================================
+        // 1. Pacing & Cadence Controls
+        // ==========================================
+        async function applyPlannedFinish() {
+            const timeVal = document.getElementById('planned-finish-input').value;
+            if (!timeVal) {
+                showToast("⚠️ กรุณาระบุเวลา เช่น 11:50 หรือ 12:30");
+                return;
+            }
+            try {
+                await fetch('/api/planned_finish', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ planned_time: timeVal })
+                });
+                showToast(`✅ บันทึกเวลาเป้าหมาย ${timeVal} น. เรียบร้อย!`);
+            } catch (e) {
+                showToast('❌ ข้อผิดพลาด: ' + e.message);
+            }
+        }
+
+        async function clearPlannedFinish() {
+            try {
+                await fetch('/api/planned_finish', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ planned_time: "" })
+                });
+                document.getElementById('planned-finish-input').value = "";
+                showToast("↩ ล้างกำหนดการตามแผนเรียบร้อย");
+            } catch (e) {
+                showToast('❌ ข้อผิดพลาด: ' + e.message);
+            }
+        }
+
+        async function applyCustomPace() {
+            const val = parseFloat(document.getElementById('pace-input').value);
+            if (!isNaN(val) && val >= 0.5 && val <= 60) {
+                await fetch('/api/set_pace', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pace_sec: val })
+                });
+                showToast(`⚡ ปรับความเร็วคงที่เป็น ${val.toFixed(1)} วินาที/คน เรียบร้อย`);
+            } else {
+                showToast('⚠️ กรุณาระบุค่า 0.5 - 60 วินาที/คน');
+            }
+        }
+
+        async function clearPace() {
+            await fetch('/api/clear_pace', { method: 'POST' });
+            showToast("↩ คืนสู่โหมดคำนวณอัตโนมัติ (AI)");
+        }
+
+        function playConferChime() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.35);
+                showToast("🔊 ทดสอบเสียง Chime เรียบร้อย");
+            } catch (e) {}
+        }
+
+        // ==========================================
+        // 2. Session Switcher & Multi-University
+        // ==========================================
+        let morningUniversities = [];
+        let afternoonUniversities = [];
+        let activeConfigSession = 'm';
+
+        function switchSessionConfigTab(prefix) {
+            activeConfigSession = prefix;
+            const btnM = document.getElementById('btn-sess-m');
+            const btnA = document.getElementById('btn-sess-a');
+            const panelM = document.getElementById('panel-morning-config');
+            const panelA = document.getElementById('panel-afternoon-config');
+            const badge = document.getElementById('session-badge-tag');
+
+            if (prefix === 'm') {
+                btnM.style.background = 'linear-gradient(135deg, #F59E0B, #D97706)';
+                btnM.style.color = '#fff';
+                btnA.style.background = '#FAF4FA';
+                btnA.style.color = '#6E2271';
+                panelM.style.display = 'block';
+                panelA.style.display = 'none';
+                badge.textContent = '☀️ กำลังแสดง: รอบเช้า';
+                badge.style.background = '#FEF3C7';
+                badge.style.color = '#92400E';
+                badge.style.borderColor = '#F59E0B';
+            } else {
+                btnA.style.background = 'linear-gradient(135deg, #0284C7, #0369A1)';
+                btnA.style.color = '#fff';
+                btnM.style.background = '#FAF4FA';
+                btnM.style.color = '#6E2271';
+                panelA.style.display = 'block';
+                panelM.style.display = 'none';
+                badge.textContent = '⛅ กำลังแสดง: รอบบ่าย';
+                badge.style.background = '#E0F2FE';
+                badge.style.color = '#0369A1';
+                badge.style.borderColor = '#0284C7';
+            }
+        }
+
+        function renderUniversityTable(prefix) {
+            const list = (prefix === 'm') ? morningUniversities : afternoonUniversities;
+            const container = document.getElementById(`${prefix}-uni-table-container`);
+            const badge = document.getElementById(`${prefix}-uni-total-badge`);
+            if (!container) return;
+
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: #8A658F; font-size: 13px; padding: 18px; border: 1.5px dashed rgba(142, 56, 144, 0.25); border-radius: 8px; background: #FAF4FA;">
+                        ยังไม่มีคิวมหาวิทยาลัยย่อย (จะใช้ชื่อหลักจากช่องด้านบนตามปกติ) หรือกดปุ่ม <b>"➕ เพิ่มสถาบัน / คณะในรอบนี้"</b> ด้านบน
+                    </div>
+                `;
+                if (badge) badge.textContent = `ยอดรวมคิว: 0 คน`;
+                return;
+            }
+
+            let cum = 0;
+            let rowsHtml = '';
+            list.forEach((u, idx) => {
+                const target = parseInt(u.target) || 0;
+                const startNum = cum + 1;
+                const endNum = cum + target;
+                cum = endNum;
+
+                rowsHtml += `
+                    <div style="display: grid; grid-template-columns: 50px 1fr 160px 190px 54px; gap: 14px; align-items: center; margin-bottom: 12px; background: #FAF4FA; padding: 12px 18px; border-radius: 14px; border: 2.5px solid rgba(142, 56, 144, 0.25);">
+                        <span style="font-size: 20px; font-weight: 900; color: #5B185D; text-align: center;">#${idx + 1}</span>
+                        <input type="text" class="input-field" value="${u.name || ''}" placeholder="ชื่อสถาบัน / คณะ เช่น ม.ราชภัฏบุรีรัมย์" 
+                               onchange="updateUniversityRow('${prefix}', ${idx}, 'name', this.value)" style="padding: 12px 18px; font-size: 19px; font-weight: 800; min-height: 54px;">
+                        <div>
+                            <input type="number" class="input-field" value="${target}" min="1" 
+                                   onchange="updateUniversityRow('${prefix}', ${idx}, 'target', this.value)" style="padding: 12px 16px; font-size: 22px; font-weight: 900; text-align: center; color: #0284C7; min-height: 54px;">
+                        </div>
+                        <span style="font-size: 19px; font-weight: 900; color: #D97706; text-align: center; white-space: nowrap;">
+                            ${startNum.toLocaleString()} - ${endNum.toLocaleString()}
+                        </span>
+                        <button type="button" onclick="removeUniversityRow('${prefix}', ${idx})" 
+                                style="background: #FEE2E2; border: 2.5px solid #EF4444; color: #B91C1C; border-radius: 12px; cursor: pointer; height: 52px; width: 52px; font-size: 22px; font-weight: 900; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="ลบสถาบันนี้">
+                            🗑️
+                        </button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = rowsHtml;
+            if (badge) {
+                badge.textContent = `ยอดรวมคิว: ${cum.toLocaleString()} คน (${list.length} สถาบัน)`;
+            }
+
+            const tarEl = document.getElementById(`${prefix}-target`);
+            if (tarEl && cum > 0) {
+                tarEl.value = cum;
+            }
+        }
+
+        function addUniversityRow(prefix, name = '', target = 500) {
+            const list = (prefix === 'm') ? morningUniversities : afternoonUniversities;
+            const defName = name || (list.length === 0 ? (document.getElementById(`${prefix}-title`).value || (prefix === 'm' ? "ม.ราชภัฏบุรีรัมย์" : "ม.ราชภัฏสุรินทร์")) : `สถาบันที่ ${list.length + 1}`);
+            list.push({ name: defName, target: target });
+            renderUniversityTable(prefix);
+            saveUniversitiesQueue(prefix);
+            showToast(`➕ เพิ่มสถาบัน "${defName}" เรียบร้อยแล้ว`);
+        }
+
+        function removeUniversityRow(prefix, index) {
+            const list = (prefix === 'm') ? morningUniversities : afternoonUniversities;
+            list.splice(index, 1);
+            renderUniversityTable(prefix);
+            saveUniversitiesQueue(prefix);
+        }
+
+        function updateUniversityRow(prefix, index, field, value) {
+            const list = (prefix === 'm') ? morningUniversities : afternoonUniversities;
+            if (list[index]) {
+                if (field === 'target') {
+                    list[index].target = Math.max(1, parseInt(value) || 100);
+                } else {
+                    list[index].name = value.trim();
+                }
+                renderUniversityTable(prefix);
+                saveUniversitiesQueue(prefix);
+            }
+        }
+
+        function loadSampleMultiUni(prefix) {
+            const list = (prefix === 'm') ? morningUniversities : afternoonUniversities;
+            list.length = 0;
+            list.push({ name: prefix === 'm' ? "ม.ราชภัฏบุรีรัมย์" : "ม.ราชภัฏสุรินทร์", target: 500 });
+            list.push({ name: prefix === 'm' ? "ม.ราชภัฏสุรินทร์" : "ม.ราชภัฏอุบลราชธานี", target: 520 });
+            list.push({ name: "ม.ราชภัฏชัยภูมิ", target: 200 });
+            renderUniversityTable(prefix);
+            saveUniversitiesQueue(prefix);
+            showToast(`🪄 โหลดตัวอย่าง 3 สถาบัน (รวม 1,220 คน) เรียบร้อย!`);
+        }
+
+        async function saveUniversitiesQueue(prefix) {
+            const sessionKey = (prefix === 'm') ? 'morning' : 'afternoon';
+            const list = (prefix === 'm') ? morningUniversities : afternoonUniversities;
+            try {
+                await fetch('/api/sessions/universities', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        session_key: sessionKey,
+                        universities: list
+                    })
+                });
+            } catch (e) {
+                console.error("Error saving universities:", e);
+            }
+        }
+
+        async function triggerSplitDay(pct) {
+            const total = parseInt(document.getElementById('split-total-input').value) || 2500;
+            const morningTarget = Math.round(total * (pct / 100));
+            const afternoonTarget = total - morningTarget;
+            document.getElementById('m-target').value = morningTarget;
+            document.getElementById('a-target').value = afternoonTarget;
+            await saveSessionMeta('m');
+            await saveSessionMeta('a');
+            showToast(`⚡ แบ่งยอดเรียบร้อย: เช้า ${morningTarget} คน / บ่าย ${afternoonTarget} คน`);
+        }
+
+        async function saveSessionMeta(prefix) {
+            const sessionKey = (prefix === 'm') ? 'morning' : 'afternoon';
+            const title = document.getElementById(`${prefix}-title`).value;
+            const target = parseInt(document.getElementById(`${prefix}-target`).value) || 1000;
+            const start = document.getElementById(`${prefix}-start`).value;
+            const finish = document.getElementById(`${prefix}-finish`).value;
+            const preRange = document.getElementById(`${prefix}-pre-break`).value;
+            const postRange = document.getElementById(`${prefix}-post-break`).value;
+            const list = (prefix === 'm') ? morningUniversities : afternoonUniversities;
+
+            try {
+                await fetch('/api/sessions/update', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        session_key: sessionKey,
+                        title: title,
+                        session_label: prefix === 'm' ? 'รอบเช้า' : 'รอบบ่าย',
+                        start_time: start,
+                        finish_time: finish,
+                        total_target: target,
+                        pre_break_range: preRange,
+                        post_break_range: postRange,
+                        universities: list
+                    })
+                });
+                showToast(`💾 บันทึกการตั้งค่า ${prefix === 'm' ? 'รอบเช้า' : 'รอบบ่าย'} เรียบร้อย!`);
+            } catch (e) {
+                showToast("❌ เกิดข้อผิดพลาด: " + e.message);
+            }
+        }
+
+        // ==========================================
+        // 3. OBS Position & Scale
+        // ==========================================
+        let currentObsSettings = {
+            position: 'bottom-right',
+            scale: 1.0,
+            pad_x: 48,
+            pad_y: 36
+        };
+
+        const posNamesTh = {
+            'top-left': 'บนซ้าย',
+            'top-center': 'บนกลาง',
+            'top-right': 'บนขวา',
+            'bottom-left': 'ล่างซ้าย',
+            'bottom-center': 'ล่างกลาง',
+            'bottom-right': 'ล่างขวา'
+        };
+
+        function setObsPosition(pos) {
+            currentObsSettings.position = pos;
+            document.querySelectorAll('.btn-obs-pos').forEach(b => b.classList.remove('active'));
+            const btn = document.getElementById(`btn-pos-${pos}`);
+            if (btn) btn.classList.add('active');
+            document.getElementById('obs-pos-badge').textContent = `📌 ตำแหน่งปัจจุบัน: ${posNamesTh[pos] || pos}`;
+            sendObsSettings();
+            showToast(`📌 ย้ายป้าย OBS ไป "${posNamesTh[pos]}" เรียบร้อย`);
+        }
+
+        function onObsScaleSliderChange(val) {
+            currentObsSettings.scale = parseFloat(val);
+            document.getElementById('lbl-obs-scale').textContent = Math.round(val * 100) + '%';
+            sendObsSettings();
+        }
+
+        function onObsPadChange(axis, val) {
+            if (axis === 'x') {
+                currentObsSettings.pad_x = parseInt(val);
+                document.getElementById('lbl-obs-pad-x').textContent = val + 'px';
+            } else {
+                currentObsSettings.pad_y = parseInt(val);
+                document.getElementById('lbl-obs-pad-y').textContent = val + 'px';
+            }
+            sendObsSettings();
+        }
+
+        async function sendObsSettings() {
+            try {
+                await fetch('/api/obs/settings', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(currentObsSettings)
+                });
+            } catch (e) {}
+        }
+
+        function copyObsGeneratedLink() {
+            const url = `http://${window.location.host}/overlay`;
+            navigator.clipboard.writeText(url).then(() => {
+                showToast("📋 คัดลอกลิงก์ OBS สำหรับ Browser Source เรียบร้อย!");
+            });
+        }
+
+        // ==========================================
+        // 4. AI Tuning & ROI
+        // ==========================================
+        let currentDetectionMode = 'hand_priority';
+        function setDetectionMode(mode) {
+            currentDetectionMode = mode;
+            document.querySelectorAll('[id^="mode-"]').forEach(b => b.classList.remove('active'));
+            const btn = document.getElementById(`mode-${mode}`);
+            if (btn) btn.classList.add('active');
+            sendTuning();
+            showToast(`🎯 สลับโหมดตรวจจับเป็น "${mode}" เรียบร้อย`);
+        }
+
+        function onTuningSliderChange(type, val) {
+            if (type === 'sens') {
+                document.getElementById('lbl-sens').textContent = parseFloat(val).toFixed(1);
+            } else {
+                document.getElementById('lbl-cool').textContent = parseFloat(val).toFixed(1) + 's';
+            }
+            sendTuning();
+        }
+
+        async function sendTuning() {
+            const sens = parseFloat(document.getElementById('slider-sens').value) || 2.0;
+            const cool = parseFloat(document.getElementById('slider-cool').value) || 1.8;
+            try {
+                await fetch('/api/tuning', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        sensitivity: sens,
+                        cooldown: cool,
+                        mode: currentDetectionMode
+                    })
+                });
+            } catch (e) {}
+        }
+
+        function onRoiSliderChange() {
+            document.getElementById('lbl-xmin').textContent = document.getElementById('s_xmin').value + '%';
+            document.getElementById('lbl-xmax').textContent = document.getElementById('s_xmax').value + '%';
+            document.getElementById('lbl-ymin').textContent = document.getElementById('s_ymin').value + '%';
+            document.getElementById('lbl-ymax').textContent = document.getElementById('s_ymax').value + '%';
+        }
+
+        async function saveRoiCoordinates() {
+            const xmin = parseInt(document.getElementById('s_xmin').value) / 100.0;
+            const xmax = parseInt(document.getElementById('s_xmax').value) / 100.0;
+            const ymin = parseInt(document.getElementById('s_ymin').value) / 100.0;
+            const ymax = parseInt(document.getElementById('s_ymax').value) / 100.0;
+
+            try {
+                await fetch('/api/roi', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        zone: 'hand',
+                        x_min: xmin,
+                        x_max: xmax,
+                        y_min: ymin,
+                        y_max: ymax
+                    })
+                });
+                showToast("🎯 บันทึกพิกัดกล่อง Handover ROI เรียบร้อยแล้ว!");
+            } catch (e) {
+                showToast("❌ ข้อผิดพลาด: " + e.message);
+            }
+        }
+
+        // ==========================================
+        // 5. Executive Report & Log Filter
+        // ==========================================
+        let allReportEvents = [];
+
+        async function loadReportData() {
+            try {
+                const res = await fetch('/api/report/summary');
+                const data = await res.json();
+
+                document.getElementById('rep-count').textContent = Number(data.current_count).toLocaleString();
+                document.getElementById('rep-count-sub').textContent = `เป้าหมาย: ${Number(data.total_target).toLocaleString()} คน (${data.progress_percent}%)`;
+                document.getElementById('rep-avg-pace').textContent = `${data.avg_duration_sec}s`;
+                document.getElementById('rep-rate-sub').textContent = `อัตรา: ${data.rate_per_min} คน/นาที`;
+                document.getElementById('rep-active-time').textContent = data.elapsed_time || '00:00:00';
+                document.getElementById('rep-speed-range').textContent = `เร็วสุด: ${data.min_duration_sec || 0}s | ช้าสุด: ${data.max_duration_sec || 0}s`;
+                document.getElementById('rep-pause-time').textContent = data.total_pause_time_formatted || '00:00:00';
+                document.getElementById('rep-pause-count').textContent = `จุดพัก/สลับรอบ: ${data.pause_count || 0} ครั้ง`;
+
+                allReportEvents = data.events || [];
+                renderReportTable(allReportEvents);
+            } catch (e) {
+                console.error("Error loading report:", e);
+            }
+        }
+
+        function renderReportTable(events) {
+            const tbody = document.getElementById('report-table-body');
+            if (!tbody) return;
+            if (events.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #8A658F; padding: 20px;">ยังไม่มีประวัติการนับบัณฑิตในรอบนี้</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = events.map(ev => {
+                let badge = '<span style="color:#059669; font-weight:700;">🟢 ปกติ</span>';
+                if (ev.status === 'fast') badge = '<span style="color:#0284C7; font-weight:700;">⚡ รวดเร็ว</span>';
+                else if (ev.status === 'slow') badge = '<span style="color:#D97706; font-weight:700;">⚠️ ช้ากว่าเกณฑ์</span>';
+                else if (ev.status === 'pause') badge = '<span style="color:#7B247D; font-weight:700;">⏸️ พักแถว</span>';
+
+                return `<tr>
+                    <td><b>#${ev.id}</b></td>
+                    <td>${ev.time}</td>
+                    <td><b>${ev.duration}s</b></td>
+                    <td>${ev.university_name || '-'}</td>
+                    <td>${badge}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function filterReportTable(query) {
+            const q = query.trim().toLowerCase();
+            if (!q) {
+                renderReportTable(allReportEvents);
+                return;
+            }
+            const filtered = allReportEvents.filter(ev => 
+                String(ev.id).includes(q) || 
+                (ev.university_name && ev.university_name.toLowerCase().includes(q)) ||
+                String(ev.time).includes(q)
+            );
+            renderReportTable(filtered);
+        }
+
+        // ==========================================
+        // 6. WebSocket Live Data Sync
+        // ==========================================
+        function connectWS() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
+
+            ws.onmessage = (event) => {
+                try {
+                    const msg = JSON.parse(event.data);
+                    if (msg.type === "STATS_UPDATE") {
+                        const d = msg.data;
+                        const steady = document.getElementById('steady-pace-val');
+                        if (steady) steady.innerHTML = `${d.avg_duration_sec}s <span style="font-size: 14px; font-weight: 600; color: #8A658F;">/ คน</span>`;
+                        
+                        const instant = document.getElementById('instant-pace-val');
+                        if (instant) instant.innerHTML = `${d.instant_duration_sec}s <span style="font-size: 14px; font-weight: 600; color: #8A658F;">/ คน</span>`;
+
+                        const rate = document.getElementById('instant-rate-val');
+                        if (rate) rate.textContent = `~${d.rate_per_min} คน/นาที`;
+
+                        const strip = document.getElementById('cadence-strip');
+                        if (strip && d.recent_events && d.recent_events.length > 0) {
+                            strip.innerHTML = d.recent_events.map(ev => {
+                                let cls = 'normal';
+                                if (ev.status === 'fast') cls = 'fast';
+                                else if (ev.status === 'slow') cls = 'slow';
+                                else if (ev.status === 'pause') cls = 'pause';
+                                return `<div class="cadence-pill ${cls}">
+                                    <span>#${ev.id}</span>
+                                    <span>${ev.duration}s</span>
+                                </div>`;
+                            }).join('');
+                        }
+
+                        // Sync universities queues
+                        if (d.sessions) {
+                            const m = d.sessions.morning;
+                            const a = d.sessions.afternoon;
+                            if (m && morningUniversities.length === 0) {
+                                morningUniversities = (m.universities && m.universities.length > 0) ? m.universities : [{ name: m.title || "ม.ราชภัฏบุรีรัมย์", target: m.total_target || 1500 }];
+                                renderUniversityTable('m');
+                            }
+                            if (a && afternoonUniversities.length === 0) {
+                                afternoonUniversities = (a.universities && a.universities.length > 0) ? a.universities : [{ name: a.title || "ม.ราชภัฏสุรินทร์", target: a.total_target || 1000 }];
+                                renderUniversityTable('a');
+                            }
+                        }
+                    }
+                } catch (e) {}
+            };
+
+            ws.onclose = () => {
+                setTimeout(connectWS, 2000);
+            };
+        }
+
+        connectWS();
+    
+
+// ==========================================
+// Universal Font & Number Scale Controller (Clean, No Overlap)
+// ==========================================
+const FONT_SCALE_KEY = 'graduation_app_scale';
+const SCALE_PRESETS = [1.0, 1.15, 1.30, 1.50];
+const SCALE_LABELS = {
+    1.0: '100% (ปกติ)',
+    1.15: '115% (ใหญ่)',
+    1.30: '130% (ใหญ่มาก)',
+    1.50: '150% (ใหญ่ที่สุด)'
+};
+let currentScale = 1.0;
+
+function getStoredScale() {
+    try {
+        const val = parseFloat(localStorage.getItem(FONT_SCALE_KEY));
+        if (!isNaN(val) && val >= 0.8 && val <= 2.0) {
+            return Math.round(val * 100) / 100;
+        }
+    } catch (e) {}
+    return 1.0;
+}
+
+function getScaleLabel(scale) {
+    for (let k in SCALE_LABELS) {
+        if (Math.abs(parseFloat(k) - scale) < 0.04) {
+            return SCALE_LABELS[k];
+        }
+    }
+    return Math.round(scale * 100) + '%';
+}
+
+function updateScaleUI(scale) {
+    const label = getScaleLabel(scale);
+    
+    const d1 = document.getElementById('app-scale-display');
+    if (d1) d1.textContent = label;
+    const d2 = document.getElementById('settings-scale-display');
+    if (d2) d2.textContent = label;
+    const d3 = document.getElementById('stage-scale-badge');
+    if (d3) d3.textContent = label;
+
+    // Highlight any preset buttons in settings page
+    document.querySelectorAll('.btn-scale-preset-setting').forEach(btn => {
+        const s = parseFloat(btn.getAttribute('data-scale'));
+        if (Math.abs(s - scale) < 0.04) {
+            btn.style.background = 'linear-gradient(135deg, #8E3890, #6E2271)';
+            btn.style.color = '#FFFFFF';
+            btn.style.borderColor = '#6E2271';
+            btn.style.boxShadow = '0 2px 8px rgba(142, 56, 144, 0.35)';
+        } else {
+            btn.style.background = '#FFFFFF';
+            btn.style.color = '#475569';
+            btn.style.borderColor = '#CBD5E1';
+            btn.style.boxShadow = 'none';
+        }
+    });
+}
+
+function applyAppScale(scale, save) {
+    if (typeof save === 'undefined') save = true;
+    currentScale = Math.round(Math.max(0.85, Math.min(1.80, scale)) * 100) / 100;
+    
+    const isStagePage = !!document.getElementById('stage-scale-badge') || (document.body && document.body.classList.contains('theme-purple-yellow'));
+    if (isStagePage) {
+        if (document.body) {
+            document.body.style.zoom = '';
+        }
+        document.documentElement.style.setProperty('--stage-font-scale', currentScale);
+    } else {
+        if (document.body) {
+            document.body.style.zoom = currentScale;
+        }
+        document.documentElement.style.setProperty('--app-font-scale', currentScale);
+    }
+
+    updateScaleUI(currentScale);
+
+    if (save) {
+        try {
+            localStorage.setItem(FONT_SCALE_KEY, currentScale.toFixed(2));
+            if (window.BroadcastChannel) {
+                const bc = new BroadcastChannel('app_scale_channel');
+                bc.postMessage({ scale: currentScale });
+                bc.close();
+            }
+        } catch(e) {}
+    }
+}
+
+function setAppScale(scale) {
+    applyAppScale(scale, true);
+}
+
+function changeAppScale(delta) {
+    applyAppScale(currentScale + delta, true);
+}
+
+function resetAppScale() {
+    applyAppScale(1.0, true);
+}
+
+function cycleAppScale() {
+    let nextScale = SCALE_PRESETS[0];
+    for (let i = 0; i < SCALE_PRESETS.length; i++) {
+        if (currentScale < SCALE_PRESETS[i] - 0.04) {
+            nextScale = SCALE_PRESETS[i];
+            break;
+        }
+    }
+    if (currentScale >= SCALE_PRESETS[SCALE_PRESETS.length - 1] - 0.04) {
+        nextScale = SCALE_PRESETS[0];
+    }
+    applyAppScale(nextScale, true);
+}
+
+window.applyAppScale = applyAppScale;
+window.setAppScale = setAppScale;
+window.changeAppScale = changeAppScale;
+window.resetAppScale = resetAppScale;
+window.cycleAppScale = cycleAppScale;
+
+(function initAppScale() {
+    const initialScale = getStoredScale();
+    applyAppScale(initialScale, false);
+
+    window.addEventListener('storage', (e) => {
+        if (e.key === FONT_SCALE_KEY && e.newValue) {
+            const newScale = parseFloat(e.newValue);
+            if (!isNaN(newScale)) applyAppScale(newScale, false);
+        }
+    });
+
+    try {
+        if (window.BroadcastChannel) {
+            const bc = new BroadcastChannel('app_scale_channel');
+            bc.onmessage = (ev) => {
+                if (ev.data && typeof ev.data.scale === 'number') {
+                    applyAppScale(ev.data.scale, false);
+                }
+            };
+        }
+    } catch(e) {}
+})();
+
+    </script>
+
+    <!-- Floating Font Scale Quick Widget (Fixed bottom-right) -->
+    
+
+</body>
+</html>

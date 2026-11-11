@@ -1,0 +1,57 @@
+{
+  "morning": {
+    "title": "ม.ราชภัฏบุรีรัมย์",
+    "session_label": "รอบเช้า",
+    "start_time": "08:30",
+    "finish_time": "11:50",
+    "time_range": "08:30 - 11:50",
+    "total_target": 2500,
+    "pre_break_range": "1-1,500",
+    "post_break_range": "1,501-2,500",
+    "universities": [
+      {
+        "name": "ม.ราชภัฏบุรีรัมย์",
+        "target": 1000
+      },
+      {
+        "name": "สถาบันที่ 2",
+        "target": 500
+      },
+      {
+        "name": "สถาบันที่ 3",
+        "target": 500
+      },
+      {
+        "name": "สถาบันที่ 4",
+        "target": 500
+      }
+    ]
+  },
+  "afternoon": {
+    "title": "ม.ราชภัฏสุรินทร์",
+    "session_label": "รอบบ่าย",
+    "start_time": "13:30",
+    "finish_time": "16:45",
+    "time_range": "13:30 - 16:45",
+    "total_target": 1000,
+    "pre_break_range": "1-600",
+    "post_break_range": "601-1,000",
+    "universities": [
+      {
+        "name": "ม.ราชภัฏบุรีรัมย์",
+        "target": 500
+      },
+      {
+        "name": "ม.ราชภัฏสุรินทร์",
+        "target": 500
+      }
+    ]
+  },
+  "theme": "purple-yellow",
+  "obs_settings": {
+    "position": "bottom-center",
+    "scale": 1.0,
+    "pad_x": 48,
+    "pad_y": 36
+  }
+}

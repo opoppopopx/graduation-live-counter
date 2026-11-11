@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graduation Broadcast Overlay</title>
+    <!-- Google Fonts: Sarabun & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Sarabun:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        :root {
+            --overlay-scale: 1;
+            --pad-x: 48px;
+            --pad-y: 36px;
+            --origin: bottom left;
+        }
+
+        body {
+            background-color: transparent !important;
+            font-family: 'Sarabun', 'Outfit', sans-serif;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            padding: var(--pad-y) var(--pad-x);
+            color: #ffffff;
+            transition: padding 0.25s ease;
+        }
+
+        /* Position classes applied to <body> */
+        body.pos-bottom-left {
+            justify-content: flex-start;
+            align-items: flex-end;
+            --origin: bottom left;
+        }
+
+        body.pos-bottom-center {
+            justify-content: center;
+            align-items: flex-end;
+            --origin: bottom center;
+        }
+
+        body.pos-bottom-right {
+            justify-content: flex-end;
+            align-items: flex-end;
+            --origin: bottom right;
+        }
+
+        body.pos-top-left {
+            justify-content: flex-start;
+            align-items: flex-start;
+            --origin: top left;
+        }
+
+        body.pos-top-center {
+            justify-content: center;
+            align-items: flex-start;
+            --origin: top center;
+        }
+
+        body.pos-top-right {
+            justify-content: flex-end;
+            align-items: flex-start;
+            --origin: top right;
+        }
+
+        body.pos-center {
+            justify-content: center;
+            align-items: center;
+            --origin: center center;
+        }
+
+        /* Card Container (Royal Thai Navy & Gold Broadcast Style) */
+        .broadcast-card {
+            background: linear-gradient(135deg, rgba(8, 18, 38, 0.92) 0%, rgba(14, 28, 54, 0.88) 100%);
+            border: 1.5px solid rgba(212, 175, 55, 0.55);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 25px rgba(212, 175, 55, 0.2);
+            border-radius: 20px;
+            padding: 20px 28px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            min-width: 520px;
+            transform-origin: var(--origin, bottom left);
+            transform: scale(var(--overlay-scale, 1));
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        /* Gold top accent glow bar */
+        .broadcast-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 24px;
+            right: 24px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #FFD700, #F5B041, transparent);
+            border-radius: 2px;
+        }
+
+        /* ธีมม่วง-ราชภัฏบุรีรัมย์ (BRU Orchid Purple & Gold) */
+        body.theme-purple-yellow .broadcast-card {
+            background: linear-gradient(135deg, rgba(142, 56, 144, 0.95) 0%, rgba(105, 30, 108, 0.95) 100%);
+            border: 2px solid #F59E0B;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(142, 56, 144, 0.45);
+        }
+
+        body.theme-purple-yellow .broadcast-card::before {
+            background: linear-gradient(90deg, transparent, #FACC15, #FFFFFF, #FACC15, transparent);
+        }
+
+        body.theme-purple-yellow .elapsed-box {
+            background: rgba(255, 255, 255, 0.22);
+            color: #FFFFFF;
+        }
+
+        body.theme-purple-yellow .progress-fill {
+            background: linear-gradient(90deg, #FACC15 0%, #10B981 100%);
+            box-shadow: 0 0 14px rgba(250, 204, 21, 0.8);
+        }
+
+        /* Header Row */
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .ceremony-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #E2E8F0;
+            text-transform: uppercase;
+        }
+
+        .badge-live {
+            background: #E53E3E;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 0 10px rgba(229, 62, 62, 0.6);
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            animation: pulse-dot 1.4s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(0.9); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.8; }
+        }
+
+        .elapsed-box {
+            font-family: 'Outfit', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: #CBD5E1;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        /* Main Counter Hero */
+        .counter-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .counter-primary {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .counter-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #D4AF37;
+        }
+
+        .count-number {
+            font-family: 'Outfit', sans-serif;
+            font-size: 52px;
+            font-weight: 900;
+            line-height: 1;
+            color: #ffffff;
+            background: linear-gradient(180deg, #FFFFFF 30%, #F6E05E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 20px rgba(246, 224, 94, 0.35);
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-block;
+        }
+
+        .count-number.bump {
+            transform: scale(1.18);
+            -webkit-text-fill-color: #FFF275;
+        }
+
+        .target-label {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #94A3B8;
+        }
+
+        .duration-badge {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid rgba(245, 176, 65, 0.4);
+            border-radius: 12px;
+            padding: 6px 14px;
+            text-align: right;
+        }
+
+        .duration-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #94A3B8;
+        }
+
+        .duration-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: #38BDF8;
+        }
+
+        /* Progress Bar */
+        .progress-wrapper {
+            margin-bottom: 16px;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #CBD5E1;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #D4AF37 0%, #F59E0B 50%, #10B981 100%);
+            border-radius: 6px;
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+            transition: width 0.4s ease-out;
+        }
+
+        /* Footer Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 14px;
+        }
+
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .metric-title {
+            font-size: 11px;
+            color: #94A3B8;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            color: #F8FAFC;
+        }
+
+        .metric-value.gold {
+            color: #FBBF24;
+        }
+
+        .metric-value.green {
+            color: #34D399;
+        }
+
+        /* Styles Mode Switches */
+        /* Lower-third wide variant */
+        body[data-layout="compact"] .broadcast-card {
+            min-width: 380px;
+            padding: 14px 20px;
+        }
+        body[data-layout="compact"] .metrics-grid {
+            display: none;
+        }
+        body[data-layout="compact"] .count-number {
+            font-size: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="broadcast-card" id="card">
+        <!-- Header -->
+        <div class="header-row">
+            <div class="ceremony-title" style="overflow: hidden; max-width: 320px;">
+                <img src="/static/logo.png" alt="Logo" style="height: 24px; width: auto; object-fit: contain; margin-right: 4px; vertical-align: middle; flex-shrink: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">
+                <span id="title-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">พิธีประสาทปริญญาบัตร</span>
+                <span id="session-badge" style="font-size: 11px; padding: 2px 8px; border-radius: 4px; background: rgba(56, 189, 248, 0.2); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.4); margin-left: 6px; display: none; flex-shrink: 0;"></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <div class="elapsed-box">⏱️ <span id="elapsed">00:00:00</span></div>
+                <div class="badge-live" id="live-badge">
+                    <span class="live-dot"></span> LIVE
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Hero Count -->
+        <div class="counter-row">
+            <div class="counter-primary">
+                <span class="counter-label">บัณฑิตคนที่</span>
+                <span class="count-number" id="count">0</span>
+                <span class="target-label">/ <span id="target">1,500</span></span>
+            </div>
+            <div class="duration-badge">
+                <div class="duration-title">เวลาคนล่าสุด</div>
+                <div class="duration-val" id="last-duration">0.0s</div>
+            </div>
+        </div>
+
+        <!-- Progress Track -->
+        <div class="progress-wrapper">
+            <div class="progress-labels">
+                <span>ความคืบหน้า</span>
+                <span id="percent-label">0.0% (คงเหลือ <span id="remaining">1,500</span> คน)</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-bar"></div>
+            </div>
+        </div>
+
+        <!-- Metric Details -->
+        <div class="metrics-grid">
+            <div class="metric-item">
+                <div class="metric-title">ความเร็วเฉลี่ย</div>
+                <div class="metric-val metric-value" id="avg-duration">3.0 วินาที/คน</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-title">อัตราการรับ</div>
+                <div class="metric-val metric-value gold" id="rate">20.0 คน/นาที</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-title">ประมาณเวลาเสร็จ (ETA)</div>
+                <div class="metric-val metric-value green" id="eta">--:--:-- น.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const layoutParam = urlParams.get('layout');
+        if (layoutParam) {
+            document.body.setAttribute('data-layout', layoutParam);
+        }
+
+        const countEl = document.getElementById('count');
+        const targetEl = document.getElementById('target');
+        const lastDurationEl = document.getElementById('last-duration');
+        const avgDurationEl = document.getElementById('avg-duration');
+        const rateEl = document.getElementById('rate');
+        const etaEl = document.getElementById('eta');
+        const elapsedEl = document.getElementById('elapsed');
+        const progressBar = document.getElementById('progress-bar');
+        const percentLabel = document.getElementById('percent-label');
+        const remainingEl = document.getElementById('remaining');
+        const liveBadge = document.getElementById('live-badge');
+
+        let prevCount = -1;
+
+        function connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}/ws`;
+            const ws = new WebSocket(wsUrl);
+
+            ws.onopen = () => {
+                console.log("[Overlay] Connected to Real-time WebSocket");
+                liveBadge.style.opacity = '1';
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const msg = JSON.parse(event.data);
+                    if (msg.type === "STATS_UPDATE") {
+                        updateUI(msg.data);
+                    }
+                } catch (e) {
+                    console.error("WS parse error:", e);
+                }
+            };
+
+            ws.onclose = () => {
+                console.warn("[Overlay] WebSocket disconnected, reconnecting in 2s...");
+                liveBadge.style.opacity = '0.5';
+                setTimeout(connectWebSocket, 2000);
+            };
+
+            ws.onerror = (err) => {
+                console.error("WS error:", err);
+                ws.close();
+            };
+        }
+
+        function updateUI(data) {
+            // Sync theme in real time
+            if (data.theme) {
+                if (data.theme === 'purple-yellow') {
+                    document.body.classList.add('theme-purple-yellow');
+                } else {
+                    document.body.classList.remove('theme-purple-yellow');
+                }
+                try { localStorage.setItem('app_theme', data.theme); } catch(e) {}
+            }
+
+            // Check count bump animation
+            if (prevCount !== -1 && data.current_count > prevCount) {
+                countEl.classList.add('bump');
+                setTimeout(() => countEl.classList.remove('bump'), 300);
+            }
+            prevCount = data.current_count;
+
+            // Sync session title & label
+            if (data.session_title) {
+                const titleEl = document.getElementById('title-text');
+                if (titleEl) titleEl.textContent = data.session_title;
+            }
+            const sBadge = document.getElementById('session-badge');
+            if (sBadge && data.session_label) {
+                sBadge.textContent = data.session_label;
+                sBadge.style.display = 'inline-block';
+            }
+
+            countEl.textContent = Number(data.current_count).toLocaleString();
+            targetEl.textContent = Number(data.total_target).toLocaleString();
+            lastDurationEl.textContent = `${data.last_duration_sec}s`;
+            avgDurationEl.textContent = `${data.avg_duration_sec} วินาที/คน`;
+            rateEl.textContent = `${data.rate_per_min} คน/นาที`;
+            etaEl.textContent = `${data.estimated_finish_time} น.`;
+            elapsedEl.textContent = data.elapsed_time;
+
+            const pct = data.progress_percent || 0;
+            progressBar.style.width = `${Math.min(100.0, pct)}%`;
+            if (data.is_over_target) {
+                percentLabel.innerHTML = `<span style="color:#F87171; font-weight:800;">${pct}% (เกินเป้า +${Number(data.over_target_count).toLocaleString()} คน)</span>`;
+            } else {
+                percentLabel.innerHTML = `${pct}% (คงเหลือ <span id="remaining">${Number(data.remaining).toLocaleString()}</span> คน)`;
+            }
+
+            if (data.is_paused) {
+                liveBadge.style.backgroundColor = '#EAB308';
+                liveBadge.innerHTML = 'PAUSED';
+            } else {
+                liveBadge.style.backgroundColor = '#E53E3E';
+                liveBadge.innerHTML = '<span class="live-dot"></span> LIVE';
+            }
+
+            // Sync OBS Overlay Position & Scale in real-time
+            if (data.obs_settings && !lockedPos) {
+                applyOverlayPositioning(data.obs_settings);
+                try { localStorage.setItem('obs_settings', JSON.stringify(data.obs_settings)); } catch(e) {}
+            }
+        }
+
+        // URL Query Parameter overrides
+        const lockedPos = urlParams.get('pos');
+        const lockedScale = urlParams.get('scale');
+        const lockedPadX = urlParams.get('padX') || urlParams.get('x');
+        const lockedPadY = urlParams.get('padY') || urlParams.get('y');
+
+        function applyOverlayPositioning(settings) {
+            const pos = lockedPos || (settings && settings.position) || 'bottom-left';
+            let scale = 1.0;
+            if (lockedScale !== null) {
+                const sVal = parseFloat(lockedScale);
+                scale = sVal > 2 ? sVal / 100 : sVal;
+            } else if (settings && settings.scale !== undefined) {
+                scale = parseFloat(settings.scale);
+            }
+
+            const padX = (lockedPadX !== null) ? parseInt(lockedPadX) : ((settings && settings.pad_x !== undefined) ? settings.pad_x : 48);
+            const padY = (lockedPadY !== null) ? parseInt(lockedPadY) : ((settings && settings.pad_y !== undefined) ? settings.pad_y : 36);
+
+            document.body.classList.remove(
+                'pos-bottom-left', 'pos-bottom-center', 'pos-bottom-right',
+                'pos-top-left', 'pos-top-center', 'pos-top-right', 'pos-center'
+            );
+            document.body.classList.add(`pos-${pos}`);
+
+            document.documentElement.style.setProperty('--overlay-scale', scale);
+            document.documentElement.style.setProperty('--pad-x', `${padX}px`);
+            document.documentElement.style.setProperty('--pad-y', `${padY}px`);
+        }
+
+        // Apply on initial load from localStorage or defaults
+        try {
+            const savedSettings = JSON.parse(localStorage.getItem('obs_settings') || 'null');
+            applyOverlayPositioning(savedSettings);
+        } catch(e) {
+            applyOverlayPositioning();
+        }
+
+        // Initialize theme
+        try {
+            const savedTheme = localStorage.getItem('app_theme') || 'purple-yellow';
+            if (savedTheme === 'purple-yellow') document.body.classList.add('theme-purple-yellow');
+        } catch(e) {}
+
+        connectWebSocket();
+    </script>
+</body>
+</html>

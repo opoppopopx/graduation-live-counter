@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Large Video Files (GitHub 100MB limit)
+sample_videos/*.mp4
+!sample_videos/sample_ceremony.mp4
+*.mkv
+*.mov
+*.avi
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
