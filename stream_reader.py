@@ -186,7 +186,25 @@ class VideoStreamReader:
             if self.source_type == "webcam":
                 clean_path = str(self.source_path).strip().strip('"').strip("'")
                 index = int(clean_path) if clean_path.isdigit() else 0
-                cap = cv2.VideoCapture(index, cv2.CAP_DSHOW)
+                try:
+                    cap = cv2.VideoCapture(index, cv2.CAP_DSHOW)
+                    if not cap.isOpened():
+                        cap = cv2.VideoCapture(index)
+                except Exception:
+                    cap = cv2.VideoCapture(index)
+
+                if cap and cap.isOpened():
+                    # Ultra-low latency: Buffer size = 1 frame (Prevents delay accumulation over hours)
+                    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                    # Request crisp 720p HD resolution from capture card / webcam
+                    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+                    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+                    cap.set(cv2.CAP_PROP_FPS, 30)
+                    logger.info(f"Connected to camera/capture card (index {index}) with Buffer=1, 720p requested.")
+                else:
+                    logger.warning(f"Could not open camera index {index}. Fallback to simulation.")
+                    self.source_type = "simulation"
+                    return None
             elif self.source_type in ["online", "youtube", "facebook"]:
                 stream_url = self.get_online_stream_url(self.source_path)
                 if stream_url:
@@ -205,7 +223,20 @@ class VideoStreamReader:
                 else:
                     logger.warning(f"Could not extract stream URL for {self.source_path}. Fallback to simulation.")
                     self.source_type = "simulation"
-            elif self.source_type in ["rtsp", "rtmp", "file"]:
+            elif self.source_type in ["rtsp", "rtmp"]:
+                clean_path = str(self.source_path).strip().strip('"').strip("'")
+                os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp|fflags;nobuffer|max_delay;500000"
+                cap = cv2.VideoCapture(clean_path, cv2.CAP_FFMPEG)
+                if not cap.isOpened():
+                    cap = cv2.VideoCapture(clean_path)
+                if cap and cap.isOpened():
+                    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+                    logger.info(f"Connected to RTSP/RTMP stream with nobuffer: {clean_path}")
+                else:
+                    logger.error(f"Could not open RTSP stream: {clean_path}. Fallback to simulation.")
+                    self.source_type = "simulation"
+                    return None
+            elif self.source_type == "file":
                 clean_path = str(self.source_path).strip().strip('"').strip("'")
                 if not os.path.isabs(clean_path):
                     base_dir = os.path.dirname(os.path.abspath(__file__))
