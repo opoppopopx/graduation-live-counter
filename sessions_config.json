@@ -3,31 +3,23 @@
     "title": "ม.ราชภัฏบุรีรัมย์",
     "session_label": "รอบเช้า",
     "start_time": "08:30",
-    "finish_time": "11:55",
-    "time_range": "08:30 - 11:55",
-    "total_target": 3000,
-    "pre_break_range": "1-1,800",
-    "post_break_range": "1,801-3,000",
+    "finish_time": "11:50",
+    "time_range": "08:30 - 11:50",
+    "total_target": 2000,
+    "pre_break_range": "1-100",
+    "post_break_range": "101-2,000",
     "universities": [
       {
         "name": "ม.ราชภัฏบุรีรัมย์",
-        "target": 1000
+        "target": 500
       },
       {
-        "name": "ม.ขอนแก่น",
+        "name": "ม.ราชภัฏกัมภูชา",
         "target": 500
       },
       {
         "name": "สถาบันที่ 3",
-        "target": 500
-      },
-      {
-        "name": "สถาบันที่ 4",
-        "target": 500
-      },
-      {
-        "name": "สถาบันที่ 5",
-        "target": 500
+        "target": 1000
       }
     ]
   },
@@ -53,9 +45,9 @@
   },
   "theme": "purple-yellow",
   "obs_settings": {
-    "position": "bottom-right",
+    "position": "bottom-center",
     "scale": 1.0,
-    "pad_x": 48,
+    "pad_x": 62,
     "pad_y": 36
   }
 }
