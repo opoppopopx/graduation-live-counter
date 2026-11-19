@@ -1763,7 +1763,7 @@
                 <!-- 2. Live Ceremony Interventions (Clean & Single-line, Details in Tooltip) -->
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; padding: 10px; background: rgba(0, 0, 0, 0.03); border-radius: 12px; border: 1.5px dashed rgba(142, 56, 144, 0.25);">
                     <button class="btn-action" id="btn-break-phase" style="padding: 10px 14px; font-size: 14px; font-weight: 800; background: #FEF3C7; border: 1.5px solid #F59E0B; color: #92400E; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; cursor: pointer; min-height: 46px;" onclick="handleBreakButtonClick()" title="ใช้เมื่อประธานสั่งพักแถว ตัดยอดช่วงแรกที่คนปัจจุบันทันที (หรือคลิกเพื่อสลับกลับไปช่วงก่อนพัก)">
-                        <span id="btn-break-text" style="font-size: 15px; font-weight: 900;">⏸️ สั่งพักแถวตอนนี้</span>
+                        <span id="btn-break-text" style="font-size: 15px; font-weight: 900;">⏸️ พักแถว</span>
                         <span id="btn-break-subtext" style="display: none;"></span>
                     </button>
                     <button class="btn-action" style="padding: 10px 14px; font-size: 14px; font-weight: 800; background: #E0F2FE; border: 1.5px solid #0284C7; color: #075985; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; cursor: pointer; min-height: 46px;" onclick="triggerSyncTargetToActual()" title="คนขาดหรือคนเกิน จบพิธีที่ 100% พอดี (ระบบจะปรับเป้าหมายให้เท่ากับยอดรับจริงทันที)">
@@ -3553,14 +3553,14 @@
                                 btnBreak.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(185, 28, 28, 0.35))';
                                 btnBreak.style.borderColor = '#EF4444';
                                 btnBreak.style.color = '#FCA5A5';
-                                btnBreakText.textContent = '🟢 ตัดรอบเข้าสู่ช่วงหลังพักแล้ว';
+                                btnBreakText.textContent = '🟢 หลังพักแถวแล้ว';
                                 btnBreakSubtext.textContent = '(คลิกเพื่อสลับกลับไปช่วงก่อนพัก)';
                                 btnBreakSubtext.style.color = '#F87171';
                             } else {
                                 btnBreak.style.background = 'linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(217, 119, 6, 0.35))';
                                 btnBreak.style.borderColor = '#F59E0B';
                                 btnBreak.style.color = '#FDE68A';
-                                btnBreakText.textContent = '⏸️ ประธานสั่งพักแถวตอนนี้';
+                                btnBreakText.textContent = '⏸️ พักแถว';
                                 btnBreakSubtext.textContent = '(ตัดยอดช่วงก่อนพัก ณ บัณฑิตคนนี้ทันที)';
                                 btnBreakSubtext.style.color = '#FCD34D';
                             }
