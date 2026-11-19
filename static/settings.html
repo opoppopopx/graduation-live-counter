@@ -708,14 +708,21 @@
             </div>
 
             <!-- OBS URL Generator & Copy -->
-            <div style="background: #FFFFFF; border: 1.5px solid rgba(142, 56, 144, 0.25); border-radius: 12px; padding: 18px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
-                    <span style="font-size: 14px; font-weight: 800; color: #D97706;">🔗 ลิงก์ Browser Source สำหรับใส่ใน OBS Studio:</span>
-                    <button class="btn-action" style="background: #10B981; font-weight: 900; font-size: 18px; min-height: 56px; padding: 12px 26px;" onclick="copyObsGeneratedLink()">📋 คัดลอกลิงก์ OBS</button>
+            <div style="background: #FFFFFF; border: 2px solid rgba(142, 56, 144, 0.25); border-radius: 14px; padding: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 15px; font-weight: 900; color: #5B185D;">🔗 OBS Browser Source URL:</span>
+                        <span style="font-size: 12px; font-weight: 800; background: #EEF2FF; color: #4338CA; padding: 3px 10px; border-radius: 20px;">1080p (1920x1080)</span>
+                    </div>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn-action" style="background: #10B981; font-weight: 900; font-size: 15px; min-height: 44px; padding: 10px 20px; display: inline-flex; align-items: center; gap: 8px;" onclick="copyObsGeneratedLink()">📋 คัดลอก URL</button>
+                        <a href="/overlay" target="_blank" class="btn-action" style="background: #0284C7; font-weight: 800; font-size: 15px; min-height: 44px; padding: 10px 20px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; color: white;">↗ ดูพรีวิว Overlay</a>
+                    </div>
                 </div>
-                <input type="text" id="obs-generated-url" class="input-field" readonly style="width: 100%; font-family: monospace; font-size: 18px; font-weight: 800; color: #0284C7; min-height: 56px;" value="http://localhost:8088/overlay">
-                <div style="font-size: 12px; color: #8A658F; margin-top: 8px; font-weight: 600;">
-                    💡 ตั้งค่าใน OBS Studio: เพิ่ม <b>Browser Source</b> > วางลิงก์นี้ > กำหนด <b>Width: 1920</b>, <b>Height: 1080</b>
+                <input type="text" id="obs-generated-url" class="input-field" readonly style="width: 100%; font-family: monospace; font-size: 17px; font-weight: 800; color: #0284C7; min-height: 50px; background: #F8FAFC; border: 1.5px solid #CBD5E1;" value="http://localhost:8088/overlay">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 10px; font-size: 13px; color: #64748B; font-weight: 600;">
+                    <div>💡 วิธีใช้งานใน OBS: เพิ่ม <b>Browser Source</b> &rarr; วางลิงก์นี้ &rarr; กำหนด <b>Width: 1920</b>, <b>Height: 1080</b></div>
+                    <div style="color: #10B981; font-weight: 700;">✅ ปรับตำแหน่ง/ขนาดจากหน้านี้ แล้วใน OBS จะเปลี่ยนสดทันที</div>
                 </div>
             </div>
         </div>
@@ -1424,6 +1431,22 @@
         }
 
         connectWS();
+
+        // Dynamically init OBS URL
+        const obsGenUrl = document.getElementById('obs-generated-url');
+        if (obsGenUrl) {
+            obsGenUrl.value = `http://${window.location.host}/overlay`;
+        }
+
+        // Support URL Hash tab navigation (e.g. #tab-obs or #obs)
+        function checkHashTab() {
+            const hash = window.location.hash.replace('#', '').replace('tab-', '');
+            if (hash && ['cadence', 'sessions', 'obs', 'ai', 'report'].includes(hash)) {
+                switchSettingsTab(hash);
+            }
+        }
+        window.addEventListener('hashchange', checkHashTab);
+        checkHashTab();
     
 
 // ==========================================

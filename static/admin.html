@@ -1452,80 +1452,61 @@
 </head>
 <body>
 
-    <!-- Header: Full 2-Row Layout -->
-    <header style="padding: 12px 18px 12px; margin-bottom: 18px; display: flex; flex-direction: column; gap: 10px;">
-        <!-- Row 1: Logo + Title LEFT | Buttons RIGHT -->
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
-            <!-- Brand (Pinned to left edge, crystal clear white text) -->
-            <div style="display: flex; align-items: center; gap: 12px; margin-left: 0;">
-                <img src="/static/logo.png?v=2" alt="ตรามหาวิทยาลัยราชภัฏบุรีรัมย์"
-                     style="height: 56px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.45)); cursor: pointer;"
-                     onclick="window.location.reload();" title="คลิกเพื่อรีเฟรช">
-                <div class="brand-text">
-                    <h1 style="font-size: 22px; font-weight: 900; line-height: 1.2; display: flex; align-items: center; gap: 10px; color: #FFFFFF !important; text-shadow: 0 2px 4px rgba(0,0,0,0.35);">
-                        มหาวิทยาลัยราชภัฏบุรีรัมย์
-                        <span style="font-size: 12px; font-weight: 900; background: linear-gradient(135deg, #FACC15, #EAB308); color: #78350F; padding: 3px 10px; border-radius: 6px; letter-spacing: 0.5px; text-shadow: none;">AI LIVE COUNTER</span>
-                    </h1>
-                    <p style="font-size: 13px; color: #FFFFFF !important; opacity: 0.95; font-weight: 700; margin-top: 3px; text-shadow: 0 1px 3px rgba(0,0,0,0.45);">ระบบนับจำนวนบัณฑิตและคำนวณเวลาอัตโนมัติ สำหรับยิงกราฟิกขึ้น OBS Live Stream</p>
-                </div>
-            </div>
-
-            <!-- Right Buttons: Manual Mode + Stage Display + Theme Toggle (Far Right Corner) -->
-            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                <!-- Manual Mode Button -->
-                <a href="/manual" target="_blank"
-                   style="background: linear-gradient(135deg, #EF4444, #DC2626); color: white; text-decoration: none;
-                          font-size: 14px; font-weight: 900; height: 42px; padding: 0 18px; border-radius: 10px;
-                          display: inline-flex; align-items: center; gap: 8px;
-                          box-shadow: 0 4px 14px rgba(239,68,68,0.4); border: 1.5px solid rgba(255,255,255,0.3);"
-                   title="เปิดหน้านับด้วยมือ (Manual Counter)">
-                    ✋ โหมดนับด้วยมือ (Spacebar)
-                </a>
-
-                <!-- Stage Display -->
-                <a href="/live" target="_blank"
-                   style="background: linear-gradient(135deg, #0284C7, #0369A1); color: white; text-decoration: none;
-                          font-size: 14px; font-weight: 800; height: 42px; padding: 0 18px; border-radius: 10px;
-                          display: inline-flex; align-items: center; gap: 8px;
-                          box-shadow: 0 4px 14px rgba(2,132,199,0.35);"
-                   title="เปิดจอแสดงผลหน้างานจริง">
-                    📺 จอแสดงผลหน้างานจริง (Stage Display)
-                </a>
-
-                <!-- Theme Toggle Button (Sun/Moon, Far Right Corner) -->
-                <button id="btn-theme-toggle" class="btn-theme-switch" onclick="toggleTheme()"
-                        style="width: 42px; height: 42px; padding: 0; border-radius: 50%; font-size: 20px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;"
-                        title="สลับโหมดสว่าง / มืด (คลิกเพื่อเปลี่ยนธีม)">
-                    <span id="theme-btn-text" style="font-size: 20px; line-height: 1;">🌙</span>
-                </button>
+    <!-- Header: Single Row Clean Layout -->
+    <header style="padding: 12px 20px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+        <!-- Brand (Left) -->
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <img src="/static/logo.png?v=2" alt="ตรามหาวิทยาลัยราชภัฏบุรีรัมย์"
+                 style="height: 52px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.45)); cursor: pointer;"
+                 onclick="window.location.reload();" title="คลิกเพื่อรีเฟรช">
+            <div class="brand-text">
+                <h1 style="font-size: 21px; font-weight: 900; line-height: 1.2; display: flex; align-items: center; gap: 10px; color: #FFFFFF !important; text-shadow: 0 2px 4px rgba(0,0,0,0.35);">
+                    มหาวิทยาลัยราชภัฏบุรีรัมย์
+                    <span style="font-size: 12px; font-weight: 900; background: linear-gradient(135deg, #FACC15, #EAB308); color: #78350F; padding: 3px 10px; border-radius: 6px; letter-spacing: 0.5px; text-shadow: none;">AI LIVE COUNTER</span>
+                </h1>
+                <p style="font-size: 13px; color: #FFFFFF !important; opacity: 0.95; font-weight: 700; margin-top: 3px; text-shadow: 0 1px 3px rgba(0,0,0,0.45);">ระบบนับจำนวนบัณฑิตและคำนวณเวลาอัตโนมัติ สำหรับยิงกราฟิกขึ้น OBS Live Stream</p>
             </div>
         </div>
 
-        <!-- Row 2: Settings link LEFT | OBS URL RIGHT -->
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;">
-            <!-- Settings Link -->
-            <a href="/settings" target="_blank"
-               style="background: rgba(255,255,255,0.12); color: #fff; text-decoration: none;
-                      font-size: 14px; font-weight: 800; height: 40px; padding: 0 18px; border-radius: 10px;
+        <!-- Right Action Buttons: Settings (including OBS) + Manual Mode + Stage Display + Theme Toggle -->
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <!-- Settings Link (Points to Settings, with OBS) -->
+            <a href="/settings#tab-obs" target="_blank"
+               style="background: rgba(255,255,255,0.15); color: #fff; text-decoration: none;
+                      font-size: 14px; font-weight: 800; height: 42px; padding: 0 16px; border-radius: 10px;
                       display: inline-flex; align-items: center; gap: 8px;
-                      border: 1.5px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px);"
-               title="เปิดหน้าตั้งค่าขั้นสูง">
-                ⚙️ การตั้งค่าขั้นสูง (Settings) ↗
+                      border: 1.5px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px);
+                      box-shadow: 0 2px 8px rgba(0,0,0,0.15);"
+               title="เปิดหน้าตั้งค่าขั้นสูง (รวมการตั้งค่า OBS Overlay)">
+                ⚙️ การตั้งค่าขั้นสูง (Settings & OBS) ↗
             </a>
 
-            <!-- OBS URL Bar -->
-            <div class="obs-copy-bar" style="display: flex; align-items: center; gap: 10px; padding: 8px 16px; border-radius: 10px;">
-                <span style="font-size: 13px; font-weight: 700; opacity: 0.85;">OBS Browser Source URL:</span>
-                <span class="obs-link-text" id="obs-url" style="font-size: 13px; font-weight: 900;">http://localhost:8088/overlay</span>
-                <button class="btn-copy" onclick="copyObsUrl()"
-                        style="padding: 6px 14px; font-size: 13px; font-weight: 800; border-radius: 8px;">คัดลอก URL</button>
-                <a href="/overlay" target="_blank"
-                   style="color: var(--accent-blue); text-decoration: none; font-size: 13px; font-weight: 700;">↗ ดูพรีวิว</a>
-                <button type="button" onclick="window.open('/settings#tab-obs', '_blank');"
-                        style="background: rgba(245,158,11,0.2); border: 1.5px solid #F59E0B; color: #FDE68A; font-weight: 800; font-size: 13px; padding: 6px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
-                    <span id="top-obs-pos-badge">📍 ล่างซ้าย</span> ▾
-                </button>
-            </div>
+            <!-- Manual Mode Button -->
+            <a href="/manual" target="_blank"
+               style="background: linear-gradient(135deg, #EF4444, #DC2626); color: white; text-decoration: none;
+                      font-size: 14px; font-weight: 900; height: 42px; padding: 0 18px; border-radius: 10px;
+                      display: inline-flex; align-items: center; gap: 8px;
+                      box-shadow: 0 4px 14px rgba(239,68,68,0.4); border: 1.5px solid rgba(255,255,255,0.3);"
+               title="เปิดหน้านับด้วยมือ (Manual Counter)">
+                ✋ โหมดนับด้วยมือ (Spacebar)
+            </a>
+
+            <!-- Stage Display -->
+            <a href="/live" target="_blank"
+               style="background: linear-gradient(135deg, #0284C7, #0369A1); color: white; text-decoration: none;
+                      font-size: 14px; font-weight: 800; height: 42px; padding: 0 18px; border-radius: 10px;
+                      display: inline-flex; align-items: center; gap: 8px;
+                      box-shadow: 0 4px 14px rgba(2,132,199,0.35);"
+               title="เปิดจอแสดงผลหน้างานจริง">
+                📺 จอแสดงผลหน้างานจริง (Stage Display)
+            </a>
+
+            <!-- Theme Toggle Button (Sun/Moon, Far Right Corner) -->
+            <button id="btn-theme-toggle" class="btn-theme-switch" onclick="toggleTheme()"
+                    style="width: 42px; height: 42px; padding: 0; border-radius: 50%; font-size: 20px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;"
+                    title="สลับโหมดสว่าง / มืด (คลิกเพื่อเปลี่ยนธีม)">
+                <span id="theme-btn-text" style="font-size: 20px; line-height: 1;">🌙</span>
+            </button>
         </div>
     </header>
 
@@ -2005,7 +1986,7 @@
     <script>
         // Set OBS URL input
         const currentHost = window.location.host;
-        document.getElementById('obs-url').textContent = `http://${currentHost}/overlay`;
+        const obsUrlEl = document.getElementById('obs-url'); if (obsUrlEl) obsUrlEl.textContent = `http://${currentHost}/overlay`;
 
         let currentSourceType = 'simulation';
 
