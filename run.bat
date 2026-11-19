@@ -10,5 +10,5 @@ if exist "C:\Program Files\Python314\python.exe" (
 )
 
 echo กำลังเริ่มระบบ... กรุณารอสักครู่ (ระบบจะเปิดหน้าต่างเบราว์เซอร์ให้เองโดยอัตโนมัติ)
-"%PY_CMD%" -m uvicorn main:app --host 0.0.0.0 --port 8000
+"%PY_CMD%" -m uvicorn main:app --host 0.0.0.0 --port 8088
 pause

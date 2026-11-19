@@ -17,5 +17,5 @@ if exist "C:\Program Files\Python314\python.exe" (
     set "PY_CMD=C:\Program Files\Python314\python.exe"
 )
 
-"%PY_CMD%" -m uvicorn main:app --host 0.0.0.0 --port 8000
+"%PY_CMD%" -m uvicorn main:app --host 0.0.0.0 --port 8088
 pause

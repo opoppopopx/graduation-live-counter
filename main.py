@@ -83,7 +83,7 @@ async def startup_event():
     def open_browser():
         import time, webbrowser
         time.sleep(1.5)
-        webbrowser.open("http://localhost:8000/admin")
+        webbrowser.open("http://localhost:8088/admin")
 
     import threading
     threading.Thread(target=open_browser, daemon=True).start()
@@ -550,4 +550,4 @@ def get_stage_page():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)
+    uvicorn.run("main:app", host="0.0.0.0", port=8088, reload=False)
