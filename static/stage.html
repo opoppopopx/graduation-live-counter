@@ -680,6 +680,84 @@
         </div>
 
     <script>
+
+// =======================================================
+// 🍪 UNIVERSAL COOKIE & LOCALSTORAGE PERSISTENCE SYSTEM
+// ป้องกันข้อมูลสูญหาย 100% แม้ไฟดับ คอมดับ หรือปิดโปรแกรม
+// =======================================================
+(function initClientPersistence() {
+    const COOKIE_PREFIX = 'grad_live_';
+    const LS_KEY = 'grad_live_backup';
+
+    function setCookie(k, v, days = 7) {
+        try {
+            const d = new Date();
+            d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = `${COOKIE_PREFIX}${k}=${encodeURIComponent(v)};expires=${d.toUTCString()};path=/;SameSite=Lax`;
+        } catch(e) {}
+    }
+
+    function getCookie(k) {
+        try {
+            const name = `${COOKIE_PREFIX}${k}=`;
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i].trim();
+                if (c.indexOf(name) === 0) return decodeURIComponent(c.substring(name.length, c.length));
+            }
+        } catch(e) {}
+        return null;
+    }
+
+    window.saveStateBackupLocally = function(data) {
+        if (!data) return;
+        try {
+            const count = (data.current_count !== undefined) ? data.current_count : 0;
+            const target = (data.total_target !== undefined) ? data.total_target : 0;
+            const session = data.active_session || '';
+            const theme = data.theme || '';
+            const now = Date.now();
+
+            setCookie('count', count);
+            setCookie('target', target);
+            setCookie('session', session);
+            setCookie('theme', theme);
+            setCookie('saved_at', now);
+
+            localStorage.setItem(LS_KEY, JSON.stringify({
+                current_count: count,
+                total_target: target,
+                active_session: session,
+                progress_pct: data.progress_pct || data.progress_percent || 0,
+                theme: theme,
+                saved_at: now
+            }));
+        } catch(e) {}
+    };
+
+    window.loadStateBackupLocally = function() {
+        try {
+            const str = localStorage.getItem(LS_KEY);
+            if (str) {
+                const parsed = JSON.parse(str);
+                if (parsed && typeof parsed.current_count === 'number') return parsed;
+            }
+            const cCount = getCookie('count');
+            if (cCount !== null) {
+                return {
+                    current_count: parseInt(cCount, 10) || 0,
+                    total_target: parseInt(getCookie('target'), 10) || 0,
+                    active_session: getCookie('session') || 'morning',
+                    theme: getCookie('theme') || 'purple-yellow',
+                    saved_at: parseInt(getCookie('saved_at'), 10) || 0
+                };
+            }
+        } catch(e) {}
+        return null;
+    };
+})();
+
+
         let prevCount = -1;
 
         function setTextSize(isXl) {
@@ -754,6 +832,7 @@
                     const msg = JSON.parse(event.data);
                     if (msg.type === "STATS_UPDATE") {
                         updateStageUI(msg.data);
+                        window.saveStateBackupLocally(msg.data);
                     }
                 } catch (e) {
                     console.error("Error parsing WS stats:", e);

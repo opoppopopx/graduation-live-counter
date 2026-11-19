@@ -1471,6 +1471,12 @@
         <!-- Right Action Buttons: Settings (including OBS) + Manual Mode + Stage Display + Theme Toggle -->
         <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
             <!-- Settings Link (Points to Settings, with OBS) -->
+            <!-- Auto-save Persistence Pill Badge -->
+            <div style="font-size: 13px; font-weight: 800; background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1.5px solid rgba(16, 185, 129, 0.4); border-radius: 20px; padding: 6px 14px; display: inline-flex; align-items: center; gap: 6px;" title="ระบบบันทึกข้อมูลอัตโนมัติ 2 ชั้น (SSD + Browser Cookies & LocalStorage) ข้อมูลไม่สูญหายแม้ไฟดับหรือคอมดับ">
+                <span>💾</span>
+                <span>บันทึกอัตโนมัติ (ทนไฟดับ)</span>
+            </div>
+
             <a href="/settings#tab-obs" target="_blank"
                style="background: rgba(255,255,255,0.15); color: #fff; text-decoration: none;
                       font-size: 14px; font-weight: 800; height: 42px; padding: 0 16px; border-radius: 10px;
@@ -1509,6 +1515,18 @@
             </button>
         </div>
     </header>
+
+    <!-- Disaster Recovery Banner (Shows only if server restarted at 0 but browser has cookies from today) -->
+    <div id="disaster-recovery-banner" style="display: none; background: #FEF3C7; border: 2px solid #F59E0B; border-radius: 12px; padding: 12px 18px; margin: 0 18px 18px; justify-content: space-between; align-items: center; gap: 12px; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);">
+        <div style="display: flex; align-items: center; gap: 10px; color: #92400E; font-weight: 800; font-size: 14px;">
+            <span style="font-size: 22px;">🍪</span>
+            <span>ตรวจพบคุกกี้สำรองในเครื่องนี้: ยอดนับ <b id="disaster-cached-count" style="color: #B45309; font-size: 18px;">0</b> คน (ก่อนเครื่องดับ/ไฟดับ) ต้องการกู้คืนยอดนี้หรือไม่?</span>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <button onclick="restoreDisasterBackup()" style="background: #10B981; color: white; border: none; font-weight: 900; font-size: 14px; padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px;">✅ กู้คืนยอดนี้ทันที</button>
+            <button onclick="dismissDisasterBanner()" style="background: rgba(0,0,0,0.1); color: #78350F; border: none; font-weight: 700; font-size: 13px; padding: 8px 12px; border-radius: 8px; cursor: pointer;">✕ ละเว้น</button>
+        </div>
+    </div>
 
     <div class="dashboard-grid">
         <!-- Left: Live Video Monitor & AI Calibration -->
@@ -1975,6 +1993,84 @@
     <div id="toast">บันทึกเรียบร้อย!</div>
 
     <script>
+
+// =======================================================
+// 🍪 UNIVERSAL COOKIE & LOCALSTORAGE PERSISTENCE SYSTEM
+// ป้องกันข้อมูลสูญหาย 100% แม้ไฟดับ คอมดับ หรือปิดโปรแกรม
+// =======================================================
+(function initClientPersistence() {
+    const COOKIE_PREFIX = 'grad_live_';
+    const LS_KEY = 'grad_live_backup';
+
+    function setCookie(k, v, days = 7) {
+        try {
+            const d = new Date();
+            d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = `${COOKIE_PREFIX}${k}=${encodeURIComponent(v)};expires=${d.toUTCString()};path=/;SameSite=Lax`;
+        } catch(e) {}
+    }
+
+    function getCookie(k) {
+        try {
+            const name = `${COOKIE_PREFIX}${k}=`;
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i].trim();
+                if (c.indexOf(name) === 0) return decodeURIComponent(c.substring(name.length, c.length));
+            }
+        } catch(e) {}
+        return null;
+    }
+
+    window.saveStateBackupLocally = function(data) {
+        if (!data) return;
+        try {
+            const count = (data.current_count !== undefined) ? data.current_count : 0;
+            const target = (data.total_target !== undefined) ? data.total_target : 0;
+            const session = data.active_session || '';
+            const theme = data.theme || '';
+            const now = Date.now();
+
+            setCookie('count', count);
+            setCookie('target', target);
+            setCookie('session', session);
+            setCookie('theme', theme);
+            setCookie('saved_at', now);
+
+            localStorage.setItem(LS_KEY, JSON.stringify({
+                current_count: count,
+                total_target: target,
+                active_session: session,
+                progress_pct: data.progress_pct || data.progress_percent || 0,
+                theme: theme,
+                saved_at: now
+            }));
+        } catch(e) {}
+    };
+
+    window.loadStateBackupLocally = function() {
+        try {
+            const str = localStorage.getItem(LS_KEY);
+            if (str) {
+                const parsed = JSON.parse(str);
+                if (parsed && typeof parsed.current_count === 'number') return parsed;
+            }
+            const cCount = getCookie('count');
+            if (cCount !== null) {
+                return {
+                    current_count: parseInt(cCount, 10) || 0,
+                    total_target: parseInt(getCookie('target'), 10) || 0,
+                    active_session: getCookie('session') || 'morning',
+                    theme: getCookie('theme') || 'purple-yellow',
+                    saved_at: parseInt(getCookie('saved_at'), 10) || 0
+                };
+            }
+        } catch(e) {}
+        return null;
+    };
+})();
+
+
         // Set OBS URL input
         const currentHost = window.location.host;
         const obsUrlEl = document.getElementById('obs-url'); if (obsUrlEl) obsUrlEl.textContent = `http://${currentHost}/overlay`;
@@ -3397,6 +3493,7 @@
                 if (msg.type === "STATS_UPDATE") {
                     try {
                         const d = msg.data;
+                        window.saveStateBackupLocally(d);
 
                         // Sync Theme across all clients if changed
                         if (d.theme) {

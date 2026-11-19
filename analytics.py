@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Optional, Tuple
 
 SESSION_CONFIG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sessions_config.json")
+RUNTIME_STATE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "runtime_state.json")
 
 DEFAULT_SESSIONS = {
     "morning": {
@@ -84,6 +85,118 @@ class GraduationAnalytics:
         # Configuration thresholds for realistic ceremony pacing
         self.MIN_CADENCE_SEC = 1.5   # ต่ำกว่านี้ถือเป็น glitch / เบิ้ล
         self.MAX_CADENCE_SEC = 8.0   # เกินกว่านี้ถือเป็นการพักแถว/เปลี่ยนคณะ (Intermission)
+
+        # Automatic Persistence: โหลดสถานะการนับจาก runtime_state.json ป้องกันไฟดับ/คอมดับ
+        self._load_runtime_state()
+
+    def _load_runtime_state(self):
+        """โหลดข้อมูลนับสดจากไฟล์ runtime_state.json ป้องกันข้อมูลหายกรณีคอมดับ/ไฟดับ"""
+        if not os.path.exists(RUNTIME_STATE_FILE):
+            return
+        try:
+            with open(RUNTIME_STATE_FILE, "r", encoding="utf-8") as f:
+                state = json.load(f)
+            if not isinstance(state, dict):
+                return
+            
+            saved_count = state.get("current_count")
+            if saved_count is not None:
+                self.current_count = max(0, int(saved_count))
+            
+            saved_session = state.get("active_session_key")
+            if saved_session in ("morning", "afternoon"):
+                self.active_session_key = saved_session
+
+            saved_target = state.get("total_target")
+            if saved_target is not None and int(saved_target) > 0:
+                self.total_target = int(saved_target)
+
+            if "break_taken" in state:
+                self.break_taken = bool(state["break_taken"])
+            if "is_paused" in state:
+                self.is_paused = bool(state["is_paused"])
+            if "counting_mode" in state:
+                self.counting_mode = state["counting_mode"]
+            if "total_pause_time_sec" in state:
+                self.total_pause_time_sec = float(state["total_pause_time_sec"])
+            if "intermission_count" in state:
+                self.intermission_count = int(state["intermission_count"])
+            if "manual_pace_sec" in state:
+                self.manual_pace_sec = state["manual_pace_sec"]
+            if "auto_deduct_excess" in state:
+                self.auto_deduct_excess = bool(state["auto_deduct_excess"])
+            if "last_switched_from" in state:
+                self.last_switched_from = state["last_switched_from"]
+
+            if isinstance(state.get("raw_durations"), list):
+                self.raw_durations = state["raw_durations"]
+            if isinstance(state.get("active_durations"), list):
+                self.active_durations = state["active_durations"]
+            if isinstance(state.get("recent_events"), list):
+                self.recent_events = state["recent_events"]
+            if isinstance(state.get("session_events"), list):
+                self.session_events = state["session_events"]
+            if isinstance(state.get("session_states"), dict):
+                self.session_states = state["session_states"]
+
+            start_ts = state.get("start_timestamp")
+            if start_ts:
+                self.start_timestamp = float(start_ts)
+            start_dt = state.get("start_datetime")
+            if start_dt:
+                try:
+                    self.start_datetime = datetime.fromisoformat(start_dt)
+                except Exception:
+                    pass
+            last_confer = state.get("last_confer_timestamp")
+            if last_confer:
+                self.last_confer_timestamp = float(last_confer)
+
+            cur = self.sessions.get(self.active_session_key, DEFAULT_SESSIONS.get(self.active_session_key, {}))
+            self.ceremony_title = cur.get("title", self.ceremony_title)
+            self.session_name = cur.get("session_label", self.session_name)
+            self.pre_break_range = cur.get("pre_break_range", self.pre_break_range)
+            self.post_break_range = cur.get("post_break_range", self.post_break_range)
+            self.planned_finish_time = cur.get("finish_time", self.planned_finish_time)
+            cur["total_target"] = self.total_target
+
+            print(f"[Persistence] Restored from runtime_state.json: Count={self.current_count}, Target={self.total_target}, Session={self.active_session_key}, Break={self.break_taken}")
+        except Exception as e:
+            print(f"[Persistence] Warning loading runtime_state.json: {e}")
+
+    def _save_runtime_state(self):
+        """บันทึกสถานะลง runtime_state.json แบบ Atomic ทนทานต่อไฟดับ/คอมดับ 100%"""
+        try:
+            state = {
+                "version": 1,
+                "last_saved_at": datetime.now().isoformat(),
+                "active_session_key": self.active_session_key,
+                "current_count": self.current_count,
+                "total_target": self.total_target,
+                "start_timestamp": self.start_timestamp,
+                "start_datetime": self.start_datetime.isoformat() if self.start_datetime else None,
+                "end_datetime": self.end_datetime.isoformat() if self.end_datetime else None,
+                "last_confer_timestamp": self.last_confer_timestamp,
+                "break_taken": self.break_taken,
+                "is_paused": self.is_paused,
+                "counting_mode": self.counting_mode,
+                "total_pause_time_sec": self.total_pause_time_sec,
+                "intermission_count": self.intermission_count,
+                "manual_pace_sec": self.manual_pace_sec,
+                "raw_durations": self.raw_durations[-150:] if len(self.raw_durations) > 300 else self.raw_durations,
+                "active_durations": self.active_durations[-150:] if len(self.active_durations) > 300 else self.active_durations,
+                "recent_events": self.recent_events[-20:],
+                "session_events": self.session_events,
+                "session_states": self.session_states,
+                "last_switched_from": self.last_switched_from,
+                "auto_deduct_excess": self.auto_deduct_excess
+            }
+            tmp_file = RUNTIME_STATE_FILE + ".tmp"
+            with open(tmp_file, "w", encoding="utf-8") as f:
+                json.dump(state, f, ensure_ascii=False, indent=2)
+            os.replace(tmp_file, RUNTIME_STATE_FILE)
+        except Exception as e:
+            pass
 
     def _load_sessions_config(self) -> Dict:
         """โหลดข้อมูลรอบเช้า/รอบบ่ายจาก JSON ถ้ามี"""
@@ -305,6 +418,7 @@ class GraduationAnalytics:
         if getattr(self, "last_switched_from", None):
             prev = self.last_switched_from
             return self.switch_active_session(prev, reset_count=False, restore_saved_state=True)
+        self._save_runtime_state()
         return self.get_summary()
 
     def _auto_handle_excess(self):
@@ -426,6 +540,7 @@ class GraduationAnalytics:
             self.raw_durations = self.raw_durations[-150:]
 
         self.last_confer_timestamp = now
+        self._save_runtime_state()
         return self.get_summary()
 
     def manual_adjust(self, delta: int) -> Dict:
@@ -445,6 +560,7 @@ class GraduationAnalytics:
             "action": "manual_adjust",
             "notes": f"แอดมินปรับยอดแมนนวล ({'+' if delta > 0 else ''}{delta} คน)"
         })
+        self._save_runtime_state()
         return self.get_summary()
 
     def set_current_count(self, count: int) -> Dict:
@@ -464,6 +580,7 @@ class GraduationAnalytics:
             "action": "set_count",
             "notes": f"แอดมินตั้งค่ายอดคนปัจจุบันเป็น {count} คน"
         })
+        self._save_runtime_state()
         return self.get_summary()
 
     def set_total_target(self, target: int) -> Dict:
@@ -489,6 +606,7 @@ class GraduationAnalytics:
             self.sessions[self.active_session_key]["pre_break_range"] = self.pre_break_range
             self.sessions[self.active_session_key]["post_break_range"] = self.post_break_range
             self._save_sessions_config()
+        self._save_runtime_state()
         return self.get_summary()
 
     def set_manual_pace(self, pace_sec: float) -> Dict:
@@ -668,6 +786,7 @@ class GraduationAnalytics:
         self.manual_pace_sec = None
         self.total_pause_time_sec = 0.0
         self.intermission_count = 0
+        self._save_runtime_state()
 
     def set_counting_mode(self, mode: str) -> Dict:
         """สลับโหมดการนับ: 'auto' (ระบบอัตโนมัติ AI) หรือ 'manual' (ระบบนับด้วยมือ)"""
@@ -677,12 +796,14 @@ class GraduationAnalytics:
                 self.is_paused = True  # หยุดระบบนับอัตโนมัติทันที
             else:
                 self.is_paused = False # กลับมาเปิดระบบอัตโนมัติ
+        self._save_runtime_state()
         return self.get_summary()
 
     def toggle_pause(self) -> bool:
         self.is_paused = not self.is_paused
         if not self.is_paused:
             self.counting_mode = "auto"
+        self._save_runtime_state()
         return self.is_paused
 
     def _calculate_robust_cadence(self) -> Tuple[float, float, str]:

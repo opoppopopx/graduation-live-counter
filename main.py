@@ -253,6 +253,23 @@ class CountConfig(BaseModel):
 class PaceConfig(BaseModel):
     pace_sec: float
 
+class ClientRestoreRequest(BaseModel):
+    current_count: int
+    total_target: Optional[int] = None
+    active_session: Optional[str] = None
+
+@app.post("/api/state/restore_client_backup")
+async def restore_client_backup(req: ClientRestoreRequest):
+    """กู้คืนข้อมูลที่นับไว้จาก Cookie / LocalStorage ของเบราว์เซอร์"""
+    if req.current_count > 0:
+        analytics.set_current_count(req.current_count)
+        if req.total_target and req.total_target > 0:
+            analytics.set_total_target(req.total_target)
+        if req.active_session in ("morning", "afternoon") and req.active_session != analytics.active_session_key:
+            analytics.switch_active_session(req.active_session)
+        await broadcast_stats()
+    return {"status": "ok", "current_count": analytics.current_count}
+
 @app.post("/api/set_count")
 async def set_current_count(config: CountConfig):
     analytics.set_current_count(config.current_count)
