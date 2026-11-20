@@ -23,3 +23,6 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# Runtime state persistence
+runtime_state.json
