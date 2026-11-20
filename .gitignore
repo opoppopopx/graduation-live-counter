@@ -27,3 +27,7 @@ Thumbs.db
 # Runtime state persistence
 runtime_state.json
 auth_sessions.json
+
+# Audio cache
+static/audio_cache/*.mp3
+static/audio_tts/*.mp3

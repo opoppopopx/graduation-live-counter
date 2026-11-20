@@ -632,6 +632,78 @@ def api_logout(request: Request, response: Response):
 def api_auth_check(request: Request):
     return {"authenticated": is_authenticated(request)}
 
+# ==============================================================================
+# 🔊 NATURAL THAI HUMAN VOICE TTS SERVICE (PRE-CACHED & ON-DEMAND)
+# ==============================================================================
+import urllib.request
+import urllib.parse
+
+AUDIO_CACHE_DIR = os.path.join(STATIC_DIR, "audio_cache")
+os.makedirs(AUDIO_CACHE_DIR, exist_ok=True)
+
+THAI_DIGITS = ['', 'หนึ่ง', 'สอง', 'สาม', 'สี่', 'ห้า', 'หก', 'เจ็ด', 'แปด', 'เก้า']
+THAI_POSITIONS = ['', 'สิบ', 'ร้อย', 'พัน', 'หมื่น', 'แสน', 'ล้าน']
+
+def num_to_thai_speech(num: int) -> str:
+    if num == 0:
+        return 'ศูนย์'
+    n = abs(int(num))
+    s = str(n)
+    l = len(s)
+    res = ''
+    for i, c in enumerate(s):
+        d = int(c)
+        p = l - i - 1
+        if d != 0:
+            if p == 1 and d == 1:
+                res += 'สิบ'
+            elif p == 1 and d == 2:
+                res += 'ยี่สิบ'
+            elif p == 0 and d == 1 and l > 1 and s[-2] != '0':
+                res += 'เอ็ด'
+            else:
+                res += THAI_DIGITS[d] + THAI_POSITIONS[p]
+    return res
+
+def fetch_and_cache_tts(num: int) -> Optional[str]:
+    filepath = os.path.join(AUDIO_CACHE_DIR, f"th_{num}.mp3")
+    if os.path.exists(filepath) and os.path.getsize(filepath) > 0:
+        return filepath
+    
+    thai_text = num_to_thai_speech(num)
+    try:
+        url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=th&client=tw-ob&q=' + urllib.parse.quote(thai_text)
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=4) as resp:
+            data = resp.read()
+            with open(filepath, 'wb') as f:
+                f.write(data)
+        return filepath
+    except Exception as e:
+        logger.warning(f"Google TTS fetch failed for {num}: {e}")
+    return None
+
+@app.get("/api/audio/tts")
+async def get_thai_tts_audio(num: int = 1):
+    """Serve pre-cached or on-demand natural Thai human voice counting MP3."""
+    filepath = os.path.join(AUDIO_CACHE_DIR, f"th_{num}.mp3")
+    if not (os.path.exists(filepath) and os.path.getsize(filepath) > 0):
+        loop = asyncio.get_running_loop()
+        filepath = await loop.run_in_executor(None, fetch_and_cache_tts, num)
+    
+    if filepath and os.path.exists(filepath):
+        try:
+            loop = asyncio.get_running_loop()
+            for next_n in range(num + 1, num + 4):
+                next_fp = os.path.join(AUDIO_CACHE_DIR, f"th_{next_n}.mp3")
+                if not os.path.exists(next_fp):
+                    loop.run_in_executor(None, fetch_and_cache_tts, next_n)
+        except Exception:
+            pass
+        return FileResponse(filepath, media_type="audio/mpeg", headers={"Cache-Control": "public, max-age=86400"})
+    
+    return Response(status_code=404)
+
 # Web Page Routes
 NO_CACHE_HEADERS = {
     "Cache-Control": "no-cache, no-store, must-revalidate",

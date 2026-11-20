@@ -1121,20 +1121,45 @@
             return convertChunk(n);
         }
 
+        let currentVoiceAudio = null;
+
         function speakNumberThai(count) {
+            const num = Math.max(1, parseInt(count, 10) || 1);
+            try {
+                if (currentVoiceAudio) {
+                    currentVoiceAudio.pause();
+                    currentVoiceAudio.currentTime = 0;
+                }
+                const audio = new Audio(`/api/audio/tts?num=${num}`);
+                currentVoiceAudio = audio;
+                const p = audio.play();
+                if (p !== undefined) {
+                    p.catch(err => {
+                        console.warn('Audio play failed, falling back:', err);
+                        playFallbackWebSpeech(num);
+                    });
+                }
+            } catch(e) {
+                playFallbackWebSpeech(num);
+            }
+        }
+
+        function playFallbackWebSpeech(num) {
             if (!('speechSynthesis' in window)) {
                 playSynthBell();
                 return;
             }
             try {
                 window.speechSynthesis.cancel();
-                const text = toThaiNumberWords(count) || String(count);
+                const text = toThaiNumberWords(num) || String(num);
                 const utter = new SpeechSynthesisUtterance(text);
                 utter.lang = 'th-TH';
-                utter.rate = 1.18;
-                utter.pitch = 1.0;
+                utter.rate = 1.15;
+                const voices = window.speechSynthesis.getVoices();
+                const thaiVoice = voices.find(v => v.lang === 'th-TH' || v.lang.includes('th'));
+                if (thaiVoice) utter.voice = thaiVoice;
                 window.speechSynthesis.speak(utter);
-            } catch (e) {
+            } catch(e) {
                 playSynthBell();
             }
         }
@@ -1191,8 +1216,8 @@
             if (mode === 'voice') {
                 showToast('🗣️ กำลังทดสอบขานตัวเลข: "หนึ่ง สอง สาม"...');
                 speakNumberThai(1);
-                setTimeout(() => speakNumberThai(2), 700);
-                setTimeout(() => speakNumberThai(3), 1400);
+                setTimeout(() => speakNumberThai(2), 850);
+                setTimeout(() => speakNumberThai(3), 1700);
             } else if (mode === 'mute') {
                 showToast('🔇 ขณะนี้อยู่ในโหมดปิดเสียง (ไม่มีเสียงเตือน)');
             } else {
