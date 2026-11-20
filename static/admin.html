@@ -1501,6 +1501,16 @@
                 📺 จอแสดงผลหน้างานจริง (Stage Display)
             </a>
 
+            <!-- Sound Mode Quick Selector -->
+            <div style="display: inline-flex; align-items: center; background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.3); border-radius: 10px; height: 42px; padding: 0 10px; backdrop-filter: blur(4px);" title="เลือกรูปแบบเสียงเตือนเมื่อนับยอด">
+                <span id="admin-sound-icon" style="font-size: 16px; margin-right: 6px;">🔔</span>
+                <select id="sel-admin-sound-mode" onchange="changeSoundMode(this.value)" style="background: transparent; color: #FFFFFF; border: none; font-size: 13.5px; font-weight: 800; cursor: pointer; outline: none;">
+                    <option value="chime" style="color: #2A122D; font-weight: 700;">🔔 เสียงกริ่งกระดิ่ง (Chime)</option>
+                    <option value="voice" style="color: #2A122D; font-weight: 700;">🗣️ เสียงคนพูดนับเลข (1, 2, 3...)</option>
+                    <option value="mute" style="color: #2A122D; font-weight: 700;">🔇 ปิดเสียงเตือน (Mute)</option>
+                </select>
+            </div>
+
             <!-- Theme Toggle Button (Sun/Moon, Far Right Corner) -->
             <button id="btn-theme-toggle" class="btn-theme-switch" onclick="toggleTheme()"
                     style="width: 42px; height: 42px; padding: 0; border-radius: 50%; font-size: 20px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;"
@@ -2764,13 +2774,70 @@
             });
         }
 
-        // Sound Chime Synthesizer (Web Audio API)
+        // =========================================================================
+        // 🔊 Sound Notification System (Harmonic Chime vs Human Voice Counting)
+        // =========================================================================
         let audioCtx = null;
         let lastKnownCount = -1;
 
-        function playConferChime() {
-            const chk = document.getElementById('chk-sound');
-            if (chk && !chk.checked) return;
+        // Convert number to natural Thai spoken words (e.g. 1 -> "หนึ่ง", 21 -> "ยี่สิบเอ็ด", 105 -> "หนึ่งร้อยห้า")
+        function toThaiNumberWords(num) {
+            if (num === 0) return 'ศูนย์';
+            const digits = ['', 'หนึ่ง', 'สอง', 'สาม', 'สี่', 'ห้า', 'หก', 'เจ็ด', 'แปด', 'เก้า'];
+            const positions = ['', 'สิบ', 'ร้อย', 'พัน', 'หมื่น', 'แสน', 'ล้าน'];
+            let n = Math.floor(Math.abs(num));
+
+            function convertChunk(val) {
+                let str = '';
+                const s = String(val);
+                const len = s.length;
+                for (let i = 0; i < len; i++) {
+                    const digit = parseInt(s[i], 10);
+                    const pos = len - i - 1;
+                    if (digit !== 0) {
+                        if (pos === 1 && digit === 1) {
+                            str += 'สิบ';
+                        } else if (pos === 1 && digit === 2) {
+                            str += 'ยี่สิบ';
+                        } else if (pos === 0 && digit === 1 && len > 1 && s[len - 2] !== '0') {
+                            str += 'เอ็ด';
+                        } else {
+                            str += digits[digit] + positions[pos];
+                        }
+                    }
+                }
+                return str;
+            }
+
+            if (n >= 1000000) {
+                const millions = Math.floor(n / 1000000);
+                const remainder = n % 1000000;
+                return convertChunk(millions) + 'ล้าน' + (remainder > 0 ? convertChunk(remainder) : '');
+            }
+            return convertChunk(n);
+        }
+
+        // Human Voice Speech Synthesis
+        function speakNumberThai(count) {
+            if (!('speechSynthesis' in window)) {
+                playSynthBell();
+                return;
+            }
+            try {
+                window.speechSynthesis.cancel(); // Cancel any queued speech for instant response
+                const text = toThaiNumberWords(count) || String(count);
+                const utter = new SpeechSynthesisUtterance(text);
+                utter.lang = 'th-TH';
+                utter.rate = 1.18; // Crisp, responsive tempo for ceremonies
+                utter.pitch = 1.0;
+                window.speechSynthesis.speak(utter);
+            } catch (e) {
+                playSynthBell();
+            }
+        }
+
+        // 2-tone harmonic crystal bell chime
+        function playSynthBell() {
             try {
                 if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -2778,7 +2845,6 @@
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
 
-                // 2-tone harmonic bell
                 osc.type = 'triangle';
                 osc.frequency.setValueAtTime(880, audioCtx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(1320, audioCtx.currentTime + 0.08);
@@ -2793,6 +2859,52 @@
                 osc.stop(audioCtx.currentTime + 0.36);
             } catch (e) {}
         }
+
+        function playConferSound(currentCount) {
+            const mode = localStorage.getItem('grad_sound_mode') || 'chime';
+            if (mode === 'mute') return;
+            if (mode === 'voice') {
+                speakNumberThai(currentCount || 1);
+            } else {
+                playSynthBell();
+            }
+        }
+
+        function playConferChime() {
+            playConferSound(lastKnownCount > 0 ? lastKnownCount : 1);
+        }
+
+        function changeSoundMode(mode) {
+            localStorage.setItem('grad_sound_mode', mode);
+            const iconSpan = document.getElementById('admin-sound-icon');
+            if (iconSpan) {
+                if (mode === 'voice') iconSpan.textContent = '🗣️';
+                else if (mode === 'mute') iconSpan.textContent = '🔇';
+                else iconSpan.textContent = '🔔';
+            }
+            if (mode === 'voice') {
+                showToast('🗣️ สลับเป็นโหมดเสียงคนพูดนับเลขไทย (1, 2, 3...)');
+                speakNumberThai(1);
+            } else if (mode === 'mute') {
+                showToast('🔇 ปิดเสียงเตือนเรียบร้อย (ไม่มีเสียง)');
+            } else {
+                showToast('🔔 สลับเป็นโหมดเสียงกริ่งกระดิ่ง (Chime)');
+                playSynthBell();
+            }
+        }
+
+        function initSoundMode() {
+            const mode = localStorage.getItem('grad_sound_mode') || 'chime';
+            const sel = document.getElementById('sel-admin-sound-mode');
+            if (sel) sel.value = mode;
+            const iconSpan = document.getElementById('admin-sound-icon');
+            if (iconSpan) {
+                if (mode === 'voice') iconSpan.textContent = '🗣️';
+                else if (mode === 'mute') iconSpan.textContent = '🔇';
+                else iconSpan.textContent = '🔔';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', initSoundMode);
 
         // Schedule Adherence Controls
         async function applyPlannedFinish() {
@@ -3547,10 +3659,10 @@
                         if (kRate) kRate.textContent = d.rate_per_min;
 
                         // ==========================================
-                        // 2. SOUND CHIME IF COUNT INCREMENTED
+                        // 2. SOUND NOTIFICATION IF COUNT INCREMENTED
                         // ==========================================
                         if (lastKnownCount >= 0 && d.current_count > lastKnownCount) {
-                            playConferChime();
+                            playConferSound(d.current_count);
                         }
                         lastKnownCount = d.current_count;
 
