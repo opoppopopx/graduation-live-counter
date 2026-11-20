@@ -1,0 +1,580 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบผู้ดูแล | AI Graduation Live Counter</title>
+    <link rel="icon" type="image/png" href="/static/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8E3890;
+            --primary-dark: #6E2271;
+            --primary-deep: #4A124D;
+            --accent: #F59E0B;
+            --accent-gold: #D97706;
+            --bg-dark: #120A17;
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --card-border: rgba(142, 56, 144, 0.25);
+            --text-main: #2A122D;
+            --text-muted: #6B4E70;
+            --error-red: #EF4444;
+            --success-green: #10B981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top right, #3C1340 0%, #1A071E 50%, #0D0310 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            color: var(--text-main);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Background Glows */
+        .ambient-glow {
+            position: absolute;
+            width: 480px;
+            height: 480px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glow-1 {
+            top: -100px;
+            right: -80px;
+            background: #A855F7;
+        }
+        .glow-2 {
+            bottom: -120px;
+            left: -80px;
+            background: #F59E0B;
+            opacity: 0.18;
+        }
+
+        /* Login Card */
+        .login-wrapper {
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+            z-index: 10;
+            animation: fadeInCard 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInCard {
+            from {
+                opacity: 0;
+                transform: translateY(18px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            padding: 36px 32px 30px;
+            backdrop-filter: blur(16px);
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 26px;
+        }
+
+        .logo-img {
+            height: 76px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 6px 14px rgba(110, 34, 113, 0.35));
+            margin-bottom: 12px;
+            transition: transform 0.25s ease;
+        }
+        .logo-img:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        .uni-name {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--primary-dark);
+            line-height: 1.25;
+            letter-spacing: -0.2px;
+        }
+
+        .sub-name {
+            font-size: 13px;
+            font-weight: 800;
+            color: #B45309;
+            background: #FEF3C7;
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 8px;
+            margin-top: 6px;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            letter-spacing: 0.5px;
+        }
+
+        .login-heading {
+            margin-top: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* Alert / Message banner */
+        .alert-box {
+            display: none;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 18px;
+            animation: slideAlert 0.3s ease;
+        }
+        @keyframes slideAlert {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .alert-error {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 1.5px solid #FCA5A5;
+        }
+        .alert-success {
+            background: #D1FAE5;
+            color: #065F46;
+            border: 1.5px solid #6EE7B7;
+        }
+
+        /* Form Group */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--primary-deep);
+            margin-bottom: 6px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            font-size: 18px;
+            color: #8E3890;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 48px;
+            padding: 0 44px 0 44px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1F2937;
+            background: #FAF5FF;
+            border: 2px solid rgba(142, 56, 144, 0.22);
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            background: #FFFFFF;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(142, 56, 144, 0.15);
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 17px;
+            color: #94A3B8;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+        }
+        .toggle-password-btn:hover {
+            color: var(--primary);
+        }
+
+        /* Options Row (Remember me) */
+        .options-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+            font-size: 13.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .remember-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .remember-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            height: 52px;
+            background: linear-gradient(135deg, #8E3890 0%, #6E2271 100%);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(110, 34, 113, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #9C3EA0 0%, #7D2881 100%);
+            box-shadow: 0 8px 24px rgba(110, 34, 113, 0.45);
+            transform: translateY(-1.5px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(1px);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2.5px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #FFFFFF;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Placeholder DB Info Box */
+        .db-info-box {
+            margin-top: 24px;
+            padding: 14px 16px;
+            background: #FDF4FF;
+            border: 1.5px dashed rgba(142, 56, 144, 0.35);
+            border-radius: 12px;
+            font-size: 12.5px;
+            line-height: 1.5;
+            color: #701A75;
+        }
+        .db-info-box strong {
+            color: #581C87;
+            font-weight: 800;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .db-info-box code {
+            background: rgba(142, 56, 144, 0.12);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            font-weight: 700;
+            color: #4A044E;
+        }
+
+        /* Public Links Footer */
+        .public-links {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .public-links a {
+            color: #FBBF24;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .public-links a:hover {
+            color: #FDE68A;
+            text-decoration: underline;
+        }
+
+        .badge-secure {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #059669;
+            background: #D1FAE5;
+            padding: 2px 8px;
+            border-radius: 6px;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Glow Effects -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <!-- Brand / Logo -->
+            <div class="brand-header">
+                <img src="/static/logo.png?v=2" alt="ตรามหาวิทยาลัยราชภัฏบุรีรัมย์" class="logo-img">
+                <h1 class="uni-name">มหาวิทยาลัยราชภัฏบุรีรัมย์</h1>
+                <div class="sub-name">AI LIVE CEREMONY COUNTER</div>
+                <div class="login-heading">
+                    <span>🔒 เข้าสู่ระบบแผงควบคุมผู้ดูแล (Admin Access)</span>
+                </div>
+            </div>
+
+            <!-- Alert Notification Banner -->
+            <div id="alert-box" class="alert-box"></div>
+
+            <!-- Login Form -->
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <!-- Username -->
+                <div class="form-group">
+                    <label class="form-label" for="username">ชื่อผู้ใช้งาน (Username)</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="username" class="form-control" placeholder="กรอกชื่อผู้ใช้..." autocomplete="username" required autofocus>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label class="form-label" for="password">รหัสผ่าน (Password)</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔑</span>
+                        <input type="password" id="password" class="form-control" placeholder="กรอกรหัสผ่าน..." autocomplete="current-password" required>
+                        <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility()" title="แสดง/ซ่อนรหัสผ่าน">
+                            <span id="eye-icon">👁️</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember Me -->
+                <div class="options-row">
+                    <label class="remember-label">
+                        <input type="checkbox" id="remember-me" class="remember-checkbox" checked>
+                        <span>จดจำการเข้าสู่ระบบบนเครื่องนี้</span>
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="btn-login" class="btn-submit">
+                    <span id="btn-text">เข้าสู่ระบบแอดมิน ➔</span>
+                    <span id="btn-spinner" class="spinner"></span>
+                </button>
+            </form>
+
+            <!-- Database Integration Placeholder Box -->
+            <div class="db-info-box">
+                <strong>🛠️ โครงสร้างเตรียมเชื่อมต่อฐานข้อมูล (Database Ready)</strong>
+                ระบบป้องกันหน้าแอดมินเปิดใช้งานแล้ว บัญชีทดสอบเริ่มต้น:
+                <br>• ชื่อผู้ใช้: <code>admin</code>
+                <br>• รหัสผ่าน: <code>admin1234</code>
+                <br><span style="font-size: 11.5px; opacity: 0.85; margin-top: 4px; display: block;">(สามารถเชื่อมต่อฐานข้อมูลจริง เช่น MySQL, PostgreSQL หรือ SQLite ใน main.py ได้ทันที)</span>
+            </div>
+        </div>
+
+        <!-- Public Screens Links (No login required) -->
+        <div class="public-links">
+            <a href="/stage" target="_blank" title="เปิดจอแสดงผลหน้างานโดยตรง ไม่ต้องล็อกอิน">
+                📺 จอแสดงผลหน้างาน (Stage)
+            </a>
+            <span>•</span>
+            <a href="/overlay" target="_blank" title="สำหรับใช้ใน OBS Studio">
+                🎬 หน้า OBS Overlay
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Check if already authenticated on page load
+        (async function checkExistingAuth() {
+            try {
+                const res = await fetch('/api/auth/check');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.authenticated) {
+                        // Already logged in, redirect directly to requested page
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const redirectUrl = urlParams.get('redirect') || '/admin';
+                        window.location.href = redirectUrl;
+                    }
+                }
+            } catch (err) {
+                // Ignore network issues on initial check
+            }
+        })();
+
+        // Toggle password show/hide
+        function togglePasswordVisibility() {
+            const pwdInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eye-icon');
+            if (pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                eyeIcon.textContent = '🙈';
+            } else {
+                pwdInput.type = 'password';
+                eyeIcon.textContent = '👁️';
+            }
+        }
+
+        // Show alert message
+        function showAlert(message, type = 'error') {
+            const box = document.getElementById('alert-box');
+            box.className = `alert-box alert-${type}`;
+            box.innerHTML = message;
+            box.style.display = 'block';
+        }
+
+        function hideAlert() {
+            const box = document.getElementById('alert-box');
+            box.style.display = 'none';
+        }
+
+        // Handle Login Submission
+        async function handleLogin(e) {
+            e.preventDefault();
+            hideAlert();
+
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const rememberInput = document.getElementById('remember-me');
+            const btnLogin = document.getElementById('btn-login');
+            const btnText = document.getElementById('btn-text');
+            const btnSpinner = document.getElementById('btn-spinner');
+
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            const remember = rememberInput.checked;
+
+            if (!username || !password) {
+                showAlert('⚠️ กรุณากรอกชื่อผู้ใช้และรหัสผ่านให้ครบถ้วน');
+                return;
+            }
+
+            // Set loading state
+            btnLogin.disabled = true;
+            btnText.textContent = 'กำลังตรวจสอบข้อมูล...';
+            btnSpinner.style.display = 'inline-block';
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password,
+                        remember: remember
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showAlert('✅ เข้าสู่ระบบสำเร็จ กำลังนำท่านเข้าสู่ระบบ...', 'success');
+                    
+                    // Store token in localStorage / sessionStorage for client scripts
+                    if (result.token) {
+                        localStorage.setItem('grad_admin_token', result.token);
+                        sessionStorage.setItem('grad_admin_token', result.token);
+                    }
+
+                    // Get redirect parameter from URL or fallback to /admin
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const redirectUrl = urlParams.get('redirect') || '/admin';
+
+                    setTimeout(() => {
+                        window.location.href = redirectUrl;
+                    }, 600);
+                } else {
+                    showAlert(`❌ ${result.detail || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง'}`);
+                    btnLogin.disabled = false;
+                    btnText.textContent = 'เข้าสู่ระบบแอดมิน ➔';
+                    btnSpinner.style.display = 'none';
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showAlert('❌ ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบว่าระบบกำลังทำงานอยู่');
+                btnLogin.disabled = false;
+                btnText.textContent = 'เข้าสู่ระบบแอดมิน ➔';
+                btnSpinner.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

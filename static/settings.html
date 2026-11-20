@@ -375,6 +375,9 @@
             <a href="/overlay" target="_blank" class="btn-nav btn-nav-outline">
                 🎦 ดูป้าย OBS
             </a>
+            <button onclick="handleLogout()" class="btn-nav" style="background: rgba(239, 68, 68, 0.12); color: #DC2626; border: 1.5px solid rgba(239, 68, 68, 0.35); font-weight: 800; cursor: pointer; padding: 0 16px; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.9)'; this.style.color='#FFFFFF';" onmouseout="this.style.background='rgba(239, 68, 68, 0.12)'; this.style.color='#DC2626';" title="ออกจากระบบผู้ดูแล (Logout)">
+                🚪 ออกจากระบบ
+            </button>
         </div>
     </header>
 
@@ -1672,6 +1675,17 @@ window.cycleAppScale = cycleAppScale;
         }
     } catch(e) {}
 })();
+
+async function handleLogout() {
+    if (confirm('คุณต้องการออกจากระบบผู้ดูแลใช่หรือไม่?')) {
+        try {
+            await fetch('/api/auth/logout', { method: 'POST' });
+        } catch(e) {}
+        localStorage.removeItem('grad_admin_token');
+        sessionStorage.removeItem('grad_admin_token');
+        window.location.href = '/login';
+    }
+}
 
     </script>
 

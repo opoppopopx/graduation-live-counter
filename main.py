@@ -5,8 +5,9 @@ import json
 import asyncio
 import logging
 from typing import List, Optional
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile, File
-from fastapi.responses import HTMLResponse, StreamingResponse, FileResponse, Response
+import uuid
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile, File, Request
+from fastapi.responses import HTMLResponse, StreamingResponse, FileResponse, Response, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import shutil
@@ -28,6 +29,77 @@ os.makedirs(VIDEOS_DIR, exist_ok=True)
 
 # Mount static folder
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+# ==============================================================================
+# 🔐 AUTHENTICATION & ACCESS CONTROL (MOCK / READY FOR DATABASE CONNECTION)
+# ==============================================================================
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+    remember: bool = True
+
+AUTH_SESSIONS_FILE = os.path.join(BASE_DIR, "auth_sessions.json")
+
+def load_active_sessions() -> set:
+    if os.path.exists(AUTH_SESSIONS_FILE):
+        try:
+            with open(AUTH_SESSIONS_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                return set(data.get("sessions", []))
+        except Exception:
+            pass
+    return set()
+
+def save_active_sessions(sessions: set):
+    try:
+        with open(AUTH_SESSIONS_FILE, "w", encoding="utf-8") as f:
+            json.dump({"sessions": list(sessions)}, f)
+    except Exception as e:
+        logger.warning(f"Failed to persist sessions: {e}")
+
+ACTIVE_SESSIONS = load_active_sessions()
+
+# ------------------------------------------------------------------------------
+# PLACEHOLDER USER DATABASE
+# (TODO: Connect your actual Database here - e.g. PostgreSQL, MySQL, SQLite, MongoDB)
+# ------------------------------------------------------------------------------
+MOCK_USER_DB = {
+    "admin": {
+        "password": "admin1234",  # In production, store password hash (e.g. bcrypt/argon2)
+        "name": "ผู้ดูแลระบบส่วนกลาง (Admin)",
+        "role": "admin"
+    }
+}
+
+def authenticate_user_db(username: str, password: str) -> Optional[dict]:
+    """
+    Placeholder database authentication function.
+    Replace this function body with your actual database queries:
+    
+    Example (SQLAlchemy / PostgreSQL / MySQL / SQLite):
+        user = db.query(UserModel).filter(UserModel.username == username).first()
+        if user and pwd_context.verify(password, user.hashed_password):
+            return {"username": user.username, "name": user.full_name, "role": user.role}
+        return None
+    """
+    user = MOCK_USER_DB.get(username)
+    if user and user["password"] == password:
+        return {
+            "username": username,
+            "name": user["name"],
+            "role": user["role"]
+        }
+    return None
+
+def is_authenticated(request: Request) -> bool:
+    """Check if request has a valid session token via cookie or Authorization header."""
+    token = request.cookies.get("grad_auth_session")
+    if not token:
+        auth_header = request.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            token = auth_header[7:].strip()
+    return bool(token and token in ACTIVE_SESSIONS)
+
 
 # Core Modules
 stream_reader = VideoStreamReader()
@@ -516,6 +588,50 @@ async def export_ceremony_csv():
         }
     )
 
+# ==============================================================================
+# 🔐 AUTHENTICATION ENDPOINTS
+# ==============================================================================
+@app.post("/api/auth/login")
+def api_login(req: LoginRequest, response: Response):
+    user = authenticate_user_db(req.username, req.password)
+    if not user:
+        return Response(
+            content=json.dumps({"success": False, "detail": "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"}),
+            status_code=401,
+            media_type="application/json"
+        )
+    token = f"grad_sess_{uuid.uuid4().hex}"
+    ACTIVE_SESSIONS.add(token)
+    save_active_sessions(ACTIVE_SESSIONS)
+
+    max_age = (86400 * 30) if req.remember else 86400  # 30 days or 1 day
+    response.set_cookie(
+        key="grad_auth_session",
+        value=token,
+        max_age=max_age,
+        path="/",
+        httponly=False,
+        samesite="lax"
+    )
+    return {
+        "success": True,
+        "token": token,
+        "user": user
+    }
+
+@app.post("/api/auth/logout")
+def api_logout(request: Request, response: Response):
+    token = request.cookies.get("grad_auth_session")
+    if token and token in ACTIVE_SESSIONS:
+        ACTIVE_SESSIONS.remove(token)
+        save_active_sessions(ACTIVE_SESSIONS)
+    response.delete_cookie(key="grad_auth_session", path="/")
+    return {"success": True, "message": "ออกจากระบบเรียบร้อย"}
+
+@app.get("/api/auth/check")
+def api_auth_check(request: Request):
+    return {"authenticated": is_authenticated(request)}
+
 # Web Page Routes
 NO_CACHE_HEADERS = {
     "Cache-Control": "no-cache, no-store, must-revalidate",
@@ -530,15 +646,27 @@ def get_favicon():
         return FileResponse(favicon_path, media_type="image/png")
     return Response(status_code=204)
 
+@app.get("/login", response_class=HTMLResponse)
+def get_login_page(request: Request):
+    if is_authenticated(request):
+        return RedirectResponse(url="/admin", status_code=303)
+    login_path = os.path.join(STATIC_DIR, "login.html")
+    with open(login_path, "r", encoding="utf-8") as f:
+        return Response(content=f.read(), media_type="text/html", headers=NO_CACHE_HEADERS)
+
 @app.get("/", response_class=HTMLResponse)
 @app.get("/admin", response_class=HTMLResponse)
-def get_admin_page():
+def get_admin_page(request: Request):
+    if not is_authenticated(request):
+        return RedirectResponse(url="/login?redirect=/admin", status_code=303)
     with open(os.path.join(STATIC_DIR, "admin.html"), "r", encoding="utf-8") as f:
         return Response(content=f.read(), media_type="text/html", headers=NO_CACHE_HEADERS)
 
 @app.get("/manual", response_class=HTMLResponse)
 @app.get("/hand", response_class=HTMLResponse)
-def get_manual_page():
+def get_manual_page(request: Request):
+    if not is_authenticated(request):
+        return RedirectResponse(url="/login?redirect=/manual", status_code=303)
     manual_path = os.path.join(STATIC_DIR, "manual.html")
     if not os.path.exists(manual_path):
         return HTMLResponse("<h1>Manual Page Loading...</h1>", status_code=200)
@@ -547,7 +675,9 @@ def get_manual_page():
 
 @app.get("/settings", response_class=HTMLResponse)
 @app.get("/tools", response_class=HTMLResponse)
-def get_settings_page():
+def get_settings_page(request: Request):
+    if not is_authenticated(request):
+        return RedirectResponse(url="/login?redirect=/settings", status_code=303)
     with open(os.path.join(STATIC_DIR, "settings.html"), "r", encoding="utf-8") as f:
         return Response(content=f.read(), media_type="text/html", headers=NO_CACHE_HEADERS)
 

@@ -26,3 +26,4 @@ Thumbs.db
 
 # Runtime state persistence
 runtime_state.json
+auth_sessions.json
