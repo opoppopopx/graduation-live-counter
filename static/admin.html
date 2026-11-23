@@ -2772,7 +2772,8 @@
             'top-left': 'บนซ้าย (Top-Left)',
             'top-center': 'บนกลาง (Top-Center)',
             'top-right': 'บนขวา (Top-Right)',
-            'center': 'กลางจอ (Center)'
+            'center': 'กลางจอ (Center)',
+            'custom': 'ลากวางอิสระ (Custom Drag)'
         };
 
         function renderObsControlsUI() {
@@ -2781,11 +2782,14 @@
             const activeBtn = document.getElementById(`btn-pos-${pos}`);
             if (activeBtn) activeBtn.classList.add('active');
 
-            const thName = posNamesTh[pos] || pos;
+            let thName = posNamesTh[pos] || pos;
+            if (pos === 'custom' && currentObsSettings.pos_x_pct !== undefined) {
+                thName = `ลากวางอิสระ (${currentObsSettings.pos_x_pct}%, ${currentObsSettings.pos_y_pct}%)`;
+            }
             const pill = document.getElementById('obs-live-pos-pill');
             if (pill) pill.textContent = `📍 ตำแหน่งปัจจุบัน: ${thName}`;
             const topBadge = document.getElementById('top-obs-pos-badge');
-            if (topBadge) topBadge.textContent = `📍 ${posNamesTh[pos] ? posNamesTh[pos].split(' ')[0] : pos}`;
+            if (topBadge) topBadge.textContent = `📍 ${pos === 'custom' ? 'อิสระ' : (posNamesTh[pos] ? posNamesTh[pos].split(' ')[0] : pos)}`;
 
             const scale = currentObsSettings.scale || 1.0;
             const scalePct = Math.round(scale * 100);
@@ -2841,6 +2845,8 @@
 
         function setObsPosition(pos) {
             currentObsSettings.position = pos;
+            delete currentObsSettings.pos_x_pct;
+            delete currentObsSettings.pos_y_pct;
             sendObsSettingsToServer();
             showToast(`📍 ปรับตำแหน่งป้าย OBS เป็น "${posNamesTh[pos] || pos}" เรียบร้อย`);
         }

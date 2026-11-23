@@ -78,6 +78,19 @@
             --origin: center center;
         }
 
+        /* Custom Free-Drag Positioning */
+        body.pos-custom {
+            display: block !important;
+            padding: 0 !important;
+        }
+
+        body.pos-custom .broadcast-card {
+            position: fixed !important;
+            margin: 0 !important;
+            transform-origin: top left !important;
+            transform: scale(var(--overlay-scale, 1)) !important;
+        }
+
         /* Card Container (Royal Thai Navy & Gold Broadcast Style) */
         .broadcast-card {
             background: linear-gradient(135deg, rgba(8, 18, 38, 0.92) 0%, rgba(14, 28, 54, 0.88) 100%);
@@ -92,6 +105,57 @@
             transform: scale(var(--overlay-scale, 1));
             transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
+            cursor: grab;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+        }
+
+        .broadcast-card.is-dragging {
+            cursor: grabbing !important;
+            transition: none !important;
+            box-shadow: 0 26px 70px rgba(0, 0, 0, 0.85), 0 0 45px rgba(245, 158, 11, 0.75) !important;
+            z-index: 999999;
+            transform: scale(calc(var(--overlay-scale, 1) * 1.02)) !important;
+        }
+
+        /* Floating drag hint pill */
+        .drag-indicator {
+            position: absolute;
+            top: -34px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.9);
+            color: #FACC15;
+            border: 1.5px solid rgba(250, 204, 21, 0.5);
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+        }
+
+        .broadcast-card:hover .drag-indicator,
+        .broadcast-card.is-dragging .drag-indicator {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        .broadcast-card.is-dragging .drag-indicator {
+            background: rgba(142, 56, 144, 0.95);
+            color: #FFFFFF;
+            border-color: #F59E0B;
+            box-shadow: 0 6px 18px rgba(245, 158, 11, 0.4);
         }
 
         /* Gold top accent glow bar */
@@ -338,6 +402,12 @@
 <body>
 
     <div class="broadcast-card" id="card">
+        <!-- Floating Drag Handle Indicator -->
+        <div id="drag-indicator" class="drag-indicator">
+            <span class="drag-icon">✋</span>
+            <span id="drag-text">คลิกลากเพื่อเปลี่ยนตำแหน่ง (Drag & Drop)</span>
+        </div>
+
         <!-- Header -->
         <div class="header-row">
             <div class="ceremony-title" style="overflow: hidden; max-width: 320px;">
@@ -594,6 +664,8 @@
         const lockedPadY = urlParams.get('padY') || urlParams.get('y');
 
         function applyOverlayPositioning(settings) {
+            if (isDragging) return; // Do not interrupt user actively dragging
+
             const pos = lockedPos || (settings && settings.position) || 'bottom-left';
             let scale = 1.0;
             if (lockedScale !== null) {
@@ -606,15 +678,214 @@
             const padX = (lockedPadX !== null) ? parseInt(lockedPadX) : ((settings && settings.pad_x !== undefined) ? settings.pad_x : 48);
             const padY = (lockedPadY !== null) ? parseInt(lockedPadY) : ((settings && settings.pad_y !== undefined) ? settings.pad_y : 36);
 
+            const card = document.getElementById('card');
+
             document.body.classList.remove(
                 'pos-bottom-left', 'pos-bottom-center', 'pos-bottom-right',
-                'pos-top-left', 'pos-top-center', 'pos-top-right', 'pos-center'
+                'pos-top-left', 'pos-top-center', 'pos-top-right', 'pos-center', 'pos-custom'
             );
-            document.body.classList.add(`pos-${pos}`);
+
+            if (pos === 'custom' && settings && settings.pos_x_pct !== undefined && settings.pos_y_pct !== undefined) {
+                document.body.classList.add('pos-custom');
+                if (card) {
+                    card.style.position = 'fixed';
+                    card.style.left = `${settings.pos_x_pct}%`;
+                    card.style.top = `${settings.pos_y_pct}%`;
+                    card.style.margin = '0';
+                    card.style.transformOrigin = 'top left';
+                }
+            } else {
+                document.body.classList.add(`pos-${pos}`);
+                if (card) {
+                    card.style.position = '';
+                    card.style.left = '';
+                    card.style.top = '';
+                    card.style.margin = '';
+                    card.style.transformOrigin = '';
+                }
+            }
 
             document.documentElement.style.setProperty('--overlay-scale', scale);
             document.documentElement.style.setProperty('--pad-x', `${padX}px`);
             document.documentElement.style.setProperty('--pad-y', `${padY}px`);
+        }
+
+        // =========================================================================
+        // ✋ INTERACTIVE DRAG & DROP FOR OBS OVERLAY
+        // คลิกลากเพื่อย้ายตำแหน่งป้าย OBS ได้อิสระ พร้อมบันทึกและซิงก์เรียลไทม์
+        // =========================================================================
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+        let initialCardLeft = 0;
+        let initialCardTop = 0;
+        let hasMoved = false;
+
+        const overlayCard = document.getElementById('card');
+        const dragIndicatorText = document.getElementById('drag-text');
+
+        function detectNearPreset(left, top, w, h) {
+            const W = window.innerWidth;
+            const H = window.innerHeight;
+            const right = left + w;
+            const bottom = top + h;
+            const cx = left + w / 2;
+            const cy = top + h / 2;
+            const THRESHOLD = 70; // 70px snap distance
+
+            // Check bottom-center
+            if (Math.abs(cx - W / 2) < THRESHOLD * 1.5 && Math.abs(bottom - (H - 36)) < THRESHOLD) {
+                return { name: 'bottom-center', label: 'ล่างกลาง (Bottom Center)' };
+            }
+            // Check bottom-left
+            if (left < THRESHOLD && Math.abs(bottom - (H - 36)) < THRESHOLD) {
+                return { name: 'bottom-left', label: 'ล่างซ้าย (Bottom Left)' };
+            }
+            // Check bottom-right
+            if (Math.abs(right - (W - 48)) < THRESHOLD && Math.abs(bottom - (H - 36)) < THRESHOLD) {
+                return { name: 'bottom-right', label: 'ล่างขวา (Bottom Right)' };
+            }
+            // Check top-left
+            if (left < THRESHOLD && top < THRESHOLD) {
+                return { name: 'top-left', label: 'บนซ้าย (Top Left)' };
+            }
+            // Check top-center
+            if (Math.abs(cx - W / 2) < THRESHOLD * 1.5 && top < THRESHOLD) {
+                return { name: 'top-center', label: 'บนกลาง (Top Center)' };
+            }
+            // Check top-right
+            if (Math.abs(right - (W - 48)) < THRESHOLD && top < THRESHOLD) {
+                return { name: 'top-right', label: 'บนขวา (Top Right)' };
+            }
+            // Check center
+            if (Math.abs(cx - W / 2) < THRESHOLD && Math.abs(cy - H / 2) < THRESHOLD) {
+                return { name: 'center', label: 'กลางจอ (Center)' };
+            }
+            return null;
+        }
+
+        if (overlayCard) {
+            overlayCard.addEventListener('pointerdown', (e) => {
+                if (e.button !== 0 && e.pointerType === 'mouse') return;
+                
+                isDragging = true;
+                hasMoved = false;
+                overlayCard.setPointerCapture(e.pointerId);
+
+                const rect = overlayCard.getBoundingClientRect();
+                startX = e.clientX;
+                startY = e.clientY;
+                initialCardLeft = rect.left;
+                initialCardTop = rect.top;
+
+                overlayCard.classList.add('is-dragging');
+                if (dragIndicatorText) dragIndicatorText.textContent = '📍 ลากไปยังตำแหน่งที่ต้องการ...';
+            });
+
+            overlayCard.addEventListener('pointermove', (e) => {
+                if (!isDragging) return;
+
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                if (Math.hypot(dx, dy) > 4) {
+                    hasMoved = true;
+                }
+
+                const rect = overlayCard.getBoundingClientRect();
+                const cardW = rect.width;
+                const cardH = rect.height;
+                const maxLeft = Math.max(0, window.innerWidth - cardW);
+                const maxTop = Math.max(0, window.innerHeight - cardH);
+
+                let curLeft = Math.max(0, Math.min(maxLeft, initialCardLeft + dx));
+                let curTop = Math.max(0, Math.min(maxTop, initialCardTop + dy));
+
+                document.body.classList.remove(
+                    'pos-bottom-left', 'pos-bottom-center', 'pos-bottom-right',
+                    'pos-top-left', 'pos-top-center', 'pos-top-right', 'pos-center'
+                );
+                document.body.classList.add('pos-custom');
+
+                overlayCard.style.position = 'fixed';
+                overlayCard.style.left = `${curLeft}px`;
+                overlayCard.style.top = `${curTop}px`;
+                overlayCard.style.margin = '0';
+                overlayCard.style.transformOrigin = 'top left';
+
+                const pctX = Math.round((curLeft / window.innerWidth) * 1000) / 10;
+                const pctY = Math.round((curTop / window.innerHeight) * 1000) / 10;
+
+                const snap = detectNearPreset(curLeft, curTop, cardW, cardH);
+                if (dragIndicatorText) {
+                    if (snap) {
+                        dragIndicatorText.textContent = `🎯 ดูดเข้ามุม: ${snap.label}`;
+                    } else {
+                        dragIndicatorText.textContent = `📍 X: ${pctX}% | Y: ${pctY}%`;
+                    }
+                }
+            });
+
+            const finishDrag = async (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                try { overlayCard.releasePointerCapture(e.pointerId); } catch(err) {}
+                overlayCard.classList.remove('is-dragging');
+
+                if (!hasMoved) return;
+
+                const rect = overlayCard.getBoundingClientRect();
+                const cardW = rect.width;
+                const cardH = rect.height;
+
+                const snap = detectNearPreset(rect.left, rect.top, cardW, cardH);
+                let finalPos = 'custom';
+                let posX = Math.round((rect.left / window.innerWidth) * 1000) / 10;
+                let posY = Math.round((rect.top / window.innerHeight) * 1000) / 10;
+
+                const currentScale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--overlay-scale')) || 1.0;
+                const currentPadX = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--pad-x')) || 48;
+                const currentPadY = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--pad-y')) || 36;
+
+                if (snap) {
+                    finalPos = snap.name;
+                    posX = null;
+                    posY = null;
+                    applyOverlayPositioning({ position: finalPos, scale: currentScale, pad_x: currentPadX, pad_y: currentPadY });
+                } else {
+                    overlayCard.style.left = `${posX}%`;
+                    overlayCard.style.top = `${posY}%`;
+                }
+
+                if (dragIndicatorText) {
+                    dragIndicatorText.textContent = snap ? `✅ บันทึกตำแหน่ง: ${snap.label}` : `✅ บันทึกตำแหน่ง (${posX}%, ${posY}%)`;
+                    setTimeout(() => {
+                        if (!isDragging) dragIndicatorText.textContent = 'คลิกลากเพื่อเปลี่ยนตำแหน่ง (Drag & Drop)';
+                    }, 2500);
+                }
+
+                try {
+                    const payload = {
+                        position: finalPos,
+                        scale: currentScale,
+                        pad_x: currentPadX,
+                        pad_y: currentPadY
+                    };
+                    if (finalPos === 'custom') {
+                        payload.pos_x_pct = posX;
+                        payload.pos_y_pct = posY;
+                    }
+                    await fetch('/api/obs/settings', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                } catch(err) {
+                    console.error("Failed to save OBS position:", err);
+                }
+            };
+
+            overlayCard.addEventListener('pointerup', finishDrag);
+            overlayCard.addEventListener('pointercancel', finishDrag);
         }
 
         // Apply on initial load from localStorage or defaults

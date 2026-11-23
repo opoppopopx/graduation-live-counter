@@ -235,7 +235,7 @@ class GraduationAnalytics:
     def set_obs_settings(self, settings: Dict) -> Dict:
         """บันทึกการตั้งค่าตำแหน่งและขนาดของ OBS Overlay"""
         pos = settings.get("position", self.obs_settings.get("position", "bottom-left"))
-        valid_positions = ("bottom-left", "bottom-center", "bottom-right", "top-left", "top-center", "top-right", "center")
+        valid_positions = ("bottom-left", "bottom-center", "bottom-right", "top-left", "top-center", "top-right", "center", "custom")
         if pos not in valid_positions:
             pos = "bottom-left"
 
@@ -257,12 +257,37 @@ class GraduationAnalytics:
         except (ValueError, TypeError):
             pad_y = 36
 
-        self.obs_settings = {
+        pos_x_pct = settings.get("pos_x_pct")
+        pos_y_pct = settings.get("pos_y_pct")
+        if pos_x_pct is not None:
+            try:
+                pos_x_pct = round(max(0.0, min(100.0, float(pos_x_pct))), 1)
+            except (ValueError, TypeError):
+                pos_x_pct = None
+
+        if pos_y_pct is not None:
+            try:
+                pos_y_pct = round(max(0.0, min(100.0, float(pos_y_pct))), 1)
+            except (ValueError, TypeError):
+                pos_y_pct = None
+
+        new_settings = {
             "position": pos,
             "scale": round(scale, 2),
             "pad_x": pad_x,
             "pad_y": pad_y
         }
+        if pos == "custom":
+            if pos_x_pct is not None:
+                new_settings["pos_x_pct"] = pos_x_pct
+            elif "pos_x_pct" in self.obs_settings:
+                new_settings["pos_x_pct"] = self.obs_settings["pos_x_pct"]
+            if pos_y_pct is not None:
+                new_settings["pos_y_pct"] = pos_y_pct
+            elif "pos_y_pct" in self.obs_settings:
+                new_settings["pos_y_pct"] = self.obs_settings["pos_y_pct"]
+
+        self.obs_settings = new_settings
         self.sessions["obs_settings"] = self.obs_settings
         self._save_sessions_config()
         return self.obs_settings

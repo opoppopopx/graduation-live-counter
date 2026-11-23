@@ -47,7 +47,7 @@
   "obs_settings": {
     "position": "bottom-center",
     "scale": 1.0,
-    "pad_x": 62,
+    "pad_x": 48,
     "pad_y": 36
   }
 }

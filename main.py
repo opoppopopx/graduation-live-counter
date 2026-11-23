@@ -410,6 +410,8 @@ class ObsSettingsConfig(BaseModel):
     scale: Optional[float] = 1.0
     pad_x: Optional[int] = 48
     pad_y: Optional[int] = 36
+    pos_x_pct: Optional[float] = None
+    pos_y_pct: Optional[float] = None
 
 ObsSettingsConfig.model_rebuild()
 
