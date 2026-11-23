@@ -1592,108 +1592,134 @@
                 </button>
             </div>
 
-            <!-- Video Playback & Speed Controls (Large & High Contrast) -->
-            <div class="video-control-bar" id="video-control-bar">
-                <div class="timeline-row">
-                    <button class="btn-vid-control" id="btn-vid-playpause" onclick="toggleVideoPlayPause()" title="คลิกเพื่อหยุดหรือเล่นคลิปวิดีโอต่อ">
-                        <span id="vid-play-icon" style="font-size: 18px;">⏸️</span>
-                        <span id="vid-play-text">หยุดคลิป</span>
-                    </button>
-                    <button class="btn-vid-control" onclick="jumpVideoSeconds(-5)" title="ย้อนกลับ 5 วินาที">⏪ -5s</button>
-                    <button class="btn-vid-control" onclick="jumpVideoSeconds(5)" title="ข้ามไปข้างหน้า 5 วินาที">⏩ +5s</button>
-                    <input type="range" class="timeline-slider" id="vid-timeline" min="0" max="100" value="0" step="0.1" oninput="onTimelineInput(this.value)" onchange="onTimelineChange(this.value)" title="ลากเพื่อเลื่อนเวลาคลิป">
-                    <div class="time-display" id="vid-time-display">00:00 / 00:00</div>
-                </div>
-                <div class="playback-buttons-row" style="margin-top: 6px;">
-                    <div style="font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                        <span>⚡ สปีดคลิป:</span>
-                        <div class="speed-btn-group">
-                            <button class="speed-btn" id="spd-0.5" onclick="changeVideoSpeed(0.5)">0.5x</button>
-                            <button class="speed-btn active" id="spd-1.0" onclick="changeVideoSpeed(1.0)">1.0x</button>
-                            <button class="speed-btn" id="spd-1.5" onclick="changeVideoSpeed(1.5)">1.5x</button>
-                            <button class="speed-btn" id="spd-2.0" onclick="changeVideoSpeed(2.0)">2.0x</button>
-                            <button class="speed-btn" id="spd-4.0" onclick="changeVideoSpeed(4.0)">4.0x</button>
+            <!-- Collapsible Video Playback & Source Selector Card -->
+            <div id="card-video-controls" style="margin-top: 14px; background: rgba(142, 56, 144, 0.04); border: 1.5px solid rgba(142, 56, 144, 0.18); border-radius: 12px; padding: 10px 14px; transition: all 0.25s;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; cursor: pointer; user-select: none;" onclick="toggleVideoControlsCard()" title="คลิกเพื่อพับเก็บหรือขยายแผงควบคุมวิดีโอและเลือกแหล่งภาพ">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <button type="button" id="btn-toggle-video-arrow" style="background: rgba(142, 56, 144, 0.12); border: 1.5px solid rgba(142, 56, 144, 0.25); color: #5B185D; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; cursor: pointer; transition: transform 0.2s;" title="คลิกเพื่อพับเก็บ / ขยาย">
+                            <span id="video-arrow-icon">▼</span>
+                        </button>
+                        <div style="font-size: 14.5px; font-weight: 800; color: #5B185D; display: flex; align-items: center; gap: 6px;">
+                            <span>🎬</span> ควบคุมวิดีโอ & สลับแหล่งภาพ
+                            <span id="video-toggle-hint" style="font-size: 12px; color: #8A658F; font-weight: 600; margin-left: 2px;">(คลิกเพื่อพับ ▲)</span>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Video Source Selector (Clean Unified Segmented Tabs) -->
-            <div class="source-tabs" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-top: 14px; margin-bottom: 12px;">
-                <button class="tab-btn active" onclick="selectSourceTab('simulation')">🤖 จำลองภาพ</button>
-                <button class="tab-btn" onclick="selectSourceTab('screen')">🖥️ จับหน้าจอสด</button>
-                <button class="tab-btn" onclick="selectSourceTab('file')">📁 ไฟล์วิดีโอ</button>
-                <button class="tab-btn" onclick="selectSourceTab('online')">🔴 ไลฟ์ออนไลน์</button>
-                <button class="tab-btn" onclick="selectSourceTab('webcam')">📷 กล้อง/USB</button>
-                <button class="tab-btn" onclick="selectSourceTab('rtsp')">🌐 RTSP/IP</button>
-            </div>
-
-            <!-- Screen Capture UI Row (shown when 'screen' tab active) -->
-            <div id="screen-source-row" style="display:none; margin-top: 10px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 12px; padding: 16px; text-align: center;">
-                <div style="font-size: 14px; font-weight: 700; color: #38BDF8; margin-bottom: 8px;">
-                    🖥️ จับภาพถ่ายทอดสดจากหน้าจอ / แท็บเบราว์เซอร์ (แนะนำสำหรับ Facebook Live)
-                </div>
-                <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 8px;">
-                    <button id="btn-start-screen" class="btn-action" style="background: linear-gradient(135deg, #0284C7, #38BDF8); font-size: 14px; padding: 10px 24px; border-radius: 8px; font-weight: 700;" onclick="startBrowserScreenCapture()">
-                        🎬 เลือกแท็บ Facebook Live เพื่อเริ่มจับภาพสด (คลิกที่นี่)
-                    </button>
-                    <button id="btn-stop-screen" class="btn-action" style="display:none; background: #EF4444; font-size: 14px; padding: 10px 24px; border-radius: 8px; font-weight: 700;" onclick="stopBrowserScreenCapture()">
-                        ⏹️ หยุดการจับภาพหน้าจอ
-                    </button>
-                </div>
-                <div id="screen-capture-status" style="font-size: 12px; color: var(--text-muted);">
-                    💡 วิธีใช้: เปิด Facebook Live ในแท็บหรือหน้าต่างไว้ แล้วกดปุ่มนี้เพื่อเลือกแท็บนั้น ระบบจะดึงภาพสด 60 FPS เข้าตรวจจับทันที โดยไม่ต้องดาวน์โหลด!
-                </div>
-            </div>
-
-            <div class="input-row" id="standard-source-row" style="display: flex; gap: 12px; margin-bottom: 14px;">
-                <input type="text" id="source-input" class="input-field" placeholder="เลือกแหล่งภาพด้านบน..." disabled style="height: 52px; font-size: 16px; font-weight: 800; flex: 1; border-radius: 12px; padding: 10px 18px;">
-                <button class="btn-action" id="btn-apply-source" onclick="applySource()" style="height: 52px; font-size: 17px; font-weight: 900; padding: 10px 28px; border-radius: 12px; background: linear-gradient(135deg, #0284C7, #0369A1); box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35); white-space: nowrap;">เชื่อมต่อสัญญาณภาพ</button>
-            </div>
-
-            <!-- Online Tip Row (shown when 'online' tab active) -->
-            <div id="online-tip-row" style="display:none; margin-top: 8px; font-size: 12px; color: #F59E0B; background: rgba(245, 158, 11, 0.1); padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.3);">
-                <div style="font-weight: 700; margin-bottom: 4px;">⚡ หากต้องการดูภาพสดล่าสุดแบบเรียลไทม์ (Real-Time Live):</div>
-                <div style="color: var(--text-muted); line-height: 1.5;">
-                    การวางลิงก์ URL ของ Facebook จะได้เพียงคลิปย้อนหลังหรืออาจติดระบบบล็อกของ Facebook<br>
-                    เพื่อให้ได้ภาพสด<b>ล่าสุด ณ วินาทีนี้ (0 ดีเลย์)</b> แนะนำให้เปิด Facebook Live ไว้บนหน้าจอ แล้วกดปุ่มด้านล่างนี้ได้เลย:
-                </div>
-                <button class="btn-action" style="margin-top: 8px; background: linear-gradient(135deg, #0284C7, #38BDF8); font-size: 13px; padding: 8px 18px; border-radius: 6px; font-weight: 700;" onclick="selectSourceTab('screen')">
-                    🖥️ สลับไปใช้ "จับภาพหน้าจอไลฟ์สด" (ดึงภาพสดล่าสุดทันที)
-                </button>
-            </div>
-
-            <!-- File Upload Row (shown only when 'file' tab active) -->
-            <div id="file-source-row" style="display:none; margin-top: 10px; flex-direction: column; gap: 12px;">
-                <!-- Drag & drop / file picker -->
-                <div id="drag-drop-zone" style="
-                    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-                    border: 2px dashed rgba(245,158,11,0.6); border-radius: 12px;
-                    padding: 18px 20px; cursor: pointer; background: rgba(245,158,11,0.06);
-                    color: var(--gold-primary); text-align: center; transition: all 0.2s;"
-                    onclick="document.getElementById('file-upload-input').click()"
-                    ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event)">
-                    <div style="font-size: 32px;">📁</div>
-                    <div style="font-weight: 700; font-size: 14px;">คลิกเพื่อเลือกไฟล์ หรือ ลากไฟล์วิดีโอมาปล่อยที่นี่</div>
-                    <div style="font-size: 12px; color: #94A3B8;">รองรับไฟล์ .mp4, .mov, .avi, .mkv (ระบบจะเล่นและคำนวณวนลูปให้อัตโนมัติ)</div>
-                </div>
-                <input type="file" id="file-upload-input" accept="video/*" style="display:none"
-                    onchange="handleVideoUpload(this)">
-                <div id="upload-status-text" style="font-size: 12px; color: var(--text-muted); text-align: center; font-weight: 600;"></div>
-
-                <!-- Instant Click-to-Play Video Cards -->
-                <div id="video-list-container" style="display:none; background: rgba(0,0,0,0.25); padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span style="font-size: 12px; font-weight: 700; color: #38BDF8;">
-                            🎬 คลิปที่มีในเครื่อง (กดเล่นได้ทันที):
+                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;" onclick="event.stopPropagation()">
+                        <span id="video-active-source-badge" style="font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 6px; background: rgba(142, 56, 144, 0.12); color: #5B185D; border: 1px solid rgba(142, 56, 144, 0.25);" title="แหล่งสัญญาณภาพปัจจุบัน">
+                            🤖 จำลองภาพ
                         </span>
-                        <span style="font-size: 11px; color: #94A3B8;" id="clip-count-label"></span>
-                    </div>
-                    <div id="video-cards-grid" style="display: grid; grid-template-columns: 1fr; gap: 6px; max-height: 220px; overflow-y: auto;">
-                        <!-- Injected by loadSampleVideos() -->
+                        <span id="video-active-spd-badge" style="font-size: 12px; font-weight: 800; padding: 3px 8px; border-radius: 6px; background: rgba(245, 158, 11, 0.15); color: #92400E; border: 1px solid rgba(245, 158, 11, 0.35);" title="ความเร็ววิดีโอปัจจุบัน">
+                            1.0x
+                        </span>
                     </div>
                 </div>
-            </div>
+
+                <!-- Collapsible Body for Video Controls -->
+                <div id="video-controls-body" style="display: block; margin-top: 10px; transition: all 0.25s ease;">
+                    <!-- Video Playback & Speed Controls (Large & High Contrast) -->
+                    <div class="video-control-bar" id="video-control-bar">
+                        <div class="timeline-row">
+                            <button class="btn-vid-control" id="btn-vid-playpause" onclick="toggleVideoPlayPause()" title="คลิกเพื่อหยุดหรือเล่นคลิปวิดีโอต่อ">
+                                <span id="vid-play-icon" style="font-size: 18px;">⏸️</span>
+                                <span id="vid-play-text">หยุดคลิป</span>
+                            </button>
+                            <button class="btn-vid-control" onclick="jumpVideoSeconds(-5)" title="ย้อนกลับ 5 วินาที">⏪ -5s</button>
+                            <button class="btn-vid-control" onclick="jumpVideoSeconds(5)" title="ข้ามไปข้างหน้า 5 วินาที">⏩ +5s</button>
+                            <input type="range" class="timeline-slider" id="vid-timeline" min="0" max="100" value="0" step="0.1" oninput="onTimelineInput(this.value)" onchange="onTimelineChange(this.value)" title="ลากเพื่อเลื่อนเวลาคลิป">
+                            <div class="time-display" id="vid-time-display">00:00 / 00:00</div>
+                        </div>
+                        <div class="playback-buttons-row" style="margin-top: 6px;">
+                            <div style="font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                                <span>⚡ สปีดคลิป:</span>
+                                <div class="speed-btn-group">
+                                    <button class="speed-btn" id="spd-0.5" onclick="changeVideoSpeed(0.5)">0.5x</button>
+                                    <button class="speed-btn active" id="spd-1.0" onclick="changeVideoSpeed(1.0)">1.0x</button>
+                                    <button class="speed-btn" id="spd-1.5" onclick="changeVideoSpeed(1.5)">1.5x</button>
+                                    <button class="speed-btn" id="spd-2.0" onclick="changeVideoSpeed(2.0)">2.0x</button>
+                                    <button class="speed-btn" id="spd-4.0" onclick="changeVideoSpeed(4.0)">4.0x</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Source Selector (Clean Unified Segmented Tabs) -->
+                    <div class="source-tabs" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-top: 14px; margin-bottom: 12px;">
+                        <button class="tab-btn active" onclick="selectSourceTab('simulation')">🤖 จำลองภาพ</button>
+                        <button class="tab-btn" onclick="selectSourceTab('screen')">🖥️ จับหน้าจอสด</button>
+                        <button class="tab-btn" onclick="selectSourceTab('file')">📁 ไฟล์วิดีโอ</button>
+                        <button class="tab-btn" onclick="selectSourceTab('online')">🔴 ไลฟ์ออนไลน์</button>
+                        <button class="tab-btn" onclick="selectSourceTab('webcam')">📷 กล้อง/USB</button>
+                        <button class="tab-btn" onclick="selectSourceTab('rtsp')">🌐 RTSP/IP</button>
+                    </div>
+
+                    <!-- Screen Capture UI Row (shown when 'screen' tab active) -->
+                    <div id="screen-source-row" style="display:none; margin-top: 10px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 12px; padding: 16px; text-align: center;">
+                        <div style="font-size: 14px; font-weight: 700; color: #38BDF8; margin-bottom: 8px;">
+                            🖥️ จับภาพถ่ายทอดสดจากหน้าจอ / แท็บเบราว์เซอร์ (แนะนำสำหรับ Facebook Live)
+                        </div>
+                        <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 8px;">
+                            <button id="btn-start-screen" class="btn-action" style="background: linear-gradient(135deg, #0284C7, #38BDF8); font-size: 14px; padding: 10px 24px; border-radius: 8px; font-weight: 700;" onclick="startBrowserScreenCapture()">
+                                🎬 เลือกแท็บ Facebook Live เพื่อเริ่มจับภาพสด (คลิกที่นี่)
+                            </button>
+                            <button id="btn-stop-screen" class="btn-action" style="display:none; background: #EF4444; font-size: 14px; padding: 10px 24px; border-radius: 8px; font-weight: 700;" onclick="stopBrowserScreenCapture()">
+                                ⏹️ หยุดการจับภาพหน้าจอ
+                            </button>
+                        </div>
+                        <div id="screen-capture-status" style="font-size: 12px; color: var(--text-muted);">
+                            💡 วิธีใช้: เปิด Facebook Live ในแท็บหรือหน้าต่างไว้ แล้วกดปุ่มนี้เพื่อเลือกแท็บนั้น ระบบจะดึงภาพสด 60 FPS เข้าตรวจจับทันที โดยไม่ต้องดาวน์โหลด!
+                        </div>
+                    </div>
+
+                    <div class="input-row" id="standard-source-row" style="display: flex; gap: 12px; margin-bottom: 14px;">
+                        <input type="text" id="source-input" class="input-field" placeholder="เลือกแหล่งภาพด้านบน..." disabled style="height: 52px; font-size: 16px; font-weight: 800; flex: 1; border-radius: 12px; padding: 10px 18px;">
+                        <button class="btn-action" id="btn-apply-source" onclick="applySource()" style="height: 52px; font-size: 17px; font-weight: 900; padding: 10px 28px; border-radius: 12px; background: linear-gradient(135deg, #0284C7, #0369A1); box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35); white-space: nowrap;">เชื่อมต่อสัญญาณภาพ</button>
+                    </div>
+
+                    <!-- Online Tip Row (shown when 'online' tab active) -->
+                    <div id="online-tip-row" style="display:none; margin-top: 8px; font-size: 12px; color: #F59E0B; background: rgba(245, 158, 11, 0.1); padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.3);">
+                        <div style="font-weight: 700; margin-bottom: 4px;">⚡ หากต้องการดูภาพสดล่าสุดแบบเรียลไทม์ (Real-Time Live):</div>
+                        <div style="color: var(--text-muted); line-height: 1.5;">
+                            การวางลิงก์ URL ของ Facebook จะได้เพียงคลิปย้อนหลังหรืออาจติดระบบบล็อกของ Facebook<br>
+                            เพื่อให้ได้ภาพสด<b>ล่าสุด ณ วินาทีนี้ (0 ดีเลย์)</b> แนะนำให้เปิด Facebook Live ไว้บนหน้าจอ แล้วกดปุ่มด้านล่างนี้ได้เลย:
+                        </div>
+                        <button class="btn-action" style="margin-top: 8px; background: linear-gradient(135deg, #0284C7, #38BDF8); font-size: 13px; padding: 8px 18px; border-radius: 6px; font-weight: 700;" onclick="selectSourceTab('screen')">
+                            🖥️ สลับไปใช้ "จับภาพหน้าจอไลฟ์สด" (ดึงภาพสดล่าสุดทันที)
+                        </button>
+                    </div>
+
+                    <!-- File Upload Row (shown only when 'file' tab active) -->
+                    <div id="file-source-row" style="display:none; margin-top: 10px; flex-direction: column; gap: 12px;">
+                        <!-- Drag & drop / file picker -->
+                        <div id="drag-drop-zone" style="
+                            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+                            border: 2px dashed rgba(245,158,11,0.6); border-radius: 12px;
+                            padding: 18px 20px; cursor: pointer; background: rgba(245,158,11,0.06);
+                            color: var(--gold-primary); text-align: center; transition: all 0.2s;"
+                            onclick="document.getElementById('file-upload-input').click()"
+                            ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event)">
+                            <div style="font-size: 32px;">📁</div>
+                            <div style="font-weight: 700; font-size: 14px;">คลิกเพื่อเลือกไฟล์ หรือ ลากไฟล์วิดีโอมาปล่อยที่นี่</div>
+                            <div style="font-size: 12px; color: #94A3B8;">รองรับไฟล์ .mp4, .mov, .avi, .mkv (ระบบจะเล่นและคำนวณวนลูปให้อัตโนมัติ)</div>
+                        </div>
+                        <input type="file" id="file-upload-input" accept="video/*" style="display:none"
+                            onchange="handleVideoUpload(this)">
+                        <div id="upload-status-text" style="font-size: 12px; color: var(--text-muted); text-align: center; font-weight: 600;"></div>
+
+                        <!-- Instant Click-to-Play Video Cards -->
+                        <div id="video-list-container" style="display:none; background: rgba(0,0,0,0.25); padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <span style="font-size: 12px; font-weight: 700; color: #38BDF8;">
+                                    🎬 คลิปที่มีในเครื่อง (กดเล่นได้ทันที):
+                                </span>
+                                <span style="font-size: 11px; color: #94A3B8;" id="clip-count-label"></span>
+                            </div>
+                            <div id="video-cards-grid" style="display: grid; grid-template-columns: 1fr; gap: 6px; max-height: 220px; overflow-y: auto;">
+                                <!-- Injected by loadSampleVideos() -->
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End video-controls-body -->
+            </div> <!-- End card-video-controls -->
 
 
         </div>
@@ -2212,6 +2238,19 @@
                 }
             });
 
+            const tabNames = {
+                'simulation': '🤖 จำลองภาพ',
+                'screen': '🖥️ จับหน้าจอสด',
+                'file': '📁 ไฟล์วิดีโอ',
+                'online': '🔴 ไลฟ์ออนไลน์',
+                'webcam': '📷 กล้อง/USB',
+                'rtsp': '🌐 RTSP/IP'
+            };
+            const activeBadge = document.getElementById('video-active-source-badge');
+            if (activeBadge && tabNames[type]) {
+                activeBadge.textContent = tabNames[type];
+            }
+
             const input = document.getElementById('source-input');
             const fileRow = document.getElementById('file-source-row');
             const screenRow = document.getElementById('screen-source-row');
@@ -2505,6 +2544,43 @@
         }
 
         let isBreakTaken = false;
+
+        // ==========================================
+        // 🎬 COLLAPSIBLE VIDEO CONTROLS & SOURCE CARD
+        // ==========================================
+        function toggleVideoControlsCard(forceState) {
+            const body = document.getElementById('video-controls-body');
+            const arrow = document.getElementById('video-arrow-icon');
+            const hint = document.getElementById('video-toggle-hint');
+            const card = document.getElementById('card-video-controls');
+            if (!body) return;
+
+            const isCurrentlyHidden = body.style.display === 'none';
+            const shouldShow = (forceState !== undefined) ? forceState : isCurrentlyHidden;
+
+            if (shouldShow) {
+                body.style.display = 'block';
+                if (arrow) arrow.textContent = '▼';
+                if (hint) hint.textContent = '(คลิกเพื่อพับ ▲)';
+                if (card) card.style.padding = '10px 14px';
+                try { localStorage.setItem('video_controls_open', 'true'); } catch (e) {}
+            } else {
+                body.style.display = 'none';
+                if (arrow) arrow.textContent = '▶';
+                if (hint) hint.textContent = '(คลิกเพื่อขยายแผงวิดีโอ ▾)';
+                if (card) card.style.padding = '8px 14px';
+                try { localStorage.setItem('video_controls_open', 'false'); } catch (e) {}
+            }
+        }
+
+        function initVideoControlsCollapse() {
+            try {
+                const saved = localStorage.getItem('video_controls_open');
+                if (saved === 'false') {
+                    toggleVideoControlsCard(false);
+                }
+            } catch (e) {}
+        }
 
         // ==========================================
         // 🎛️ COLLAPSIBLE LIVE OPERATOR QUICK BAR
@@ -4194,6 +4270,8 @@
                 document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
                 const activeBtn = document.getElementById(`spd-${spd}`);
                 if (activeBtn) activeBtn.classList.add('active');
+                const spdBadge = document.getElementById('video-active-spd-badge');
+                if (spdBadge) spdBadge.textContent = `${spd}x`;
                 showToast(`⚡ ปรับความเร็วคลิปเป็น ${spd}x เรียบร้อย`);
             } catch (e) {}
         }
@@ -4319,6 +4397,7 @@
         connectWS();
         initBreakBatchesCollapse();
         initQuickControlsCollapse();
+        initVideoControlsCollapse();
     
 
 // ==========================================
