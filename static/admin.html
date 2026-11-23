@@ -38,10 +38,11 @@
         }
 
         body.theme-purple-yellow header {
-            background: linear-gradient(135deg, #8E3890 0%, #6E2271 100%) !important;
-            border: 2.5px solid #F59E0B !important;
-            box-shadow: 0 8px 28px rgba(142, 56, 144, 0.4) !important;
-            padding: 12px 18px !important;
+            background: linear-gradient(135deg, #7A247C 0%, #5B185D 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.18) !important;
+            box-shadow: 0 4px 18px rgba(91, 24, 93, 0.22) !important;
+            padding: 10px 18px !important;
+            border-radius: 14px !important;
         }
 
         body.theme-purple-yellow header .brand-text h1,
@@ -1452,71 +1453,75 @@
 </head>
 <body>
 
-    <!-- Header: Single Row Clean Layout -->
-    <header style="padding: 12px 20px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;">
+    <!-- Header: Minimalist & Clean Bar -->
+    <header style="padding: 10px 18px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap;">
         <!-- Brand (Left) -->
-        <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
             <img src="/static/logo.png?v=2" alt="ตรามหาวิทยาลัยราชภัฏบุรีรัมย์"
-                 style="height: 52px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.45)); cursor: pointer;"
+                 style="height: 42px; width: auto; object-fit: contain; cursor: pointer;"
                  onclick="window.location.reload();" title="คลิกเพื่อรีเฟรช">
             <div class="brand-text">
-                <h1 style="font-size: 21px; font-weight: 900; line-height: 1.2; display: flex; align-items: center; gap: 10px; color: #FFFFFF !important; text-shadow: 0 2px 4px rgba(0,0,0,0.35);">
+                <h1 style="font-size: 18px; font-weight: 800; line-height: 1.2; display: flex; align-items: center; gap: 8px; color: #FFFFFF !important; margin: 0;">
                     มหาวิทยาลัยราชภัฏบุรีรัมย์
-                    <span style="font-size: 12px; font-weight: 900; background: linear-gradient(135deg, #FACC15, #EAB308); color: #78350F; padding: 3px 10px; border-radius: 6px; letter-spacing: 0.5px; text-shadow: none;">AI LIVE COUNTER</span>
+                    <span style="font-size: 11px; font-weight: 800; background: rgba(255,255,255,0.18); color: #FDE68A; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.5px;">AI COUNTER</span>
                 </h1>
-                <p style="font-size: 13px; color: #FFFFFF !important; opacity: 0.95; font-weight: 700; margin-top: 3px; text-shadow: 0 1px 3px rgba(0,0,0,0.45);">ระบบนับจำนวนบัณฑิตและคำนวณเวลาอัตโนมัติ</p>
             </div>
         </div>
 
-        <!-- Right Action Buttons: Settings (including OBS) + Manual Mode + Stage Display + Theme Toggle -->
-        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <!-- Right Action Buttons: Clean Minimal Unified Pills -->
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
             <!-- Settings Link (Points to Settings, with OBS) -->
             <a href="/settings#tab-obs" target="_blank"
-               style="background: rgba(255,255,255,0.15); color: #fff; text-decoration: none;
-                      font-size: 14px; font-weight: 800; height: 42px; padding: 0 16px; border-radius: 10px;
-                      display: inline-flex; align-items: center; gap: 8px;
-                      border: 1.5px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px);
-                      box-shadow: 0 2px 8px rgba(0,0,0,0.15);"
+               style="background: rgba(255,255,255,0.12); color: #fff; text-decoration: none;
+                      font-size: 13.5px; font-weight: 700; height: 38px; padding: 0 14px; border-radius: 10px;
+                      display: inline-flex; align-items: center; gap: 6px;
+                      border: 1px solid rgba(255,255,255,0.22); transition: all 0.2s;"
+               onmouseover="this.style.background='rgba(255,255,255,0.2)'"
+               onmouseout="this.style.background='rgba(255,255,255,0.12)'"
                title="เปิดหน้าตั้งค่าขั้นสูง (รวมการตั้งค่า OBS Overlay)">
-                ⚙️ การตั้งค่าขั้นสูง (Settings & OBS) ↗
+                ⚙️ ตั้งค่า
             </a>
 
             <!-- Manual Mode Button -->
             <a href="/manual" target="_blank"
-               style="background: linear-gradient(135deg, #EF4444, #DC2626); color: white; text-decoration: none;
-                      font-size: 14px; font-weight: 900; height: 42px; padding: 0 18px; border-radius: 10px;
-                      display: inline-flex; align-items: center; gap: 8px;
-                      box-shadow: 0 4px 14px rgba(239,68,68,0.4); border: 1.5px solid rgba(255,255,255,0.3);"
+               style="background: rgba(255,255,255,0.12); color: #fff; text-decoration: none;
+                      font-size: 13.5px; font-weight: 700; height: 38px; padding: 0 14px; border-radius: 10px;
+                      display: inline-flex; align-items: center; gap: 6px;
+                      border: 1px solid rgba(255,255,255,0.22); transition: all 0.2s;"
+               onmouseover="this.style.background='rgba(239,68,68,0.25)'; this.style.borderColor='rgba(239,68,68,0.45)';"
+               onmouseout="this.style.background='rgba(255,255,255,0.12)'; this.style.borderColor='rgba(255,255,255,0.22)';"
                title="เปิดหน้านับด้วยมือ (Manual Counter)">
-                ✋ โหมดนับด้วยมือ (Spacebar)
+                ✋ นับมือ
             </a>
 
             <!-- Stage Display -->
             <a href="/live" target="_blank"
-               style="background: linear-gradient(135deg, #0284C7, #0369A1); color: white; text-decoration: none;
-                      font-size: 14px; font-weight: 800; height: 42px; padding: 0 18px; border-radius: 10px;
-                      display: inline-flex; align-items: center; gap: 8px;
-                      box-shadow: 0 4px 14px rgba(2,132,199,0.35);"
+               style="background: rgba(255,255,255,0.12); color: #fff; text-decoration: none;
+                      font-size: 13.5px; font-weight: 700; height: 38px; padding: 0 14px; border-radius: 10px;
+                      display: inline-flex; align-items: center; gap: 6px;
+                      border: 1px solid rgba(255,255,255,0.22); transition: all 0.2s;"
+               onmouseover="this.style.background='rgba(2,132,199,0.25)'; this.style.borderColor='rgba(2,132,199,0.45)';"
+               onmouseout="this.style.background='rgba(255,255,255,0.12)'; this.style.borderColor='rgba(255,255,255,0.22)';"
                title="เปิดจอแสดงผลหน้างานจริง">
-                📺 จอแสดงผลหน้างานจริง (Stage Display)
+                📺 จอเวที ↗
             </a>
 
-            <!-- Theme Toggle Button (Sun/Moon, Far Right Corner) -->
+            <!-- Theme Toggle Button -->
             <button id="btn-theme-toggle" class="btn-theme-switch" onclick="toggleTheme()"
-                    style="width: 42px; height: 42px; padding: 0; border-radius: 50%; font-size: 20px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;"
-                    title="สลับโหมดสว่าง / มืด (คลิกเพื่อเปลี่ยนธีม)">
-                <span id="theme-btn-text" style="font-size: 20px; line-height: 1;">🌙</span>
+                    style="width: 38px; height: 38px; padding: 0; border-radius: 10px; font-size: 17px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); color: #fff;"
+                    title="สลับโหมดสว่าง / มืด">
+                <span id="theme-btn-text" style="font-size: 17px; line-height: 1;">🌙</span>
             </button>
 
             <!-- Logout Button -->
             <button onclick="handleLogout()"
-                    style="background: rgba(239, 68, 68, 0.18); color: #FFFFFF; border: 1.5px solid rgba(239, 68, 68, 0.45);
-                           height: 42px; padding: 0 14px; border-radius: 10px; font-size: 13.5px; font-weight: 800;
-                           cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;"
-                    onmouseover="this.style.background='rgba(239, 68, 68, 0.9)'; this.style.borderColor='#EF4444';"
-                    onmouseout="this.style.background='rgba(239, 68, 68, 0.18)'; this.style.borderColor='rgba(239, 68, 68, 0.45)';"
+                    style="background: rgba(255,255,255,0.08); color: #FCA5A5; border: 1px solid rgba(239, 68, 68, 0.3);
+                           height: 38px; padding: 0 12px; border-radius: 10px; font-size: 13px; font-weight: 700;
+                           cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s;"
+                    onmouseover="this.style.background='rgba(239, 68, 68, 0.8)'; this.style.color='#FFFFFF';"
+                    onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.color='#FCA5A5';"
                     title="ออกจากระบบผู้ดูแล (Logout)">
-                🚪 ออกจากระบบ
+                🚪 ออก
             </button>
         </div>
     </header>
@@ -1599,31 +1604,28 @@
                     <input type="range" class="timeline-slider" id="vid-timeline" min="0" max="100" value="0" step="0.1" oninput="onTimelineInput(this.value)" onchange="onTimelineChange(this.value)" title="ลากเพื่อเลื่อนเวลาคลิป">
                     <div class="time-display" id="vid-time-display">00:00 / 00:00</div>
                 </div>
-                <div class="playback-buttons-row">
-                    <div style="font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 10px;">
-                        <span>⚡ เร่งความเร็วคลิป:</span>
+                <div class="playback-buttons-row" style="margin-top: 6px;">
+                    <div style="font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                        <span>⚡ สปีดคลิป:</span>
                         <div class="speed-btn-group">
                             <button class="speed-btn" id="spd-0.5" onclick="changeVideoSpeed(0.5)">0.5x</button>
-                            <button class="speed-btn active" id="spd-1.0" onclick="changeVideoSpeed(1.0)">1.0x (ปกติ)</button>
+                            <button class="speed-btn active" id="spd-1.0" onclick="changeVideoSpeed(1.0)">1.0x</button>
                             <button class="speed-btn" id="spd-1.5" onclick="changeVideoSpeed(1.5)">1.5x</button>
                             <button class="speed-btn" id="spd-2.0" onclick="changeVideoSpeed(2.0)">2.0x</button>
-                            <button class="speed-btn" id="spd-4.0" onclick="changeVideoSpeed(4.0)">4.0x (เร็ว)</button>
+                            <button class="speed-btn" id="spd-4.0" onclick="changeVideoSpeed(4.0)">4.0x</button>
                         </div>
-                    </div>
-                    <div style="font-size: 13px; font-weight: 700; color: #D97706;">
-                        * ลากเส้นเวลาหรือกดปุ่มเร่งความเร็ว เพื่อทดสอบระบบได้อิสระ
                     </div>
                 </div>
             </div>
 
-            <!-- Video Source Selector (Large Grid Tabs, No Awkward Linebreaks) -->
-            <div class="source-tabs" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-top: 16px; margin-bottom: 14px;">
-                <button class="tab-btn active" onclick="selectSourceTab('simulation')">🤖 จำลองภาพ (Demo)</button>
-                <button class="tab-btn" onclick="selectSourceTab('screen')">🖥️ จับภาพหน้าจอสด</button>
-                <button class="tab-btn" onclick="selectSourceTab('file')">📁 ไฟล์คลิปวิดีโอ (.mp4)</button>
-                <button class="tab-btn" onclick="selectSourceTab('online')">🔴 YouTube / Facebook</button>
-                <button class="tab-btn" onclick="selectSourceTab('webcam')">📷 กล้อง / แคปเจอร์</button>
-                <button class="tab-btn" onclick="selectSourceTab('rtsp')">🌐 RTSP / RTMP</button>
+            <!-- Video Source Selector (Clean Unified Segmented Tabs) -->
+            <div class="source-tabs" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-top: 14px; margin-bottom: 12px;">
+                <button class="tab-btn active" onclick="selectSourceTab('simulation')">🤖 จำลองภาพ</button>
+                <button class="tab-btn" onclick="selectSourceTab('screen')">🖥️ จับหน้าจอสด</button>
+                <button class="tab-btn" onclick="selectSourceTab('file')">📁 ไฟล์วิดีโอ</button>
+                <button class="tab-btn" onclick="selectSourceTab('online')">🔴 ไลฟ์ออนไลน์</button>
+                <button class="tab-btn" onclick="selectSourceTab('webcam')">📷 กล้อง/USB</button>
+                <button class="tab-btn" onclick="selectSourceTab('rtsp')">🌐 RTSP/IP</button>
             </div>
 
             <!-- Screen Capture UI Row (shown when 'screen' tab active) -->
@@ -1700,41 +1702,40 @@
         <div>
             <!-- Live KPI Overview -->
             <div class="kpi-grid">
-                <div class="kpi-card" style="border-left: 5px solid var(--gold-primary); padding: 12px 14px;">
+                <div class="kpi-card" style="border-left: 3.5px solid var(--gold-primary); padding: 10px 14px; border-radius: 12px;">
                     <div class="kpi-title" style="font-size: 12px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">🎓 บัณฑิตที่รับแล้ว</div>
-                    <div class="kpi-value" id="kpi-count" style="font-size: 50px; font-weight: 900; color: var(--gold-primary); line-height: 1.0;">0</div>
+                    <div class="kpi-value" id="kpi-count" style="font-size: 46px; font-weight: 900; color: var(--gold-primary); line-height: 1.0; margin: 4px 0;">0</div>
                     <div class="kpi-sub" id="kpi-target-sub" style="font-size: 12px; font-weight: 700;">เป้าหมาย: 1,500 คน</div>
                 </div>
-                <div class="kpi-card" style="border-left: 5px solid var(--accent-blue); padding: 12px 14px;">
+                <div class="kpi-card" style="border-left: 3.5px solid var(--accent-blue); padding: 10px 14px; border-radius: 12px;">
                     <div class="kpi-title" style="font-size: 12px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">⏱️ เวลาต่อคนล่าสุด</div>
-                    <div class="kpi-value" id="kpi-last-dur" style="font-size: 44px; font-weight: 900; color: #0284C7; line-height: 1.0;">0.0s</div>
+                    <div class="kpi-value" id="kpi-last-dur" style="font-size: 40px; font-weight: 900; color: #0284C7; line-height: 1.0; margin: 4px 0;">0.0s</div>
                     <div class="kpi-sub" id="kpi-avg-sub" style="font-size: 12px; font-weight: 700;">เฉลี่ย: 3.0 วิ/คน</div>
                 </div>
-                <div class="kpi-card" style="border-left: 5px solid var(--accent-green); padding: 12px 14px;">
-                    <div class="kpi-title" style="font-size: 12px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">🏁 คาดว่าจะเสร็จสิ้น (ETA)</div>
-                    <div class="kpi-value" id="kpi-eta" style="font-size: 34px; font-weight: 900; color: #059669; line-height: 1.0;">--:--:--</div>
-                    <div class="kpi-sub" id="kpi-remaining-sub" style="font-size: 12px; font-weight: 700; color: #059669;">อีก -- นาที (เหลือ 1,500 คน)</div>
+                <div class="kpi-card" style="border-left: 3.5px solid var(--accent-green); padding: 10px 14px; border-radius: 12px;">
+                    <div class="kpi-title" style="font-size: 12px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">🏁 คาดว่าจะเสร็จ (ETA)</div>
+                    <div class="kpi-value" id="kpi-eta" style="font-size: 32px; font-weight: 900; color: #059669; line-height: 1.0; margin: 4px 0;">--:--:--</div>
+                    <div class="kpi-sub" id="kpi-remaining-sub" style="font-size: 12px; font-weight: 700; color: #059669;">อีก -- นาที (เหลือ 1,500)</div>
                 </div>
-                <div class="kpi-card" style="border-left: 5px solid #A855F7; padding: 12px 14px;">
-                    <div class="kpi-title" style="font-size: 12px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">⚡ อัตราความเร็ว (Pacing)</div>
-                    <div class="kpi-value" id="kpi-rate" style="font-size: 34px; font-weight: 900; color: #7C3AED; line-height: 1.0;">20.0</div>
-                    <div class="kpi-sub" style="font-size: 12px; font-weight: 700; color: #7C3AED;">คน / นาที (ความเร็วราบรื่น)</div>
+                <div class="kpi-card" style="border-left: 3.5px solid #A855F7; padding: 10px 14px; border-radius: 12px;">
+                    <div class="kpi-title" style="font-size: 12px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">⚡ ความเร็ว (Pacing)</div>
+                    <div class="kpi-value" id="kpi-rate" style="font-size: 32px; font-weight: 900; color: #7C3AED; line-height: 1.0; margin: 4px 0;">20.0</div>
+                    <div class="kpi-sub" style="font-size: 12px; font-weight: 700; color: #7C3AED;">คน / นาที (สม่ำเสมอ)</div>
                 </div>
             </div>
 
-            <!-- 🚨 แผงควบคุมสดหน้างาน (Live Operator Quick Bar) -->
-            <div class="card quick-bar-card" style="margin-bottom: 16px; background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)); border: 2px solid #38BDF8; box-shadow: 0 6px 20px rgba(0,0,0,0.35); padding: 16px;">
+            <!-- แผงควบคุมสดหน้างาน (Live Operator Quick Bar) -->
+            <div class="card quick-bar-card" style="margin-bottom: 16px; padding: 14px 16px; border-radius: 14px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 24px;">🚨</span>
-                        <div class="quick-bar-main-title" style="font-size: 17px; font-weight: 900;">แผงควบคุมสดหน้างาน</div>
+                    <div style="font-size: 15px; font-weight: 800; color: #5B185D; display: flex; align-items: center; gap: 6px;">
+                        <span>🎛️</span> แผงควบคุมสด
                     </div>
-                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                        <button id="btn-quick-switch-session" onclick="triggerQuickSessionSwitch()" style="cursor: pointer; padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 6px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.35)); border: 1.5px solid #F59E0B; color: #92400E; transition: all 0.2s;" title="คลิกเพื่อสลับระหว่าง รอบเช้า <-> รอบบ่าย ได้ทันที">
-                            <span id="op-active-session" style="font-size: 14px; font-weight: 900;">☀️ กำลังใช้งาน: รอบเช้า</span>
-                            <span id="op-switch-hint" style="font-size: 12px; color: #B45309; font-weight: 800; background: rgba(245, 158, 11, 0.25); padding: 2px 8px; border-radius: 10px;">(สลับรอบ ⇄)</span>
+                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                        <button id="btn-quick-switch-session" onclick="triggerQuickSessionSwitch()" style="cursor: pointer; padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #92400E; transition: all 0.2s;" title="คลิกเพื่อสลับระหว่าง รอบเช้า <-> รอบบ่าย ได้ทันที">
+                            <span id="op-active-session" style="font-weight: 800;">☀️ รอบเช้า</span>
+                            <span id="op-switch-hint" style="font-size: 11px; opacity: 0.85;">(สลับ ⇄)</span>
                         </button>
-                        <span id="op-active-target" style="font-size: 14px; font-weight: 900; padding: 6px 14px; border-radius: 20px; background: rgba(56, 189, 248, 0.2); color: #0369A1; border: 1.5px solid rgba(56, 189, 248, 0.5);" title="จำนวนเป้าหมายบัณฑิตในรอบนี้">
+                        <span id="op-active-target" style="font-size: 13px; font-weight: 800; padding: 4px 12px; border-radius: 8px; background: rgba(2, 132, 199, 0.1); color: #0369A1; border: 1px solid rgba(2, 132, 199, 0.25);" title="จำนวนเป้าหมายบัณฑิตในรอบนี้">
                             เป้าหมาย: 900 คน
                         </span>
                     </div>
@@ -1755,63 +1756,63 @@
                     </div>
                 </div>
 
-                <!-- 1. Primary Live Counting Buttons (All Buttons Equal Size: 1fr 1fr, 52px Height) -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                <!-- 1. Primary Live Counting Buttons -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
                     <!-- Green +1 Button -->
-                    <button class="btn-control btn-plus" onclick="adjustCount(1)" style="height: 52px; min-height: 52px; font-size: 17px; font-weight: 900; background: linear-gradient(135deg, #10B981 0%, #047857 100%); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35); border: 2px solid #34D399; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;" title="กดปุ่มนี้ หรือ เคาะ Spacebar เมื่อบัณฑิตรับปริญญาบัตร">
-                        <span style="font-size: 20px;">➕</span>
+                    <button class="btn-control btn-plus" onclick="adjustCount(1)" style="height: 48px; min-height: 48px; font-size: 16px; font-weight: 800; background: linear-gradient(135deg, #10B981 0%, #059669 100%); box-shadow: 0 3px 10px rgba(16, 185, 129, 0.25); border: 1.5px solid #34D399; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;" title="กดปุ่มนี้ หรือ เคาะ Spacebar เมื่อบัณฑิตรับปริญญาบัตร">
+                        <span style="font-size: 18px;">➕</span>
                         <span>นับเพิ่ม (+1)</span>
-                        <span style="font-size: 10px; font-weight: 800; color: #D1FAE5; background: rgba(0,0,0,0.25); padding: 2px 6px; border-radius: 5px; letter-spacing: 0.5px;">Spacebar</span>
+                        <span style="font-size: 10px; font-weight: 800; color: #D1FAE5; background: rgba(0,0,0,0.2); padding: 1px 5px; border-radius: 4px;">Space</span>
                     </button>
 
                     <!-- Red -1 Button -->
-                    <button class="btn-control btn-minus" onclick="adjustCount(-1)" style="height: 52px; min-height: 52px; font-size: 17px; font-weight: 900; background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%); box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3); border: 2px solid #F87171; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;" title="กดยกเลิกคนล่าสุด เมื่อเผลอกดเกินหรือข้ามคน">
-                        <span style="font-size: 20px;">➖</span>
+                    <button class="btn-control btn-minus" onclick="adjustCount(-1)" style="height: 48px; min-height: 48px; font-size: 16px; font-weight: 800; background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); box-shadow: 0 3px 10px rgba(239, 68, 68, 0.25); border: 1.5px solid #F87171; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;" title="กดยกเลิกคนล่าสุด เมื่อเผลอกดเกินหรือข้ามคน">
+                        <span style="font-size: 18px;">➖</span>
                         <span>ลดจำนวน (-1)</span>
                     </button>
                 </div>
 
-                <!-- 2. Secondary Control Row: Pause & Reset (Equal Size: 1fr 1fr, 52px Height) -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-                    <button class="btn-control btn-pause" id="btn-pause" onclick="togglePause()" style="height: 52px; min-height: 52px; font-size: 16px; font-weight: 900; background: #F59E0B; color: #000; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3); border: 1.5px solid #FBBF24; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;" title="กดเพื่อพักการนับชั่วคราว (เช่น รอประธาน หรือพักเบรกสั้น)">
-                        <span style="font-size: 20px;">⏸️</span>
+                <!-- 2. Secondary Control Row: Pause & Reset -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                    <button class="btn-control btn-pause" id="btn-pause" onclick="togglePause()" style="height: 44px; min-height: 44px; font-size: 14.5px; font-weight: 800; background: #F59E0B; color: #000; border: 1px solid #FBBF24; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;" title="กดเพื่อพักการนับชั่วคราว">
+                        <span style="font-size: 17px;">⏸️</span>
                         <span>พักการนับ</span>
                     </button>
-                    <button class="btn-control btn-reset" onclick="resetCount()" style="height: 52px; min-height: 52px; font-size: 16px; font-weight: 800; background: #FFFFFF; color: #4A154B; border: 1.5px solid rgba(142, 56, 144, 0.3); box-shadow: 0 2px 6px rgba(0,0,0,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;" title="กดเพื่อเริ่มรอบใหม่ (ระบบจะถามยืนยันก่อนล้าง)">
-                        <span style="font-size: 20px;">🔄</span>
-                        <span>รีเซ็ตเริ่มรอบใหม่</span>
+                    <button class="btn-control btn-reset" onclick="resetCount()" style="height: 44px; min-height: 44px; font-size: 14.5px; font-weight: 800; background: #FFFFFF; color: #4A154B; border: 1px solid rgba(142, 56, 144, 0.25); border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;" title="กดเพื่อเริ่มรอบใหม่">
+                        <span style="font-size: 17px;">🔄</span>
+                        <span>รีเซ็ตรอบ</span>
                     </button>
                 </div>
 
-                <!-- 3. Live Ceremony Interventions: Break & Sync (Equal Size: 1fr 1fr, 52px Height) -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
-                    <button class="btn-action" id="btn-break-phase" style="height: 52px; min-height: 52px; padding: 0 14px; font-size: 16px; font-weight: 900; background: #FEF3C7; border: 1.5px solid #F59E0B; color: #92400E; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; cursor: pointer; box-sizing: border-box;" onclick="handleBreakButtonClick()" title="ใช้เมื่อประธานสั่งพักแถว ตัดยอดช่วงแรกที่คนปัจจุบันทันที (หรือคลิกเพื่อสลับกลับไปช่วงก่อนพัก)">
-                        <span id="btn-break-text" style="font-size: 16px; font-weight: 900;">⏸️ พักแถว</span>
+                <!-- 3. Live Ceremony Interventions: Break & Sync -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                    <button class="btn-action" id="btn-break-phase" style="height: 44px; min-height: 44px; padding: 0 12px; font-size: 14.5px; font-weight: 800; background: #FEF3C7; border: 1px solid #F59E0B; color: #92400E; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; cursor: pointer; box-sizing: border-box;" onclick="handleBreakButtonClick()" title="ใช้เมื่อประธานสั่งพักแถว">
+                        <span id="btn-break-text" style="font-size: 14.5px; font-weight: 800;">⏸️ พักแถว</span>
                         <span id="btn-break-subtext" style="display: none;"></span>
                     </button>
-                    <button class="btn-action" style="height: 52px; min-height: 52px; padding: 0 14px; font-size: 16px; font-weight: 900; background: #E0F2FE; border: 1.5px solid #0284C7; color: #075985; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; cursor: pointer; box-sizing: border-box;" onclick="triggerSyncTargetToActual()" title="คนขาดหรือคนเกิน จบพิธีที่ 100% พอดี (ระบบจะปรับเป้าหมายให้เท่ากับยอดรับจริงทันที)">
-                        <span style="font-size: 16px; font-weight: 900;">🎯 ปรับเป้าหมาย = ยอดจริง</span>
+                    <button class="btn-action" style="height: 44px; min-height: 44px; padding: 0 12px; font-size: 14.5px; font-weight: 800; background: #E0F2FE; border: 1px solid #0284C7; color: #075985; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; cursor: pointer; box-sizing: border-box;" onclick="triggerSyncTargetToActual()" title="ปรับเป้าหมายให้เท่ากับยอดรับจริงทันที">
+                        <span style="font-size: 14.5px; font-weight: 800;">🎯 ปรับเป้า = ยอดจริง</span>
                     </button>
                 </div>
 
-                <!-- 3. Direct Fast Count & Target Calibration (Clean Inline Form) -->
-                <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 10px; align-items: flex-end; padding-top: 10px; border-top: 1.5px solid rgba(142, 56, 144, 0.12);">
+                <!-- 4. Direct Fast Count & Target Calibration -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: flex-end; padding-top: 8px; border-top: 1px solid rgba(142, 56, 144, 0.1);">
                     <div>
-                        <label style="font-size: 13px; color: #D97706; font-weight: 800; display: block; margin-bottom: 4px;" title="ใช้กรณีข้ามคน หรือต้องการระบุยอดคนที่รับแล้ว ณ ตอนนี้">
-                            🔢 แก้ไขยอดรับจริง (คน):
+                        <label style="font-size: 12px; color: #D97706; font-weight: 700; display: block; margin-bottom: 3px;">
+                            🔢 แก้ไขยอดรับจริง:
                         </label>
-                        <div style="display: flex; gap: 6px;">
-                            <input type="number" id="current-count-input" class="input-field" placeholder="เช่น 350" min="0" style="padding: 8px 10px; font-size: 16px; font-weight: 900; height: 42px; text-align: center;" onkeydown="if(event.key==='Enter') applyCurrentCount()" title="พิมพ์จำนวนคนแล้วกด Enter หรือกดปุ่มตั้งยอด">
-                            <button class="btn-action" style="padding: 8px 14px; font-size: 14px; font-weight: 800; background: linear-gradient(135deg, #10B981, #059669); white-space: nowrap; height: 42px; border-radius: 8px;" onclick="applyCurrentCount()" title="บันทึกจำนวนคนที่รับแล้วทันที">ตั้งยอด</button>
+                        <div style="display: flex; gap: 4px;">
+                            <input type="number" id="current-count-input" class="input-field" placeholder="ยอดคน" min="0" style="padding: 6px 8px; font-size: 15px; font-weight: 800; height: 38px; text-align: center; border-radius: 8px;" onkeydown="if(event.key==='Enter') applyCurrentCount()">
+                            <button class="btn-action" style="padding: 6px 12px; font-size: 13px; font-weight: 800; background: linear-gradient(135deg, #10B981, #059669); white-space: nowrap; height: 38px; border-radius: 8px;" onclick="applyCurrentCount()">ตั้งยอด</button>
                         </div>
                     </div>
                     <div>
-                        <label style="font-size: 13px; color: #4A154B; font-weight: 800; display: block; margin-bottom: 4px;" title="ปรับจำนวนเป้าหมายบัณฑิตในรอบนี้ (คน)">
-                            🎯 แก้เป้าหมายรอบนี้ (คน):
+                        <label style="font-size: 12px; color: #4A154B; font-weight: 700; display: block; margin-bottom: 3px;">
+                            🎯 แก้เป้าหมายรอบนี้:
                         </label>
-                        <div style="display: flex; gap: 6px;">
-                            <input type="number" id="target-input" class="input-field" value="900" min="1" style="padding: 8px 10px; font-size: 16px; font-weight: 900; height: 42px; text-align: center;" onkeydown="if(event.key==='Enter') updateTarget()" title="พิมพ์เป้าหมายใหม่แล้วกด Enter หรือกดปุ่มปรับเป้า">
-                            <button class="btn-action" style="padding: 8px 14px; font-size: 14px; font-weight: 800; background: linear-gradient(135deg, #0284C7, #0369A1); white-space: nowrap; height: 42px; border-radius: 8px;" onclick="updateTarget()" title="บันทึกเป้าหมายรอบนี้ทันที">ปรับเป้า</button>
+                        <div style="display: flex; gap: 4px;">
+                            <input type="number" id="target-input" class="input-field" value="900" min="1" style="padding: 6px 8px; font-size: 15px; font-weight: 800; height: 38px; text-align: center; border-radius: 8px;" onkeydown="if(event.key==='Enter') updateTarget()">
+                            <button class="btn-action" style="padding: 6px 12px; font-size: 13px; font-weight: 800; background: linear-gradient(135deg, #0284C7, #0369A1); white-space: nowrap; height: 38px; border-radius: 8px;" onclick="updateTarget()">ปรับเป้า</button>
                         </div>
                     </div>
                 </div>
