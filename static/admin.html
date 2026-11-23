@@ -346,25 +346,47 @@
             background: #FAF4FA !important;
             border: 1.5px dashed rgba(142, 56, 144, 0.3) !important;
         }
+        body.theme-purple-yellow #btn-pause:not(.is-paused-active) {
+            background: #FFFFFF !important;
+            border: 1.5px solid rgba(142, 56, 144, 0.25) !important;
+            color: #B45309 !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+        }
+        body.theme-purple-yellow .btn-reset {
+            background: #FFFFFF !important;
+            border: 1.5px solid rgba(142, 56, 144, 0.25) !important;
+            color: #4A154B !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+        }
         body.theme-purple-yellow #btn-break-phase {
-            background: #FEF3C7 !important;
-            border: 1.5px solid #F59E0B !important;
+            background: #FFFFFF !important;
+            border: 1.5px solid rgba(142, 56, 144, 0.25) !important;
             color: #92400E !important;
             font-weight: 800 !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
         }
         body.theme-purple-yellow #btn-break-subtext {
             color: #B45309 !important;
             font-weight: 600 !important;
         }
         body.theme-purple-yellow button[onclick*="triggerSyncTargetToActual"] {
-            background: #EDE0EF !important;
-            border: 1.5px solid #8E3890 !important;
+            background: #FFFFFF !important;
+            border: 1.5px solid rgba(142, 56, 144, 0.25) !important;
             color: #5B185D !important;
             font-weight: 800 !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
         }
         body.theme-purple-yellow button[onclick*="triggerSyncTargetToActual"] span[style*="color: #7DD3FC"] {
             color: #7B247D !important;
             font-weight: 600 !important;
+        }
+        body.theme-purple-yellow #btn-pause:hover,
+        body.theme-purple-yellow .btn-reset:hover,
+        body.theme-purple-yellow #btn-break-phase:hover,
+        body.theme-purple-yellow button[onclick*="triggerSyncTargetToActual"]:hover {
+            background: #F9FAFB !important;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08) !important;
         }
         body.theme-purple-yellow #quick-uni-status-bar {
             background: #FAF4FA !important;
@@ -1807,11 +1829,11 @@
 
                     <!-- 2. Secondary Control Row: Pause & Reset -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                        <button class="btn-control btn-pause" id="btn-pause" onclick="togglePause()" style="height: 44px; min-height: 44px; font-size: 14.5px; font-weight: 800; background: #F59E0B; color: #000; border: 1px solid #FBBF24; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;" title="กดเพื่อพักการนับชั่วคราว">
+                        <button class="btn-control btn-pause" id="btn-pause" onclick="togglePause()" style="height: 44px; min-height: 44px; font-size: 14.5px; font-weight: 800; background: #FFFFFF; color: #B45309; border: 1.5px solid rgba(142, 56, 144, 0.25); border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box; box-shadow: 0 1px 3px rgba(0,0,0,0.05);" title="กดเพื่อพักการนับชั่วคราว">
                             <span style="font-size: 17px;">⏸️</span>
                             <span>พักการนับ</span>
                         </button>
-                        <button class="btn-control btn-reset" onclick="resetCount()" style="height: 44px; min-height: 44px; font-size: 14.5px; font-weight: 800; background: #FFFFFF; color: #4A154B; border: 1px solid rgba(142, 56, 144, 0.25); border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;" title="กดเพื่อเริ่มรอบใหม่">
+                        <button class="btn-control btn-reset" onclick="resetCount()" style="height: 44px; min-height: 44px; font-size: 14.5px; font-weight: 800; background: #FFFFFF; color: #4A154B; border: 1.5px solid rgba(142, 56, 144, 0.25); border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box; box-shadow: 0 1px 3px rgba(0,0,0,0.05);" title="กดเพื่อเริ่มรอบใหม่">
                             <span style="font-size: 17px;">🔄</span>
                             <span>รีเซ็ตรอบ</span>
                         </button>
@@ -1819,11 +1841,11 @@
 
                     <!-- 3. Live Ceremony Interventions: Break & Sync -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
-                        <button class="btn-action" id="btn-break-phase" style="height: 44px; min-height: 44px; padding: 0 12px; font-size: 14.5px; font-weight: 800; background: #FEF3C7; border: 1px solid #F59E0B; color: #92400E; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; cursor: pointer; box-sizing: border-box;" onclick="handleBreakButtonClick()" title="ใช้เมื่อประธานสั่งพักแถว">
+                        <button class="btn-action" id="btn-break-phase" style="height: 44px; min-height: 44px; padding: 0 12px; font-size: 14.5px; font-weight: 800; background: #FFFFFF; border: 1.5px solid rgba(142, 56, 144, 0.25); color: #92400E; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; cursor: pointer; box-sizing: border-box; box-shadow: 0 1px 3px rgba(0,0,0,0.05);" onclick="handleBreakButtonClick()" title="ใช้เมื่อประธานสั่งพักแถว">
                             <span id="btn-break-text" style="font-size: 14.5px; font-weight: 800;">⏸️ พักแถว</span>
                             <span id="btn-break-subtext" style="display: none;"></span>
                         </button>
-                        <button class="btn-action" style="height: 44px; min-height: 44px; padding: 0 12px; font-size: 14.5px; font-weight: 800; background: #E0F2FE; border: 1px solid #0284C7; color: #075985; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; cursor: pointer; box-sizing: border-box;" onclick="triggerSyncTargetToActual()" title="ปรับเป้าหมายให้เท่ากับยอดรับจริงทันที">
+                        <button class="btn-action" style="height: 44px; min-height: 44px; padding: 0 12px; font-size: 14.5px; font-weight: 800; background: #FFFFFF; border: 1.5px solid rgba(142, 56, 144, 0.25); color: #5B185D; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; cursor: pointer; box-sizing: border-box; box-shadow: 0 1px 3px rgba(0,0,0,0.05);" onclick="triggerSyncTargetToActual()" title="ปรับเป้าหมายให้เท่ากับยอดรับจริงทันที">
                             <span style="font-size: 14.5px; font-weight: 800;">🎯 ปรับเป้า = ยอดจริง</span>
                         </button>
                     </div>
@@ -2509,12 +2531,16 @@
             if (btn) {
                 if (data.is_paused) {
                     btn.innerHTML = '<span>▶️</span> ดำเนินการนับต่อ';
+                    btn.classList.add('is-paused-active');
                     btn.style.background = '#10B981';
+                    btn.style.borderColor = '#059669';
                     btn.style.color = '#fff';
                 } else {
                     btn.innerHTML = '<span>⏸️</span> พักการนับ';
-                    btn.style.background = '#F59E0B';
-                    btn.style.color = '#000';
+                    btn.classList.remove('is-paused-active');
+                    btn.style.background = '#FFFFFF';
+                    btn.style.borderColor = 'rgba(142, 56, 144, 0.25)';
+                    btn.style.color = '#B45309';
                 }
             }
         }
@@ -3815,12 +3841,16 @@
                         if (pauseBtn) {
                             if (d.is_paused) {
                                 pauseBtn.innerHTML = '<span>▶️</span> ดำเนินการนับต่อ';
+                                pauseBtn.classList.add('is-paused-active');
                                 pauseBtn.style.background = '#10B981';
+                                pauseBtn.style.borderColor = '#059669';
                                 pauseBtn.style.color = '#fff';
                             } else {
                                 pauseBtn.innerHTML = '<span>⏸️</span> พักการนับ';
-                                pauseBtn.style.background = '#F59E0B';
-                                pauseBtn.style.color = '#000';
+                                pauseBtn.classList.remove('is-paused-active');
+                                pauseBtn.style.background = '#FFFFFF';
+                                pauseBtn.style.borderColor = 'rgba(142, 56, 144, 0.25)';
+                                pauseBtn.style.color = '#B45309';
                             }
                         }
 
@@ -3916,20 +3946,33 @@
                         const btnBreakText = document.getElementById('btn-break-text');
                         const btnBreakSubtext = document.getElementById('btn-break-subtext');
                         if (btnBreak && btnBreakText && btnBreakSubtext) {
+                            const isThemePurple = document.body.classList.contains('theme-purple-yellow');
                             if (isBreakTaken) {
-                                btnBreak.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(185, 28, 28, 0.35))';
-                                btnBreak.style.borderColor = '#EF4444';
-                                btnBreak.style.color = '#FCA5A5';
+                                if (isThemePurple) {
+                                    btnBreak.style.background = '#FFFFFF';
+                                    btnBreak.style.borderColor = '#EF4444';
+                                    btnBreak.style.color = '#DC2626';
+                                } else {
+                                    btnBreak.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(185, 28, 28, 0.35))';
+                                    btnBreak.style.borderColor = '#EF4444';
+                                    btnBreak.style.color = '#FCA5A5';
+                                }
                                 btnBreakText.textContent = '🟢 หลังพักแถวแล้ว';
                                 btnBreakSubtext.textContent = '(คลิกเพื่อสลับกลับไปช่วงก่อนพัก)';
-                                btnBreakSubtext.style.color = '#F87171';
+                                btnBreakSubtext.style.color = '#EF4444';
                             } else {
-                                btnBreak.style.background = 'linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(217, 119, 6, 0.35))';
-                                btnBreak.style.borderColor = '#F59E0B';
-                                btnBreak.style.color = '#FDE68A';
+                                if (isThemePurple) {
+                                    btnBreak.style.background = '#FFFFFF';
+                                    btnBreak.style.borderColor = 'rgba(142, 56, 144, 0.25)';
+                                    btnBreak.style.color = '#92400E';
+                                } else {
+                                    btnBreak.style.background = 'linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(217, 119, 6, 0.35))';
+                                    btnBreak.style.borderColor = '#F59E0B';
+                                    btnBreak.style.color = '#FDE68A';
+                                }
                                 btnBreakText.textContent = '⏸️ พักแถว';
                                 btnBreakSubtext.textContent = '(ตัดยอดช่วงก่อนพัก ณ บัณฑิตคนนี้ทันที)';
-                                btnBreakSubtext.style.color = '#FCD34D';
+                                btnBreakSubtext.style.color = '#B45309';
                             }
                         }
 
