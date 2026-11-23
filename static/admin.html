@@ -1724,13 +1724,19 @@
                 </div>
             </div>
 
-            <!-- แผงควบคุมสดหน้างาน (Live Operator Quick Bar) -->
-            <div class="card quick-bar-card" style="margin-bottom: 16px; padding: 14px 16px; border-radius: 14px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-                    <div style="font-size: 15px; font-weight: 800; color: #5B185D; display: flex; align-items: center; gap: 6px;">
-                        <span>🎛️</span> แผงควบคุมสด
+            <!-- แผงควบคุมสดหน้างาน (Live Operator Quick Bar) - Collapsible -->
+            <div class="card quick-bar-card" id="card-quick-controls" style="margin-bottom: 16px; padding: 12px 16px; border-radius: 14px; transition: all 0.25s;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; cursor: pointer; user-select: none;" onclick="toggleQuickControlsCard()" title="คลิกเพื่อพับเก็บหรือขยายแผงควบคุมสด">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <button type="button" id="btn-toggle-quick-arrow" style="background: rgba(142, 56, 144, 0.12); border: 1.5px solid rgba(142, 56, 144, 0.25); color: #5B185D; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; cursor: pointer; transition: transform 0.2s;" title="คลิกเพื่อพับเก็บ / ขยาย">
+                            <span id="quick-arrow-icon">▼</span>
+                        </button>
+                        <div style="font-size: 15px; font-weight: 800; color: #5B185D; display: flex; align-items: center; gap: 6px;">
+                            <span>🎛️</span> แผงควบคุมสด
+                            <span id="quick-toggle-hint" style="font-size: 12px; color: #8A658F; font-weight: 600; margin-left: 2px;">(คลิกเพื่อพับ ▲)</span>
+                        </div>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;" onclick="event.stopPropagation()">
                         <button id="btn-quick-switch-session" onclick="triggerQuickSessionSwitch()" style="cursor: pointer; padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #92400E; transition: all 0.2s;" title="คลิกเพื่อสลับระหว่าง รอบเช้า <-> รอบบ่าย ได้ทันที">
                             <span id="op-active-session" style="font-weight: 800;">☀️ รอบเช้า</span>
                             <span id="op-switch-hint" style="font-size: 11px; opacity: 0.85;">(สลับ ⇄)</span>
@@ -1741,81 +1747,83 @@
                     </div>
                 </div>
 
-
-                <!-- Live Active University Indicator (for Multi-University/Faculty Queue) -->
-                <div id="quick-uni-status-bar" style="display: none; margin-bottom: 12px; background: rgba(2, 132, 199, 0.12); border: 1.5px solid rgba(56, 189, 248, 0.6); border-radius: 10px; padding: 10px 14px; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 22px;">🏫</span>
-                        <div style="font-size: 15px; font-weight: 800; color: #0C4A6E;">
-                            กำลังรับ: <span id="quick-uni-current-name" style="color: #0284C7; font-weight: 900; font-size: 18px;">-</span>
-                            <span id="quick-uni-current-progress" style="font-size: 13px; color: #075985; font-weight: 700; margin-left: 6px; background: rgba(2, 132, 199, 0.15); padding: 3px 10px; border-radius: 6px;">(คนที่ 0/0 ในสถาบันนี้)</span>
+                <!-- Collapsible Body -->
+                <div id="quick-controls-body" style="display: block; margin-top: 12px; transition: all 0.25s ease;">
+                    <!-- Live Active University Indicator (for Multi-University/Faculty Queue) -->
+                    <div id="quick-uni-status-bar" style="display: none; margin-bottom: 12px; background: rgba(2, 132, 199, 0.12); border: 1.5px solid rgba(56, 189, 248, 0.6); border-radius: 10px; padding: 10px 14px; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 22px;">🏫</span>
+                            <div style="font-size: 15px; font-weight: 800; color: #0C4A6E;">
+                                กำลังรับ: <span id="quick-uni-current-name" style="color: #0284C7; font-weight: 900; font-size: 18px;">-</span>
+                                <span id="quick-uni-current-progress" style="font-size: 13px; color: #075985; font-weight: 700; margin-left: 6px; background: rgba(2, 132, 199, 0.15); padding: 3px 10px; border-radius: 6px;">(คนที่ 0/0 ในสถาบันนี้)</span>
+                            </div>
+                        </div>
+                        <div id="quick-uni-next-box" style="font-size: 13px; color: #92400E; font-weight: 800; background: rgba(245, 158, 11, 0.2); border: 1px solid #F59E0B; padding: 5px 12px; border-radius: 8px;">
+                            สถาบันถัดไป: <span id="quick-uni-next-name" style="font-weight: 900;">-</span>
                         </div>
                     </div>
-                    <div id="quick-uni-next-box" style="font-size: 13px; color: #92400E; font-weight: 800; background: rgba(245, 158, 11, 0.2); border: 1px solid #F59E0B; padding: 5px 12px; border-radius: 8px;">
-                        สถาบันถัดไป: <span id="quick-uni-next-name" style="font-weight: 900;">-</span>
+
+                    <!-- 1. Primary Live Counting Buttons -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                        <!-- Green +1 Button -->
+                        <button class="btn-control btn-plus" onclick="adjustCount(1)" style="height: 48px; min-height: 48px; font-size: 16px; font-weight: 800; background: linear-gradient(135deg, #10B981 0%, #059669 100%); box-shadow: 0 3px 10px rgba(16, 185, 129, 0.25); border: 1.5px solid #34D399; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;" title="กดปุ่มนี้ หรือ เคาะ Spacebar เมื่อบัณฑิตรับปริญญาบัตร">
+                            <span style="font-size: 18px;">➕</span>
+                            <span>นับเพิ่ม (+1)</span>
+                            <span style="font-size: 10px; font-weight: 800; color: #D1FAE5; background: rgba(0,0,0,0.2); padding: 1px 5px; border-radius: 4px;">Space</span>
+                        </button>
+
+                        <!-- Red -1 Button -->
+                        <button class="btn-control btn-minus" onclick="adjustCount(-1)" style="height: 48px; min-height: 48px; font-size: 16px; font-weight: 800; background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); box-shadow: 0 3px 10px rgba(239, 68, 68, 0.25); border: 1.5px solid #F87171; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;" title="กดยกเลิกคนล่าสุด เมื่อเผลอกดเกินหรือข้ามคน">
+                            <span style="font-size: 18px;">➖</span>
+                            <span>ลดจำนวน (-1)</span>
+                        </button>
                     </div>
-                </div>
 
-                <!-- 1. Primary Live Counting Buttons -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                    <!-- Green +1 Button -->
-                    <button class="btn-control btn-plus" onclick="adjustCount(1)" style="height: 48px; min-height: 48px; font-size: 16px; font-weight: 800; background: linear-gradient(135deg, #10B981 0%, #059669 100%); box-shadow: 0 3px 10px rgba(16, 185, 129, 0.25); border: 1.5px solid #34D399; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;" title="กดปุ่มนี้ หรือ เคาะ Spacebar เมื่อบัณฑิตรับปริญญาบัตร">
-                        <span style="font-size: 18px;">➕</span>
-                        <span>นับเพิ่ม (+1)</span>
-                        <span style="font-size: 10px; font-weight: 800; color: #D1FAE5; background: rgba(0,0,0,0.2); padding: 1px 5px; border-radius: 4px;">Space</span>
-                    </button>
+                    <!-- 2. Secondary Control Row: Pause & Reset -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                        <button class="btn-control btn-pause" id="btn-pause" onclick="togglePause()" style="height: 44px; min-height: 44px; font-size: 14.5px; font-weight: 800; background: #F59E0B; color: #000; border: 1px solid #FBBF24; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;" title="กดเพื่อพักการนับชั่วคราว">
+                            <span style="font-size: 17px;">⏸️</span>
+                            <span>พักการนับ</span>
+                        </button>
+                        <button class="btn-control btn-reset" onclick="resetCount()" style="height: 44px; min-height: 44px; font-size: 14.5px; font-weight: 800; background: #FFFFFF; color: #4A154B; border: 1px solid rgba(142, 56, 144, 0.25); border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;" title="กดเพื่อเริ่มรอบใหม่">
+                            <span style="font-size: 17px;">🔄</span>
+                            <span>รีเซ็ตรอบ</span>
+                        </button>
+                    </div>
 
-                    <!-- Red -1 Button -->
-                    <button class="btn-control btn-minus" onclick="adjustCount(-1)" style="height: 48px; min-height: 48px; font-size: 16px; font-weight: 800; background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); box-shadow: 0 3px 10px rgba(239, 68, 68, 0.25); border: 1.5px solid #F87171; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;" title="กดยกเลิกคนล่าสุด เมื่อเผลอกดเกินหรือข้ามคน">
-                        <span style="font-size: 18px;">➖</span>
-                        <span>ลดจำนวน (-1)</span>
-                    </button>
-                </div>
+                    <!-- 3. Live Ceremony Interventions: Break & Sync -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                        <button class="btn-action" id="btn-break-phase" style="height: 44px; min-height: 44px; padding: 0 12px; font-size: 14.5px; font-weight: 800; background: #FEF3C7; border: 1px solid #F59E0B; color: #92400E; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; cursor: pointer; box-sizing: border-box;" onclick="handleBreakButtonClick()" title="ใช้เมื่อประธานสั่งพักแถว">
+                            <span id="btn-break-text" style="font-size: 14.5px; font-weight: 800;">⏸️ พักแถว</span>
+                            <span id="btn-break-subtext" style="display: none;"></span>
+                        </button>
+                        <button class="btn-action" style="height: 44px; min-height: 44px; padding: 0 12px; font-size: 14.5px; font-weight: 800; background: #E0F2FE; border: 1px solid #0284C7; color: #075985; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; cursor: pointer; box-sizing: border-box;" onclick="triggerSyncTargetToActual()" title="ปรับเป้าหมายให้เท่ากับยอดรับจริงทันที">
+                            <span style="font-size: 14.5px; font-weight: 800;">🎯 ปรับเป้า = ยอดจริง</span>
+                        </button>
+                    </div>
 
-                <!-- 2. Secondary Control Row: Pause & Reset -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-                    <button class="btn-control btn-pause" id="btn-pause" onclick="togglePause()" style="height: 44px; min-height: 44px; font-size: 14.5px; font-weight: 800; background: #F59E0B; color: #000; border: 1px solid #FBBF24; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;" title="กดเพื่อพักการนับชั่วคราว">
-                        <span style="font-size: 17px;">⏸️</span>
-                        <span>พักการนับ</span>
-                    </button>
-                    <button class="btn-control btn-reset" onclick="resetCount()" style="height: 44px; min-height: 44px; font-size: 14.5px; font-weight: 800; background: #FFFFFF; color: #4A154B; border: 1px solid rgba(142, 56, 144, 0.25); border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;" title="กดเพื่อเริ่มรอบใหม่">
-                        <span style="font-size: 17px;">🔄</span>
-                        <span>รีเซ็ตรอบ</span>
-                    </button>
-                </div>
-
-                <!-- 3. Live Ceremony Interventions: Break & Sync -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
-                    <button class="btn-action" id="btn-break-phase" style="height: 44px; min-height: 44px; padding: 0 12px; font-size: 14.5px; font-weight: 800; background: #FEF3C7; border: 1px solid #F59E0B; color: #92400E; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; cursor: pointer; box-sizing: border-box;" onclick="handleBreakButtonClick()" title="ใช้เมื่อประธานสั่งพักแถว">
-                        <span id="btn-break-text" style="font-size: 14.5px; font-weight: 800;">⏸️ พักแถว</span>
-                        <span id="btn-break-subtext" style="display: none;"></span>
-                    </button>
-                    <button class="btn-action" style="height: 44px; min-height: 44px; padding: 0 12px; font-size: 14.5px; font-weight: 800; background: #E0F2FE; border: 1px solid #0284C7; color: #075985; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; cursor: pointer; box-sizing: border-box;" onclick="triggerSyncTargetToActual()" title="ปรับเป้าหมายให้เท่ากับยอดรับจริงทันที">
-                        <span style="font-size: 14.5px; font-weight: 800;">🎯 ปรับเป้า = ยอดจริง</span>
-                    </button>
-                </div>
-
-                <!-- 4. Direct Fast Count & Target Calibration -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: flex-end; padding-top: 8px; border-top: 1px solid rgba(142, 56, 144, 0.1);">
-                    <div>
-                        <label style="font-size: 12px; color: #D97706; font-weight: 700; display: block; margin-bottom: 3px;">
-                            🔢 แก้ไขยอดรับจริง:
-                        </label>
-                        <div style="display: flex; gap: 4px;">
-                            <input type="number" id="current-count-input" class="input-field" placeholder="ยอดคน" min="0" style="padding: 6px 8px; font-size: 15px; font-weight: 800; height: 38px; text-align: center; border-radius: 8px;" onkeydown="if(event.key==='Enter') applyCurrentCount()">
-                            <button class="btn-action" style="padding: 6px 12px; font-size: 13px; font-weight: 800; background: linear-gradient(135deg, #10B981, #059669); white-space: nowrap; height: 38px; border-radius: 8px;" onclick="applyCurrentCount()">ตั้งยอด</button>
+                    <!-- 4. Direct Fast Count & Target Calibration -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: flex-end; padding-top: 8px; border-top: 1px solid rgba(142, 56, 144, 0.1);">
+                        <div>
+                            <label style="font-size: 12px; color: #D97706; font-weight: 700; display: block; margin-bottom: 3px;">
+                                🔢 แก้ไขยอดรับจริง:
+                            </label>
+                            <div style="display: flex; gap: 4px;">
+                                <input type="number" id="current-count-input" class="input-field" placeholder="ยอดคน" min="0" style="padding: 6px 8px; font-size: 15px; font-weight: 800; height: 38px; text-align: center; border-radius: 8px;" onkeydown="if(event.key==='Enter') applyCurrentCount()">
+                                <button class="btn-action" style="padding: 6px 12px; font-size: 13px; font-weight: 800; background: linear-gradient(135deg, #10B981, #059669); white-space: nowrap; height: 38px; border-radius: 8px;" onclick="applyCurrentCount()">ตั้งยอด</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label style="font-size: 12px; color: #4A154B; font-weight: 700; display: block; margin-bottom: 3px;">
+                                🎯 แก้เป้าหมายรอบนี้:
+                            </label>
+                            <div style="display: flex; gap: 4px;">
+                                <input type="number" id="target-input" class="input-field" value="900" min="1" style="padding: 6px 8px; font-size: 15px; font-weight: 800; height: 38px; text-align: center; border-radius: 8px;" onkeydown="if(event.key==='Enter') updateTarget()">
+                                <button class="btn-action" style="padding: 6px 12px; font-size: 13px; font-weight: 800; background: linear-gradient(135deg, #0284C7, #0369A1); white-space: nowrap; height: 38px; border-radius: 8px;" onclick="updateTarget()">ปรับเป้า</button>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <label style="font-size: 12px; color: #4A154B; font-weight: 700; display: block; margin-bottom: 3px;">
-                            🎯 แก้เป้าหมายรอบนี้:
-                        </label>
-                        <div style="display: flex; gap: 4px;">
-                            <input type="number" id="target-input" class="input-field" value="900" min="1" style="padding: 6px 8px; font-size: 15px; font-weight: 800; height: 38px; text-align: center; border-radius: 8px;" onkeydown="if(event.key==='Enter') updateTarget()">
-                            <button class="btn-action" style="padding: 6px 12px; font-size: 13px; font-weight: 800; background: linear-gradient(135deg, #0284C7, #0369A1); white-space: nowrap; height: 38px; border-radius: 8px;" onclick="updateTarget()">ปรับเป้า</button>
-                        </div>
-                    </div>
-                </div>
+                </div> <!-- End quick-controls-body -->
             </div>
 
             <!-- Real-Time Break Batch Progress Card (Collapsible with Arrow) -->
@@ -2498,6 +2506,42 @@
 
         let isBreakTaken = false;
 
+        // ==========================================
+        // 🎛️ COLLAPSIBLE LIVE OPERATOR QUICK BAR
+        // ==========================================
+        function toggleQuickControlsCard(forceState) {
+            const body = document.getElementById('quick-controls-body');
+            const arrow = document.getElementById('quick-arrow-icon');
+            const hint = document.getElementById('quick-toggle-hint');
+            const card = document.getElementById('card-quick-controls');
+            if (!body) return;
+
+            const isCurrentlyHidden = body.style.display === 'none';
+            const shouldShow = (forceState !== undefined) ? forceState : isCurrentlyHidden;
+
+            if (shouldShow) {
+                body.style.display = 'block';
+                if (arrow) arrow.textContent = '▼';
+                if (hint) hint.textContent = '(คลิกเพื่อพับ ▲)';
+                if (card) card.style.padding = '12px 16px';
+                try { localStorage.setItem('quick_controls_open', 'true'); } catch (e) {}
+            } else {
+                body.style.display = 'none';
+                if (arrow) arrow.textContent = '▶';
+                if (hint) hint.textContent = '(คลิกเพื่อขยายแผงปุ่ม ▾)';
+                if (card) card.style.padding = '10px 16px';
+                try { localStorage.setItem('quick_controls_open', 'false'); } catch (e) {}
+            }
+        }
+
+        function initQuickControlsCollapse() {
+            try {
+                const saved = localStorage.getItem('quick_controls_open');
+                if (saved === 'false') {
+                    toggleQuickControlsCard(false);
+                }
+            } catch (e) {}
+        }
         
         // ==========================================
         // ⏸️ COLLAPSIBLE BREAK BATCHES CARD
@@ -4274,6 +4318,7 @@
         loadSampleVideos();
         connectWS();
         initBreakBatchesCollapse();
+        initQuickControlsCollapse();
     
 
 // ==========================================
