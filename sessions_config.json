@@ -6,8 +6,8 @@
     "finish_time": "11:50",
     "time_range": "08:30 - 11:50",
     "total_target": 2000,
-    "pre_break_range": "1-250",
-    "post_break_range": "251-2,000",
+    "pre_break_range": "1-407",
+    "post_break_range": "408-2,000",
     "universities": [
       {
         "name": "ม.ราชภัฏบุรีรัมย์",
@@ -45,9 +45,11 @@
   },
   "theme": "purple-yellow",
   "obs_settings": {
-    "position": "bottom-center",
-    "scale": 1.0,
+    "position": "custom",
+    "scale": 0.9,
     "pad_x": 48,
-    "pad_y": 36
+    "pad_y": 34,
+    "pos_x_pct": 13.0,
+    "pos_y_pct": 12.9
   }
 }

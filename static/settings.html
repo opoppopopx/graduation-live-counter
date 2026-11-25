@@ -398,6 +398,9 @@
         <button class="tab-btn" id="tab-nav-report" onclick="switchSettingsTab('report')">
             📊 5. รายงานสรุปพิธี & Export Excel
         </button>
+        <button class="tab-btn" id="tab-nav-accounts" onclick="switchSettingsTab('accounts')">
+            👥 6. จัดการบัญชีผู้ดูแล & เจ้าหน้าที่ (Admin & Operator Accounts)
+        </button>
     </div>
 
     <!-- ========================================== -->
@@ -924,6 +927,192 @@
         </div>
     </div>
 
+    <!-- ========================================== -->
+    <!-- TAB 6: USER & OPERATOR ACCOUNTS MANAGEMENT -->
+    <!-- ========================================== -->
+    <div id="tab-content-accounts" class="tab-content" style="display: none;">
+        <div class="settings-card">
+            <div class="card-header-row">
+                <div>
+                    <div class="card-title">
+                        <span>👥</span> จัดการบัญชีผู้ดูแลระบบ & เจ้าหน้าที่คุมเครื่อง (User & Operator Accounts)
+                    </div>
+                    <p style="margin: 6px 0 0 0; font-size: 15px; color: #6B4E70; font-weight: 600;">
+                        เพิ่ม ลบ หรือแก้ไขชื่อผู้ใช้งาน (Username), รหัสผ่าน (Password) และสิทธิ์การใช้งานสำหรับทีมงาน
+                    </p>
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn-action" style="background: linear-gradient(135deg, #8E3890, #6E2271); font-size: 16px; font-weight: 900; padding: 12px 24px;" onclick="openAddUserModal()">
+                        ➕ เพิ่มบัญชีผู้ใช้ใหม่
+                    </button>
+                    <button class="btn-action" style="background: #F3E8F5; color: #5B185D; font-weight: 800; border: 1.5px solid rgba(142,56,144,0.3);" onclick="loadUsersList()">
+                        🔄 รีเฟรชรายการ
+                    </button>
+                </div>
+            </div>
+
+            <!-- Role explanation cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-bottom: 20px;">
+                <div style="background: #FAF4FA; border: 1.5px solid #8E3890; border-radius: 14px; padding: 16px 20px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <span style="font-size: 17px; font-weight: 900; color: #5B185D;">👑 ผู้ดูแลระบบ (Admin)</span>
+                        <span id="stat-count-admin" style="font-size: 22px; font-weight: 900; color: #6E2271;">1 บัญชี</span>
+                    </div>
+                    <p style="margin: 6px 0 0 0; font-size: 14px; color: #6B4E70;">สิทธิ์สูงสุด เข้าถึงหน้าตั้งค่าขั้นสูง (Settings), จัดการรอบ, จัดการผู้ใช้, และส่งออกรายงานได้ทั้งหมด</p>
+                </div>
+                <div style="background: #FAF4FA; border: 1.5px solid #0284C7; border-radius: 14px; padding: 16px 20px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <span style="font-size: 17px; font-weight: 900; color: #0284C7;">👤 เจ้าหน้าที่คุมเครื่อง (Operator)</span>
+                        <span id="stat-count-operator" style="font-size: 22px; font-weight: 900; color: #0369A1;">0 บัญชี</span>
+                    </div>
+                    <p style="margin: 6px 0 0 0; font-size: 14px; color: #6B4E70;">สำหรับทีมงานคุมหน้างาน เข้าใช้งานหน้าคุมจอสด (Live Monitor), กดนับบัณฑิต, พักแถว, และเปิดป้าย OBS ได้</p>
+                </div>
+            </div>
+
+            <!-- Users Table Container -->
+            <div style="background: #FFFFFF; border: 1.5px solid rgba(142, 56, 144, 0.2); border-radius: 14px; padding: 18px; box-shadow: 0 4px 14px rgba(142, 56, 144, 0.06);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+                    <div style="font-size: 17px; font-weight: 900; color: #5B185D;">
+                        📋 รายชื่อบัญชีผู้ใช้งานในระบบทั้งหมด (<span id="users-total-count">0</span> บัญชี)
+                    </div>
+                    <input type="text" id="users-search-input" placeholder="🔍 ค้นหาชื่อ หรือ Username..." class="input-field" style="max-width: 280px; padding: 8px 16px; font-size: 16px; min-height: 44px;" oninput="filterUsersTable(this.value)">
+                </div>
+
+                <div style="overflow-x: auto; border: 1px solid rgba(142, 56, 144, 0.15); border-radius: 10px;">
+                    <table class="report-table" id="users-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px; text-align: center;">รูป</th>
+                                <th>ชื่อผู้ใช้ (Username)</th>
+                                <th>ชื่อ-นามสกุล / ตำแหน่งแสดงผล</th>
+                                <th>บทบาท / สิทธิ์</th>
+                                <th>วันที่สร้าง</th>
+                                <th style="text-align: center; width: 220px;">การจัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #8A658F; padding: 24px;">กำลังโหลดรายชื่อผู้ใช้...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL: ADD NEW USER -->
+    <!-- ========================================== -->
+    <div id="modal-add-user" style="position: fixed; inset: 0; background: rgba(30, 10, 35, 0.6); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 99999; padding: 20px;">
+        <div style="background: #FFFFFF; border-radius: 20px; border: 2.5px solid #8E3890; width: 100%; max-width: 520px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); overflow: hidden;">
+            <div style="background: linear-gradient(135deg, #8E3890, #6E2271); padding: 18px 24px; color: #FFFFFF; display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px;">
+                    <span>➕</span> เพิ่มบัญชีผู้ใช้งานใหม่
+                </div>
+                <button type="button" onclick="closeAddUserModal()" style="background: none; border: none; color: #FFFFFF; font-size: 24px; cursor: pointer; font-weight: 900;">✕</button>
+            </div>
+            <form onsubmit="submitAddUser(event)" style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                <div>
+                    <label style="display: block; font-size: 15px; font-weight: 800; color: #5B185D; margin-bottom: 6px;">
+                        ชื่อผู้ใช้ (Username) <span style="color: #DC2626;">*</span>
+                    </label>
+                    <input type="text" id="add-user-username" required placeholder="เช่น admin2, operator1" class="input-field" style="width: 100%;" autocomplete="off">
+                    <span style="font-size: 12px; color: #8A658F;">ตัวอักษรภาษาอังกฤษ ตัวเลข ขีดล่าง หรือขีดกลาง (3-30 ตัวอักษร)</span>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 15px; font-weight: 800; color: #5B185D; margin-bottom: 6px;">
+                        ชื่อ-นามสกุล / ตำแหน่งแสดงผล <span style="color: #DC2626;">*</span>
+                    </label>
+                    <input type="text" id="add-user-name" required placeholder="เช่น นายสมชาย ใจดี (คนคุม 1)" class="input-field" style="width: 100%;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 15px; font-weight: 800; color: #5B185D; margin-bottom: 6px;">
+                        บทบาท / สิทธิ์การใช้งาน <span style="color: #DC2626;">*</span>
+                    </label>
+                    <select id="add-user-role" class="input-field" style="width: 100%;">
+                        <option value="operator">👤 เจ้าหน้าที่คุมเครื่อง (Operator)</option>
+                        <option value="admin">👑 ผู้ดูแลระบบ (Admin)</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 15px; font-weight: 800; color: #5B185D; margin-bottom: 6px;">
+                        รหัสผ่าน (Password) <span style="color: #DC2626;">*</span>
+                    </label>
+                    <div style="position: relative;">
+                        <input type="password" id="add-user-password" required placeholder="กำหนดรหัสผ่านอย่างน้อย 4 ตัวอักษร" class="input-field" style="width: 100%; padding-right: 46px;">
+                        <button type="button" onclick="togglePasswordVisibility('add-user-password', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 18px; color: #6E2271;" title="ดู/ซ่อนรหัสผ่าน">👁️</button>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 10px;">
+                    <button type="button" onclick="closeAddUserModal()" class="btn-action" style="background: #F3F4F6; color: #4B5563; font-weight: 800;">
+                        ยกเลิก
+                    </button>
+                    <button type="submit" id="btn-submit-add-user" class="btn-action" style="background: linear-gradient(135deg, #8E3890, #6E2271); font-weight: 900;">
+                        💾 บันทึกสร้างบัญชี
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL: EDIT USER & CHANGE PASSWORD -->
+    <!-- ========================================== -->
+    <div id="modal-edit-user" style="position: fixed; inset: 0; background: rgba(30, 10, 35, 0.6); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 99999; padding: 20px;">
+        <div style="background: #FFFFFF; border-radius: 20px; border: 2.5px solid #0284C7; width: 100%; max-width: 520px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); overflow: hidden;">
+            <div style="background: linear-gradient(135deg, #0284C7, #0369A1); padding: 18px 24px; color: #FFFFFF; display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 8px;">
+                    <span>✏️</span> แก้ไขข้อมูล & เปลี่ยนรหัสผ่าน
+                </div>
+                <button type="button" onclick="closeEditUserModal()" style="background: none; border: none; color: #FFFFFF; font-size: 24px; cursor: pointer; font-weight: 900;">✕</button>
+            </div>
+            <form onsubmit="submitEditUser(event)" style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                <input type="hidden" id="edit-user-orig-username">
+                <div>
+                    <label style="display: block; font-size: 15px; font-weight: 800; color: #5B185D; margin-bottom: 6px;">
+                        ชื่อผู้ใช้ (Username) <span style="color: #DC2626;">*</span>
+                    </label>
+                    <input type="text" id="edit-user-username" required class="input-field" style="width: 100%;" autocomplete="off">
+                    <span style="font-size: 12px; color: #8A658F;">สามารถแก้ไขชื่อผู้ใช้ได้ (ตัวอักษรภาษาอังกฤษ ตัวเลข ขีดล่าง หรือขีดกลาง 3-30 ตัว)</span>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 15px; font-weight: 800; color: #5B185D; margin-bottom: 6px;">
+                        ชื่อ-นามสกุล / ตำแหน่งแสดงผล <span style="color: #DC2626;">*</span>
+                    </label>
+                    <input type="text" id="edit-user-name" required class="input-field" style="width: 100%;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 15px; font-weight: 800; color: #5B185D; margin-bottom: 6px;">
+                        บทบาท / สิทธิ์การใช้งาน <span style="color: #DC2626;">*</span>
+                    </label>
+                    <select id="edit-user-role" class="input-field" style="width: 100%;">
+                        <option value="operator">👤 เจ้าหน้าที่คุมเครื่อง (Operator)</option>
+                        <option value="admin">👑 ผู้ดูแลระบบ (Admin)</option>
+                    </select>
+                </div>
+                <div style="background: #F8FAFC; border: 1.5px dashed #CBD5E1; border-radius: 12px; padding: 14px;">
+                    <label style="display: block; font-size: 15px; font-weight: 800; color: #0369A1; margin-bottom: 6px;">
+                        🔑 เปลี่ยนรหัสผ่านใหม่ (Password)
+                    </label>
+                    <div style="position: relative;">
+                        <input type="password" id="edit-user-password" placeholder="เว้นว่างไว้หากไม่ต้องการเปลี่ยนรหัสผ่าน" class="input-field" style="width: 100%; padding-right: 46px; background: #FFFFFF;">
+                        <button type="button" onclick="togglePasswordVisibility('edit-user-password', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 18px; color: #0284C7;" title="ดู/ซ่อนรหัสผ่าน">👁️</button>
+                    </div>
+                    <span style="font-size: 12px; color: #64748B;">หากต้องการเปลี่ยนรหัสผ่าน ให้กรอกรหัสผ่านใหม่อย่างน้อย 4 ตัวอักษร</span>
+                </div>
+                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 10px;">
+                    <button type="button" onclick="closeEditUserModal()" class="btn-action" style="background: #F3F4F6; color: #4B5563; font-weight: 800;">
+                        ยกเลิก
+                    </button>
+                    <button type="submit" id="btn-submit-edit-user" class="btn-action" style="background: linear-gradient(135deg, #0284C7, #0369A1); font-weight: 900;">
+                        💾 บันทึกการเปลี่ยนแปลง
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script>
 
@@ -1025,8 +1214,284 @@
 
             if (tabId === 'report') {
                 loadReportData();
+            } else if (tabId === 'accounts') {
+                loadUsersList();
             }
         }
+
+        // ==========================================
+        // 6. User & Operator Accounts Management
+        // ==========================================
+        let allLoadedUsers = [];
+
+        function escapeUserHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerText = '🙈';
+            } else {
+                input.type = 'password';
+                btn.innerText = '👁️';
+            }
+        }
+
+        async function loadUsersList() {
+            const tbody = document.getElementById('users-table-body');
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #8A658F; padding: 24px;">🔄 กำลังโหลดข้อมูลบัญชีผู้ใช้...</td></tr>';
+            }
+            try {
+                const res = await fetch('/api/auth/users');
+                if (res.status === 401) {
+                    showToast('⚠️ กรุณาเข้าสู่ระบบก่อน');
+                    return;
+                }
+                const data = await res.json();
+                if (data.success && data.users) {
+                    allLoadedUsers = data.users;
+                    renderUsersTable(allLoadedUsers);
+                } else {
+                    showToast('❌ ไม่สามารถโหลดรายการผู้ใช้ได้');
+                }
+            } catch (e) {
+                console.error('Error loading users:', e);
+                showToast('❌ ข้อผิดพลาดในการเชื่อมต่อ: ' + e.message);
+            }
+        }
+
+        function renderUsersTable(users) {
+            const tbody = document.getElementById('users-table-body');
+            const totalEl = document.getElementById('users-total-count');
+            const adminCountEl = document.getElementById('stat-count-admin');
+            const opCountEl = document.getElementById('stat-count-operator');
+
+            if (totalEl) totalEl.innerText = users.length;
+
+            let adminCount = 0;
+            let opCount = 0;
+            users.forEach(u => {
+                if (u.role === 'admin') adminCount++;
+                else opCount++;
+            });
+            if (adminCountEl) adminCountEl.innerText = `${adminCount} บัญชี`;
+            if (opCountEl) opCountEl.innerText = `${opCount} บัญชี`;
+
+            if (!tbody) return;
+
+            if (!users || users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #8A658F; padding: 24px;">ไม่พบข้อมูลผู้ใช้ในระบบ</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map(u => {
+                const isAdmin = u.role === 'admin';
+                const roleBadge = isAdmin
+                    ? '<span style="background: #FDF2F8; color: #BE185D; border: 1.5px solid #F472B6; padding: 4px 12px; border-radius: 20px; font-weight: 900; font-size: 14px; display: inline-flex; align-items: center; gap: 4px;">👑 ผู้ดูแลระบบ (Admin)</span>'
+                    : '<span style="background: #EFF6FF; color: #1D4ED8; border: 1.5px solid #60A5FA; padding: 4px 12px; border-radius: 20px; font-weight: 900; font-size: 14px; display: inline-flex; align-items: center; gap: 4px;">👤 เจ้าหน้าที่คุมเครื่อง (Operator)</span>';
+
+                const avatarIcon = isAdmin ? '👑' : '👤';
+                const avatarBg = isAdmin ? '#FCE7F3' : '#DBEAFE';
+                const escapedUname = escapeUserHtml(u.username);
+                const escapedName = escapeUserHtml(u.name || '-');
+                const escapedDate = escapeUserHtml(u.created_at || '-');
+
+                return `
+                    <tr>
+                        <td style="text-align: center;">
+                            <div style="width: 44px; height: 44px; border-radius: 50%; background: ${avatarBg}; display: inline-flex; align-items: center; justify-content: center; font-size: 22px; border: 1.5px solid rgba(142,56,144,0.2); box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
+                                ${avatarIcon}
+                            </div>
+                        </td>
+                        <td style="font-weight: 900; color: #5B185D; font-size: 18px;">
+                            <code style="background: #FAF4FA; padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(142,56,144,0.2);">${escapedUname}</code>
+                        </td>
+                        <td style="font-weight: 700; color: #2A122D; font-size: 17px;">
+                            ${escapedName}
+                        </td>
+                        <td>${roleBadge}</td>
+                        <td style="color: #6B4E70; font-size: 15px;">${escapedDate}</td>
+                        <td style="text-align: center;">
+                            <div style="display: flex; gap: 8px; justify-content: center;">
+                                <button type="button" class="btn-action" style="padding: 8px 14px; font-size: 14px; font-weight: 800; min-height: 40px; background: #FAF5FF; color: #6E2271; border: 1.5px solid #D8B4FE;" onclick="openEditUserModal('${escapedUname}')">
+                                    ✏️ แก้ไข / รหัสผ่าน
+                                </button>
+                                <button type="button" class="btn-action" style="padding: 8px 14px; font-size: 14px; font-weight: 800; min-height: 40px; background: #FEF2F2; color: #DC2626; border: 1.5px solid #FCA5A5;" onclick="deleteUserAccount('${escapedUname}')">
+                                    🗑️ ลบ
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterUsersTable(q) {
+            const query = (q || '').trim().toLowerCase();
+            if (!query) {
+                renderUsersTable(allLoadedUsers);
+                return;
+            }
+            const filtered = allLoadedUsers.filter(u => 
+                (u.username && u.username.toLowerCase().includes(query)) ||
+                (u.name && u.name.toLowerCase().includes(query)) ||
+                (u.role && u.role.toLowerCase().includes(query))
+            );
+            renderUsersTable(filtered);
+        }
+
+        function openAddUserModal() {
+            document.getElementById('add-user-username').value = '';
+            document.getElementById('add-user-name').value = '';
+            document.getElementById('add-user-role').value = 'operator';
+            document.getElementById('add-user-password').value = '';
+            document.getElementById('add-user-password').type = 'password';
+            document.getElementById('modal-add-user').style.display = 'flex';
+        }
+
+        function closeAddUserModal() {
+            document.getElementById('modal-add-user').style.display = 'none';
+        }
+
+        async function submitAddUser(e) {
+            e.preventDefault();
+            const username = document.getElementById('add-user-username').value.trim();
+            const name = document.getElementById('add-user-name').value.trim();
+            const role = document.getElementById('add-user-role').value;
+            const password = document.getElementById('add-user-password').value;
+
+            if (!username || !name || !password) {
+                showToast('⚠️ กรุณากรอกข้อมูลให้ครบทุกช่อง');
+                return;
+            }
+
+            const btn = document.getElementById('btn-submit-add-user');
+            if (btn) btn.disabled = true;
+
+            try {
+                const res = await fetch('/api/auth/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, name, role, password })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showToast(`✅ ${data.message}`);
+                    closeAddUserModal();
+                    loadUsersList();
+                } else {
+                    showToast(`❌ ${data.detail || 'เกิดข้อผิดพลาดในการสร้างบัญชี'}`);
+                }
+            } catch (err) {
+                showToast(`❌ ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์: ${err.message}`);
+            } finally {
+                if (btn) btn.disabled = false;
+            }
+        }
+
+        function openEditUserModal(username) {
+            const user = allLoadedUsers.find(u => u.username === username);
+            if (!user) {
+                showToast('❌ ไม่พบข้อมูลผู้ใช้');
+                return;
+            }
+            document.getElementById('edit-user-orig-username').value = user.username;
+            document.getElementById('edit-user-username').value = user.username;
+            document.getElementById('edit-user-name').value = user.name || '';
+            document.getElementById('edit-user-role').value = user.role || 'operator';
+            document.getElementById('edit-user-password').value = '';
+            document.getElementById('edit-user-password').type = 'password';
+            document.getElementById('modal-edit-user').style.display = 'flex';
+        }
+
+        function closeEditUserModal() {
+            document.getElementById('modal-edit-user').style.display = 'none';
+        }
+
+        async function submitEditUser(e) {
+            e.preventDefault();
+            const origUsername = document.getElementById('edit-user-orig-username').value;
+            const newUsername = document.getElementById('edit-user-username').value.trim();
+            const name = document.getElementById('edit-user-name').value.trim();
+            const role = document.getElementById('edit-user-role').value;
+            const password = document.getElementById('edit-user-password').value;
+
+            if (!newUsername || !name) {
+                showToast('⚠️ กรุณากรอกชื่อผู้ใช้และชื่อแสดงผล');
+                return;
+            }
+
+            const payload = {
+                new_username: newUsername,
+                name: name,
+                role: role
+            };
+            if (password && password.trim().length > 0) {
+                payload.password = password.trim();
+            }
+
+            const btn = document.getElementById('btn-submit-edit-user');
+            if (btn) btn.disabled = true;
+
+            try {
+                const res = await fetch(`/api/auth/users/${encodeURIComponent(origUsername)}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showToast(`✅ ${data.message}`);
+                    closeEditUserModal();
+                    loadUsersList();
+                } else {
+                    showToast(`❌ ${data.detail || 'เกิดข้อผิดพลาดในการแก้ไข'}`);
+                }
+            } catch (err) {
+                showToast(`❌ ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์: ${err.message}`);
+            } finally {
+                if (btn) btn.disabled = false;
+            }
+        }
+
+        async function deleteUserAccount(username) {
+            if (!confirm(`⚠️ ยืนยันการลบบัญชี '${username}' ใช่หรือไม่?\nการดำเนินการนี้ไม่สามารถยกเลิกได้`)) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/auth/users/${encodeURIComponent(username)}`, {
+                    method: 'DELETE'
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showToast(`✅ ${data.message}`);
+                    loadUsersList();
+                } else {
+                    showToast(`❌ ${data.detail || 'ไม่สามารถลบบัญชีได้'}`);
+                }
+            } catch (err) {
+                showToast(`❌ ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์: ${err.message}`);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchParams = new URLSearchParams(window.location.search);
+            const tabParam = searchParams.get('tab');
+            if (tabParam === 'accounts' || window.location.hash === '#accounts') {
+                switchSettingsTab('accounts');
+            }
+        });
 
         // ==========================================
         // 1. Pacing & Cadence Controls

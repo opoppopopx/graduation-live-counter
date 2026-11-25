@@ -1,4 +1,5 @@
 import os
+import re
 import cv2
 import time
 import json
@@ -31,74 +32,126 @@ os.makedirs(VIDEOS_DIR, exist_ok=True)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 # ==============================================================================
-# 🔐 AUTHENTICATION & ACCESS CONTROL (MOCK / READY FOR DATABASE CONNECTION)
+# 🔐 AUTHENTICATION & ACCESS CONTROL (PERSISTED USER & SESSION STORE)
 # ==============================================================================
 class LoginRequest(BaseModel):
     username: str
     password: str
     remember: bool = True
 
-AUTH_SESSIONS_FILE = os.path.join(BASE_DIR, "auth_sessions.json")
+class CreateUserRequest(BaseModel):
+    username: str
+    password: str
+    name: str
+    role: str = "operator"
 
-def load_active_sessions() -> set:
+class UpdateUserRequest(BaseModel):
+    new_username: Optional[str] = None
+    password: Optional[str] = None
+    name: Optional[str] = None
+    role: Optional[str] = None
+
+AUTH_SESSIONS_FILE = os.path.join(BASE_DIR, "auth_sessions.json")
+AUTH_USERS_FILE = os.path.join(BASE_DIR, "auth_users.json")
+
+def load_users() -> dict:
+    if os.path.exists(AUTH_USERS_FILE):
+        try:
+            with open(AUTH_USERS_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, dict) and len(data) > 0:
+                    return data
+        except Exception as e:
+            logger.warning(f"Failed to load users: {e}")
+    # Default initial admin account if not configured
+    default_users = {
+        "admin": {
+            "password": "admin1234",
+            "name": "ผู้ดูแลระบบส่วนกลาง (Admin)",
+            "role": "admin",
+            "created_at": time.strftime("%Y-%m-%d %H:%M:%S")
+        }
+    }
+    save_users(default_users)
+    return default_users
+
+def save_users(users: dict):
+    try:
+        with open(AUTH_USERS_FILE, "w", encoding="utf-8") as f:
+            json.dump(users, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        logger.error(f"Failed to save users: {e}")
+
+def load_active_sessions() -> tuple:
+    sessions = set()
+    user_map = {}
     if os.path.exists(AUTH_SESSIONS_FILE):
         try:
             with open(AUTH_SESSIONS_FILE, "r", encoding="utf-8") as f:
                 data = json.load(f)
-                return set(data.get("sessions", []))
+                sessions = set(data.get("sessions", []))
+                user_map = data.get("user_sessions", {})
         except Exception:
             pass
-    return set()
+    return sessions, user_map
 
-def save_active_sessions(sessions: set):
+def save_active_sessions(sessions: set, user_map: dict = None):
+    if user_map is None:
+        user_map = ACTIVE_SESSION_USERS
     try:
         with open(AUTH_SESSIONS_FILE, "w", encoding="utf-8") as f:
-            json.dump({"sessions": list(sessions)}, f)
+            json.dump({
+                "sessions": list(sessions),
+                "user_sessions": user_map
+            }, f, ensure_ascii=False, indent=2)
     except Exception as e:
         logger.warning(f"Failed to persist sessions: {e}")
 
-ACTIVE_SESSIONS = load_active_sessions()
-
-# ------------------------------------------------------------------------------
-# PLACEHOLDER USER DATABASE
-# (TODO: Connect your actual Database here - e.g. PostgreSQL, MySQL, SQLite, MongoDB)
-# ------------------------------------------------------------------------------
-MOCK_USER_DB = {
-    "admin": {
-        "password": "admin1234",  # In production, store password hash (e.g. bcrypt/argon2)
-        "name": "ผู้ดูแลระบบส่วนกลาง (Admin)",
-        "role": "admin"
-    }
-}
+ACTIVE_SESSIONS, ACTIVE_SESSION_USERS = load_active_sessions()
 
 def authenticate_user_db(username: str, password: str) -> Optional[dict]:
-    """
-    Placeholder database authentication function.
-    Replace this function body with your actual database queries:
-    
-    Example (SQLAlchemy / PostgreSQL / MySQL / SQLite):
-        user = db.query(UserModel).filter(UserModel.username == username).first()
-        if user and pwd_context.verify(password, user.hashed_password):
-            return {"username": user.username, "name": user.full_name, "role": user.role}
-        return None
-    """
-    user = MOCK_USER_DB.get(username)
-    if user and user["password"] == password:
+    """Authenticate user against persisted user store (auth_users.json)."""
+    users = load_users()
+    user = users.get(username)
+    if user and user.get("password") == password:
         return {
             "username": username,
-            "name": user["name"],
-            "role": user["role"]
+            "name": user.get("name", username),
+            "role": user.get("role", "operator"),
+            "created_at": user.get("created_at", "-")
         }
     return None
 
-def is_authenticated(request: Request) -> bool:
-    """Check if request has a valid session token via cookie or Authorization header."""
+def get_session_token(request: Request) -> Optional[str]:
+    """Extract session token from cookie or Authorization header."""
     token = request.cookies.get("grad_auth_session")
     if not token:
         auth_header = request.headers.get("Authorization", "")
         if auth_header.startswith("Bearer "):
             token = auth_header[7:].strip()
+    return token
+
+def is_authenticated(request: Request) -> bool:
+    """Check if request has a valid session token."""
+    token = get_session_token(request)
     return bool(token and token in ACTIVE_SESSIONS)
+
+def get_current_user(request: Request) -> Optional[dict]:
+    """Retrieve full user profile for current authenticated request."""
+    token = get_session_token(request)
+    if token and token in ACTIVE_SESSIONS:
+        username = ACTIVE_SESSION_USERS.get(token, "admin")
+        users = load_users()
+        user_info = users.get(username)
+        if user_info:
+            return {
+                "username": username,
+                "name": user_info.get("name", username),
+                "role": user_info.get("role", "admin"),
+                "created_at": user_info.get("created_at", "-")
+            }
+        return {"username": username, "name": username, "role": "admin"}
+    return None
 
 
 # Core Modules
@@ -604,7 +657,8 @@ def api_login(req: LoginRequest, response: Response):
         )
     token = f"grad_sess_{uuid.uuid4().hex}"
     ACTIVE_SESSIONS.add(token)
-    save_active_sessions(ACTIVE_SESSIONS)
+    ACTIVE_SESSION_USERS[token] = req.username
+    save_active_sessions(ACTIVE_SESSIONS, ACTIVE_SESSION_USERS)
 
     max_age = (86400 * 30) if req.remember else 86400  # 30 days or 1 day
     response.set_cookie(
@@ -623,16 +677,238 @@ def api_login(req: LoginRequest, response: Response):
 
 @app.post("/api/auth/logout")
 def api_logout(request: Request, response: Response):
-    token = request.cookies.get("grad_auth_session")
+    token = get_session_token(request)
     if token and token in ACTIVE_SESSIONS:
         ACTIVE_SESSIONS.remove(token)
-        save_active_sessions(ACTIVE_SESSIONS)
+        ACTIVE_SESSION_USERS.pop(token, None)
+        save_active_sessions(ACTIVE_SESSIONS, ACTIVE_SESSION_USERS)
     response.delete_cookie(key="grad_auth_session", path="/")
     return {"success": True, "message": "ออกจากระบบเรียบร้อย"}
 
 @app.get("/api/auth/check")
 def api_auth_check(request: Request):
-    return {"authenticated": is_authenticated(request)}
+    user = get_current_user(request)
+    if user:
+        return {
+            "authenticated": True,
+            "username": user["username"],
+            "name": user["name"],
+            "role": user["role"]
+        }
+    return {"authenticated": False}
+
+# ==============================================================================
+# 👥 USER & OPERATOR ACCOUNTS MANAGEMENT ENDPOINTS
+# ==============================================================================
+@app.get("/api/auth/users")
+def get_users_list(request: Request):
+    if not is_authenticated(request):
+        return Response(
+            content=json.dumps({"success": False, "detail": "กรุณาเข้าสู่ระบบก่อน"}),
+            status_code=401,
+            media_type="application/json"
+        )
+    users = load_users()
+    user_list = []
+    for uname, data in users.items():
+        user_list.append({
+            "username": uname,
+            "name": data.get("name", uname),
+            "role": data.get("role", "operator"),
+            "created_at": data.get("created_at", "-")
+        })
+    return {"success": True, "users": user_list}
+
+@app.post("/api/auth/users")
+def create_new_user(req: CreateUserRequest, request: Request):
+    if not is_authenticated(request):
+        return Response(
+            content=json.dumps({"success": False, "detail": "กรุณาเข้าสู่ระบบก่อน"}),
+            status_code=401,
+            media_type="application/json"
+        )
+    
+    username = req.username.strip()
+    if not re.match(r'^[a-zA-Z0-9_\-\.]{3,30}$', username):
+        return Response(
+            content=json.dumps({"success": False, "detail": "ชื่อผู้ใช้ต้องเป็นตัวอักษรภาษาอังกฤษ ตัวเลข ขีดล่าง หรือขีดกลาง ความยาว 3-30 ตัวอักษร"}),
+            status_code=400,
+            media_type="application/json"
+        )
+    
+    if len(req.password) < 4:
+        return Response(
+            content=json.dumps({"success": False, "detail": "รหัสผ่านต้องมีความยาวอย่างน้อย 4 ตัวอักษร"}),
+            status_code=400,
+            media_type="application/json"
+        )
+    
+    if not req.name.strip():
+        return Response(
+            content=json.dumps({"success": False, "detail": "กรุณากรอกชื่อ-นามสกุล หรือชื่อตำแหน่งแสดงผล"}),
+            status_code=400,
+            media_type="application/json"
+        )
+    
+    role = req.role if req.role in ("admin", "operator") else "operator"
+    
+    users = load_users()
+    if username in users:
+        return Response(
+            content=json.dumps({"success": False, "detail": f"ชื่อผู้ใช้ '{username}' มีอยู่ในระบบแล้ว กรุณาเลือกชื่ออื่น"}),
+            status_code=400,
+            media_type="application/json"
+        )
+    
+    users[username] = {
+        "password": req.password,
+        "name": req.name.strip(),
+        "role": role,
+        "created_at": time.strftime("%Y-%m-%d %H:%M:%S")
+    }
+    save_users(users)
+    logger.info(f"Created new user account '{username}' with role '{role}'")
+    return {
+        "success": True,
+        "message": f"เพิ่มผู้ใช้งาน '{username}' สำเร็จแล้ว",
+        "user": {
+            "username": username,
+            "name": req.name.strip(),
+            "role": role,
+            "created_at": users[username]["created_at"]
+        }
+    }
+
+@app.put("/api/auth/users/{username}")
+def update_user(username: str, req: UpdateUserRequest, request: Request):
+    if not is_authenticated(request):
+        return Response(
+            content=json.dumps({"success": False, "detail": "กรุณาเข้าสู่ระบบก่อน"}),
+            status_code=401,
+            media_type="application/json"
+        )
+    
+    users = load_users()
+    if username not in users:
+        return Response(
+            content=json.dumps({"success": False, "detail": f"ไม่พบผู้ใช้ '{username}' ในระบบ"}),
+            status_code=404,
+            media_type="application/json"
+        )
+    
+    user_record = users[username]
+    target_username = username
+
+    # If renaming username
+    if req.new_username and req.new_username.strip() != username:
+        new_uname = req.new_username.strip()
+        if not re.match(r'^[a-zA-Z0-9_\-\.]{3,30}$', new_uname):
+            return Response(
+                content=json.dumps({"success": False, "detail": "ชื่อผู้ใช้ใหม่ต้องเป็นภาษาอังกฤษ ตัวเลข ขีดล่าง หรือขีดกลาง 3-30 ตัวอักษร"}),
+                status_code=400,
+                media_type="application/json"
+            )
+        if new_uname in users:
+            return Response(
+                content=json.dumps({"success": False, "detail": f"ชื่อผู้ใช้ใหม่ '{new_uname}' มีผู้อื่นใช้งานแล้ว"}),
+                status_code=400,
+                media_type="application/json"
+            )
+        
+        # Migrate sessions
+        for tok, u in list(ACTIVE_SESSION_USERS.items()):
+            if u == username:
+                ACTIVE_SESSION_USERS[tok] = new_uname
+        save_active_sessions(ACTIVE_SESSIONS, ACTIVE_SESSION_USERS)
+        
+        del users[username]
+        users[new_uname] = user_record
+        target_username = new_uname
+
+    # Role guard: ensure at least one admin remains
+    if req.role and req.role in ("admin", "operator"):
+        if user_record.get("role") == "admin" and req.role == "operator":
+            admin_count = sum(1 for u in users.values() if u.get("role") == "admin")
+            if admin_count <= 1:
+                return Response(
+                    content=json.dumps({"success": False, "detail": "ไม่สามารถเปลี่ยนสิทธิ์ผู้ดูแลระบบคนสุดท้ายให้เป็นเจ้าหน้าที่ทั่วไปได้"}),
+                    status_code=400,
+                    media_type="application/json"
+                )
+        users[target_username]["role"] = req.role
+
+    if req.name is not None and req.name.strip():
+        users[target_username]["name"] = req.name.strip()
+
+    if req.password is not None and req.password.strip():
+        if len(req.password.strip()) < 4:
+            return Response(
+                content=json.dumps({"success": False, "detail": "รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 4 ตัวอักษร"}),
+                status_code=400,
+                media_type="application/json"
+            )
+        users[target_username]["password"] = req.password.strip()
+
+    save_users(users)
+    logger.info(f"Updated user account '{username}' -> '{target_username}'")
+    return {
+        "success": True,
+        "message": f"อัปเดตข้อมูลผู้ใช้ '{target_username}' สำเร็จแล้ว",
+        "user": {
+            "username": target_username,
+            "name": users[target_username].get("name"),
+            "role": users[target_username].get("role")
+        }
+    }
+
+@app.delete("/api/auth/users/{username}")
+def delete_user(username: str, request: Request):
+    if not is_authenticated(request):
+        return Response(
+            content=json.dumps({"success": False, "detail": "กรุณาเข้าสู่ระบบก่อน"}),
+            status_code=401,
+            media_type="application/json"
+        )
+    
+    users = load_users()
+    if username not in users:
+        return Response(
+            content=json.dumps({"success": False, "detail": f"ไม่พบผู้ใช้ '{username}' ในระบบ"}),
+            status_code=404,
+            media_type="application/json"
+        )
+    
+    curr_user = get_current_user(request)
+    if curr_user and curr_user.get("username") == username:
+        return Response(
+            content=json.dumps({"success": False, "detail": "ไม่สามารถลบบัญชีที่ท่านกำลังใช้งานเข้าสู่ระบบอยู่ได้ กรุณาใช้บัญชีผู้ดูแลอื่นเพื่อทำการลบ"}),
+            status_code=400,
+            media_type="application/json"
+        )
+    
+    # Check if deleting last admin
+    if users[username].get("role") == "admin":
+        admin_count = sum(1 for u in users.values() if u.get("role") == "admin")
+        if admin_count <= 1:
+            return Response(
+                content=json.dumps({"success": False, "detail": "ไม่สามารถลบผู้ดูแลระบบคนสุดท้ายได้ เพื่อป้องกันระบบถูกล็อค"}),
+                status_code=400,
+                media_type="application/json"
+            )
+    
+    del users[username]
+    save_users(users)
+    
+    # Remove any active sessions for this user
+    for tok, u in list(ACTIVE_SESSION_USERS.items()):
+        if u == username:
+            ACTIVE_SESSION_USERS.pop(tok, None)
+            if tok in ACTIVE_SESSIONS:
+                ACTIVE_SESSIONS.remove(tok)
+    save_active_sessions(ACTIVE_SESSIONS, ACTIVE_SESSION_USERS)
+    
+    logger.info(f"Deleted user account '{username}'")
+    return {"success": True, "message": f"ลบบัญชี '{username}' สำเร็จแล้ว"}
 
 # ==============================================================================
 # 🔊 NATURAL THAI HUMAN VOICE TTS SERVICE (PRE-CACHED & ON-DEMAND)
