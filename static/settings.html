@@ -128,44 +128,251 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
         }
 
-        /* Tabs Navigation */
-        .tabs-bar {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 18px;
-            border-bottom: 2px solid rgba(142, 56, 144, 0.15);
-            padding-bottom: 6px;
-            overflow-x: auto;
+        /* ======================================================== */
+        /* 🎛️ COLLAPSIBLE DROPDOWN TAB NAVIGATION (แถบเลื่อนลงมาเก็บเป็นแถบๆ) */
+        /* ======================================================== */
+        .tabs-nav-wrapper {
+            margin-bottom: 22px;
+            position: relative;
+            z-index: 100;
         }
 
-        .tab-btn {
+        .tabs-nav-trigger {
             background: #FFFFFF;
-            border: 2.5px solid rgba(142, 56, 144, 0.28);
-            padding: 16px 26px;
-            border-radius: 16px;
+            border: 2.5px solid #8E3890;
+            border-radius: 18px;
+            padding: 14px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(142, 56, 144, 0.12);
+            transition: all 0.25s ease;
+            gap: 16px;
+        }
+
+        .tabs-nav-trigger:hover {
+            border-color: #6E2271;
+            background: #FCF8FD;
+            box-shadow: 0 8px 24px rgba(142, 56, 144, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .nav-trigger-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .nav-active-icon-badge {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #8E3890, #6E2271);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(142, 56, 144, 0.3);
+        }
+
+        .nav-active-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: #5B185D;
+            line-height: 1.25;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-trigger-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .nav-trigger-hint {
+            background: #FAF4FA;
+            color: #6E2271;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 800;
+            border: 1.5px solid rgba(142, 56, 144, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-trigger-arrow {
+            font-size: 22px;
+            color: #8E3890;
+            font-weight: 900;
+            transition: transform 0.25s ease;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #F3E8F5;
+        }
+
+        .tabs-dropdown-menu {
+            background: #FFFFFF;
+            border: 2.5px solid #8E3890;
+            border-top: none;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            padding: 16px 20px;
+            margin-top: -6px;
+            box-shadow: 0 16px 36px rgba(142, 56, 144, 0.2);
+            animation: tabsSlideDown 0.22s ease-out;
+        }
+
+        @keyframes tabsSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tabs-dropdown-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1.5px dashed rgba(142, 56, 144, 0.2);
+            font-size: 15px;
+            font-weight: 800;
+            color: #8A658F;
+        }
+
+        .btn-close-dropdown {
+            background: #F3F4F6;
+            color: #4B5563;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            padding: 4px 12px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-close-dropdown:hover {
+            background: #E5E7EB;
+            color: #1F2937;
+        }
+
+        .tabs-grid-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tab-card-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 18px;
+            border-radius: 14px;
+            border: 2px solid rgba(142, 56, 144, 0.18);
+            background: #FFFFFF;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        .tab-card-row:hover {
+            background: #FAF4FA;
+            border-color: #8E3890;
+            transform: translateX(4px);
+            box-shadow: 0 4px 14px rgba(142, 56, 144, 0.12);
+        }
+
+        .tab-card-row.active {
+            background: linear-gradient(135deg, rgba(142, 56, 144, 0.08), rgba(110, 34, 113, 0.12));
+            border-color: #8E3890;
+            border-width: 2.5px;
+            box-shadow: 0 4px 14px rgba(142, 56, 144, 0.16);
+        }
+
+        .tab-card-icon {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            border: 1.5px solid;
+            font-weight: 900;
+        }
+
+        .tab-card-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .tab-card-title {
             font-size: 18px;
             font-weight: 900;
             color: #5B185D;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            line-height: 1.25;
+        }
+
+        .tab-card-sub {
+            font-size: 14px;
+            font-weight: 700;
+            color: #8A658F;
+            margin-left: 4px;
+        }
+
+        .tab-card-desc {
+            font-size: 14px;
+            font-weight: 600;
+            color: #6B4E70;
+            margin-top: 3px;
+            line-height: 1.3;
+        }
+
+        .tab-card-badge {
+            flex-shrink: 0;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 900;
+            background: #F3F4F6;
+            color: #4B5563;
+            border: 1.5px solid #E5E7EB;
             transition: all 0.2s;
-            white-space: nowrap;
-            font-family: 'Kanit', sans-serif;
-            min-height: 62px;
         }
 
-        .tab-btn:hover {
-            background: #FAF4FA;
-            border-color: #8E3890;
+        .tab-card-badge.active {
+            background: #DEF7EC;
+            color: #03543F;
+            border-color: #10B981;
         }
 
-        .tab-btn.active {
-            background: linear-gradient(135deg, #8E3890, #6E2271);
-            color: #FFFFFF;
-            border-color: #6E2271;
-            box-shadow: 0 4px 14px rgba(142, 56, 144, 0.3);
+        /* Legacy Tab button compat */
+        .tab-btn {
+            cursor: pointer;
         }
 
         /* Card container */
@@ -355,13 +562,18 @@
             </div>
         </div>
         <div class="header-actions">
-<!-- Clean Non-Overlapping Font Scale Button -->
+            <!-- Header Corner Tab Selector with Arrow -->
+            <button type="button" id="btn-header-tabs-toggle" class="btn-nav btn-nav-outline" onclick="toggleTabsDropdown()" style="min-height: 52px; font-size: 16px; padding: 10px 18px; font-weight: 900; border-radius: 14px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: 2px solid #8E3890; background: #FFFFFF; color: #5B185D; box-shadow: 0 4px 12px rgba(142, 56, 144, 0.15);" title="คลิกเพื่อสลับแท็บเมนูตั้งค่า">
+                <span>📑 เมนู:</span>
+                <span id="header-current-tab-pill" style="background: #FAF5FF; color: #6E2271; padding: 3px 10px; border-radius: 8px; font-size: 15px; font-weight: 900; border: 1.5px solid #D8B4FE;">⚡ 1. จังหวะก้าว</span>
+                <span id="header-dropdown-arrow" style="font-size: 16px; color: #8E3890; font-weight: 900;">▼</span>
+            </button>
+
+            <!-- Clean Non-Overlapping Font Scale Button -->
             <button type="button" id="btn-font-scale-trigger-settings" class="btn-nav btn-nav-outline" onclick="cycleAppScale()" style="min-height: 52px; font-size: 16px; padding: 10px 20px; font-weight: 900; border-radius: 14px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: 2px solid #8E3890; background: #FFFFFF; color: #5B185D; box-shadow: 0 4px 12px rgba(142, 56, 144, 0.15);" title="คลิกเพื่อสลับขนาด: ปกติ (100%) ➔ ใหญ่ (115%) ➔ ใหญ่มาก (130%) ➔ ใหญ่ที่สุด (150%)">
                 <span>🔤 ขนาด:</span>
                 <span id="settings-scale-display" style="background: #FAF5FF; color: #6E2271; padding: 3px 10px; border-radius: 8px; font-size: 15px; font-weight: 900; border: 1.5px solid #D8B4FE;">100% (ปกติ)</span>
             </button>
-                    </div>
-                </div>
             
             <button class="btn-nav btn-nav-green" onclick="switchSettingsTab('report')">
                 📊 สรุปรายงาน & ส่งออก Excel
@@ -381,26 +593,89 @@
         </div>
     </header>
 
-    <!-- Tab Navigation -->
-    <div class="tabs-bar">
-        <button class="tab-btn active" id="tab-nav-cadence" onclick="switchSettingsTab('cadence')">
-            ⚡ 1. วิเคราะห์จังหวะก้าว & ระบบเสียงเตือน (Cadence & Sound)
-        </button>
-        <button class="tab-btn" id="tab-nav-sessions" onclick="switchSettingsTab('sessions')">
-            🎛️ 2. จัดการรอบพิธี & เพิ่มสถาบัน (Sessions & Queue)
-        </button>
-        <button class="tab-btn" id="tab-nav-obs" onclick="switchSettingsTab('obs')">
-            📺 3. ควบคุมตำแหน่ง OBS Overlay
-        </button>
-        <button class="tab-btn" id="tab-nav-ai" onclick="switchSettingsTab('ai')">
-            🎯 4. ปรับจูนความไว AI & พื้นที่ ROI
-        </button>
-        <button class="tab-btn" id="tab-nav-report" onclick="switchSettingsTab('report')">
-            📊 5. รายงานสรุปพิธี & Export Excel
-        </button>
-        <button class="tab-btn" id="tab-nav-accounts" onclick="switchSettingsTab('accounts')">
-            👥 6. จัดการบัญชีผู้ดูแล & เจ้าหน้าที่ (Admin & Operator Accounts)
-        </button>
+    <!-- ======================================================== -->
+    <!-- 🎛️ COLLAPSIBLE DROPDOWN TAB NAVIGATION (แถบเลื่อนลงมาเก็บเป็นแถบๆ) -->
+    <!-- ======================================================== -->
+    <div class="tabs-nav-wrapper">
+        <div class="tabs-nav-trigger" id="tabs-nav-trigger" onclick="toggleTabsDropdown()">
+            <div class="nav-trigger-left">
+                <div class="nav-active-icon-badge" id="nav-active-icon">⚡</div>
+                <div>
+                    <div style="font-size: 13px; font-weight: 800; color: #8A658F; text-transform: uppercase; letter-spacing: 0.5px;">
+                        📌 เมนูตั้งค่าที่กำลังใช้งาน (Active Tab)
+                    </div>
+                    <div class="nav-active-title" id="nav-active-title">
+                        1. วิเคราะห์จังหวะก้าว & ระบบเสียงเตือน (Cadence & Sound)
+                    </div>
+                </div>
+            </div>
+            <div class="nav-trigger-right">
+                <span class="nav-trigger-hint" id="nav-trigger-hint">คลิกเพื่อสลับเมนู</span>
+                <span class="nav-trigger-arrow" id="nav-trigger-arrow">▼</span>
+            </div>
+        </div>
+
+        <div class="tabs-dropdown-menu" id="tabs-dropdown-menu" style="display: none;">
+            <div class="tabs-dropdown-header-bar">
+                <span>📑 เลือกเมนูตั้งค่าที่ต้องการ (คลิกแถบเพื่อเปิดใช้งาน)</span>
+                <button type="button" class="btn-close-dropdown" onclick="toggleTabsDropdown(false)">✕ พับเก็บ</button>
+            </div>
+            <div class="tabs-grid-list">
+                <div class="tab-card-row tab-btn active" id="tab-nav-cadence" onclick="selectSettingsTab('cadence')">
+                    <div class="tab-card-icon" style="background: #FAF5FF; border-color: #D8B4FE; color: #7B247D;">⚡</div>
+                    <div class="tab-card-text">
+                        <div class="tab-card-title">1. วิเคราะห์จังหวะก้าว & ระบบเสียงเตือน <span class="tab-card-sub">(Cadence & Sound)</span></div>
+                        <div class="tab-card-desc">สปีดก้าวเฉลี่ยต่อคน, อัตราเร็ว, ประมาณเวลาจบพิธี (ETA), และเสียงเตือนบัณฑิต</div>
+                    </div>
+                    <div class="tab-card-badge active">กำลังใช้งาน ✅</div>
+                </div>
+
+                <div class="tab-card-row tab-btn" id="tab-nav-sessions" onclick="selectSettingsTab('sessions')">
+                    <div class="tab-card-icon" style="background: #EFF6FF; border-color: #93C5FD; color: #1D4ED8;">🎛️</div>
+                    <div class="tab-card-text">
+                        <div class="tab-card-title">2. จัดการรอบพิธี & เพิ่มสถาบัน <span class="tab-card-sub">(Sessions & Queue)</span></div>
+                        <div class="tab-card-desc">สลับรอบเช้า/บ่าย, เพิ่มคิวมหาวิทยาลัย, คณะ, กำหนดยอดเป้าหมาย และเวลาเริ่ม-จบ</div>
+                    </div>
+                    <div class="tab-card-badge">เลือกแถบนี้ ➔</div>
+                </div>
+
+                <div class="tab-card-row tab-btn" id="tab-nav-obs" onclick="selectSettingsTab('obs')">
+                    <div class="tab-card-icon" style="background: #F0FDF4; border-color: #86EFAC; color: #15803D;">📺</div>
+                    <div class="tab-card-text">
+                        <div class="tab-card-title">3. ควบคุมตำแหน่ง OBS Overlay <span class="tab-card-sub">(OBS Placement)</span></div>
+                        <div class="tab-card-desc">คลิกลากป้ายอิสระบนจอ, ล็อคขอบจออัตโนมัติ, ปรับขนาด Zoom, และซิงค์ขึ้นสตรีมสด</div>
+                    </div>
+                    <div class="tab-card-badge">เลือกแถบนี้ ➔</div>
+                </div>
+
+                <div class="tab-card-row tab-btn" id="tab-nav-ai" onclick="selectSettingsTab('ai')">
+                    <div class="tab-card-icon" style="background: #FFFBEB; border-color: #FDE68A; color: #B45309;">🎯</div>
+                    <div class="tab-card-text">
+                        <div class="tab-card-title">4. ปรับจูนความไว AI & พื้นที่ ROI <span class="tab-card-sub">(AI Tuning & Area)</span></div>
+                        <div class="tab-card-desc">ปรับความไวตรวจจับมือรับปริญญาบัตร, กรอบตรวจจับเฉพาะจุด, และหน่วงเวลานับซ้ำ</div>
+                    </div>
+                    <div class="tab-card-badge">เลือกแถบนี้ ➔</div>
+                </div>
+
+                <div class="tab-card-row tab-btn" id="tab-nav-report" onclick="selectSettingsTab('report')">
+                    <div class="tab-card-icon" style="background: #FDF2F8; border-color: #FBCFE8; color: #BE185D;">📊</div>
+                    <div class="tab-card-text">
+                        <div class="tab-card-title">5. รายงานสรุปพิธี & Export Excel <span class="tab-card-sub">(Report & Export)</span></div>
+                        <div class="tab-card-desc">สถิติบัณฑิตทั้งหมด, เวลาพักแถว, ไทม์ไลน์รายคน และส่งออกไฟล์ Excel/CSV</div>
+                    </div>
+                    <div class="tab-card-badge">เลือกแถบนี้ ➔</div>
+                </div>
+
+                <div class="tab-card-row tab-btn" id="tab-nav-accounts" onclick="selectSettingsTab('accounts')">
+                    <div class="tab-card-icon" style="background: #FAF5FF; border-color: #E9D5FF; color: #6E2271;">👥</div>
+                    <div class="tab-card-text">
+                        <div class="tab-card-title">6. จัดการบัญชีผู้ดูแล & เจ้าหน้าที่ <span class="tab-card-sub">(Admin & Operator Accounts)</span></div>
+                        <div class="tab-card-desc">เพิ่มบัญชีใหม่, ลบบัญชี, แก้ไข Username, กำหนดสิทธิ์ และเปลี่ยนรหัสผ่าน</div>
+                    </div>
+                    <div class="tab-card-badge">เลือกแถบนี้ ➔</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- ========================================== -->
@@ -1201,6 +1476,110 @@
             setTimeout(() => { t.style.display = 'none'; }, 3000);
         }
 
+        // ==========================================
+        // 🎛️ COLLAPSIBLE DROPDOWN TAB NAVIGATION
+        // ==========================================
+        const TAB_DEFINITIONS = {
+            'cadence': {
+                icon: '⚡',
+                title: '1. วิเคราะห์จังหวะก้าว & ระบบเสียงเตือน (Cadence & Sound)',
+                short: '1. จังหวะก้าว'
+            },
+            'sessions': {
+                icon: '🎛️',
+                title: '2. จัดการรอบพิธี & เพิ่มสถาบัน (Sessions & Queue)',
+                short: '2. จัดการรอบ'
+            },
+            'obs': {
+                icon: '📺',
+                title: '3. ควบคุมตำแหน่ง OBS Overlay (OBS Placement)',
+                short: '3. ป้าย OBS'
+            },
+            'ai': {
+                icon: '🎯',
+                title: '4. ปรับจูนความไว AI & พื้นที่ ROI (AI Tuning & Area)',
+                short: '4. จูน AI & ROI'
+            },
+            'report': {
+                icon: '📊',
+                title: '5. รายงานสรุปพิธี & Export Excel (Report & Export)',
+                short: '5. รายงาน Excel'
+            },
+            'accounts': {
+                icon: '👥',
+                title: '6. จัดการบัญชีผู้ดูแล & เจ้าหน้าที่ (Admin & Operator Accounts)',
+                short: '6. จัดการบัญชี'
+            }
+        };
+
+        function toggleTabsDropdown(forceState) {
+            const menu = document.getElementById('tabs-dropdown-menu');
+            const arrow = document.getElementById('nav-trigger-arrow');
+            const headerArrow = document.getElementById('header-dropdown-arrow');
+            const hint = document.getElementById('nav-trigger-hint');
+            const trigger = document.getElementById('tabs-nav-trigger');
+            if (!menu) return;
+
+            const isHidden = menu.style.display === 'none';
+            const shouldShow = (forceState !== undefined) ? forceState : isHidden;
+
+            if (shouldShow) {
+                menu.style.display = 'block';
+                if (arrow) arrow.textContent = '▲';
+                if (headerArrow) headerArrow.textContent = '▲';
+                if (hint) hint.textContent = 'คลิกเพื่อพับเก็บ ▲';
+                if (trigger) {
+                    trigger.style.borderBottomLeftRadius = '0px';
+                    trigger.style.borderBottomRightRadius = '0px';
+                }
+            } else {
+                menu.style.display = 'none';
+                if (arrow) arrow.textContent = '▼';
+                if (headerArrow) headerArrow.textContent = '▼';
+                if (hint) hint.textContent = 'คลิกเพื่อสลับเมนู ▾';
+                if (trigger) {
+                    trigger.style.borderBottomLeftRadius = '18px';
+                    trigger.style.borderBottomRightRadius = '18px';
+                }
+            }
+        }
+
+        function selectSettingsTab(tabId) {
+            switchSettingsTab(tabId);
+            toggleTabsDropdown(false);
+        }
+
+        function updateTabNavHeader(tabId) {
+            const def = TAB_DEFINITIONS[tabId];
+            if (!def) return;
+            const iconEl = document.getElementById('nav-active-icon');
+            const titleEl = document.getElementById('nav-active-title');
+            const headerPillEl = document.getElementById('header-current-tab-pill');
+
+            if (iconEl) iconEl.textContent = def.icon;
+            if (titleEl) titleEl.textContent = def.title;
+            if (headerPillEl) headerPillEl.textContent = `${def.icon} ${def.short}`;
+
+            // Update active badges across all tab cards
+            Object.keys(TAB_DEFINITIONS).forEach(tId => {
+                const card = document.getElementById(`tab-nav-${tId}`);
+                if (card) {
+                    const badge = card.querySelector('.tab-card-badge');
+                    if (badge) {
+                        if (tId === tabId) {
+                            badge.textContent = 'กำลังใช้งาน ✅';
+                            badge.classList.add('active');
+                            card.classList.add('active');
+                        } else {
+                            badge.textContent = 'เลือกแถบนี้ ➔';
+                            badge.classList.remove('active');
+                            card.classList.remove('active');
+                        }
+                    }
+                }
+            });
+        }
+
         // Tab Switching
         function switchSettingsTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1211,6 +1590,8 @@
             
             const content = document.getElementById(`tab-content-${tabId}`);
             if (content) content.style.display = 'block';
+
+            updateTabNavHeader(tabId);
 
             if (tabId === 'report') {
                 loadReportData();
@@ -1488,8 +1869,21 @@
         document.addEventListener('DOMContentLoaded', () => {
             const searchParams = new URLSearchParams(window.location.search);
             const tabParam = searchParams.get('tab');
-            if (tabParam === 'accounts' || window.location.hash === '#accounts') {
-                switchSettingsTab('accounts');
+            if (tabParam && TAB_DEFINITIONS[tabParam]) {
+                switchSettingsTab(tabParam);
+            } else if (window.location.hash && TAB_DEFINITIONS[window.location.hash.replace('#', '')]) {
+                switchSettingsTab(window.location.hash.replace('#', ''));
+            } else {
+                updateTabNavHeader('cadence');
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const wrapper = document.querySelector('.tabs-nav-wrapper');
+            const headerBtn = document.getElementById('btn-header-tabs-toggle');
+            if (wrapper && !wrapper.contains(e.target) && (!headerBtn || !headerBtn.contains(e.target))) {
+                toggleTabsDropdown(false);
             }
         });
 
