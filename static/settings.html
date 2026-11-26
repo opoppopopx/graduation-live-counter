@@ -129,59 +129,54 @@
         }
 
         /* ======================================================== */
-        /* 🎛️ COLLAPSIBLE DROPDOWN TAB NAVIGATION (แถบเลื่อนลงมาเก็บเป็นแถบๆ) */
+        /* 🎛️ COMPACT CORNER DROPDOWN TAB NAVIGATION (เมนูมุมจอกะทัดรัด) */
         /* ======================================================== */
         .tabs-nav-wrapper {
-            margin-bottom: 22px;
             position: relative;
-            z-index: 100;
+            display: inline-block;
+            z-index: 1000;
         }
 
         .tabs-nav-trigger {
             background: #FFFFFF;
             border: 2.5px solid #8E3890;
-            border-radius: 18px;
-            padding: 14px 22px;
-            display: flex;
-            justify-content: space-between;
+            border-radius: 14px;
+            padding: 8px 16px;
+            display: inline-flex;
             align-items: center;
+            gap: 12px;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(142, 56, 144, 0.12);
-            transition: all 0.25s ease;
-            gap: 16px;
+            box-shadow: 0 4px 14px rgba(142, 56, 144, 0.12);
+            transition: all 0.2s ease;
+            min-height: 48px;
+            user-select: none;
+            max-width: 420px;
         }
 
         .tabs-nav-trigger:hover {
             border-color: #6E2271;
-            background: #FCF8FD;
-            box-shadow: 0 8px 24px rgba(142, 56, 144, 0.2);
+            background: #FAF4FA;
+            box-shadow: 0 6px 18px rgba(142, 56, 144, 0.2);
             transform: translateY(-1px);
         }
 
-        .nav-trigger-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            flex: 1;
-            min-width: 0;
-        }
-
         .nav-active-icon-badge {
-            width: 48px;
-            height: 48px;
-            min-width: 48px;
-            border-radius: 14px;
+            width: 34px;
+            height: 34px;
+            min-width: 34px;
+            border-radius: 10px;
             background: linear-gradient(135deg, #8E3890, #6E2271);
             color: #FFFFFF;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 4px 10px rgba(142, 56, 144, 0.3);
+            font-size: 18px;
+            font-weight: 900;
+            box-shadow: 0 2px 6px rgba(142, 56, 144, 0.25);
         }
 
         .nav-active-title {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 900;
             color: #5B185D;
             line-height: 1.25;
@@ -190,56 +185,42 @@
             text-overflow: ellipsis;
         }
 
-        .nav-trigger-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-shrink: 0;
-        }
-
-        .nav-trigger-hint {
-            background: #FAF4FA;
-            color: #6E2271;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 15px;
-            font-weight: 800;
-            border: 1.5px solid rgba(142, 56, 144, 0.25);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
         .nav-trigger-arrow {
-            font-size: 22px;
+            font-size: 15px;
             color: #8E3890;
             font-weight: 900;
-            transition: transform 0.25s ease;
-            width: 32px;
-            height: 32px;
+            transition: transform 0.2s ease;
+            width: 26px;
+            height: 26px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            background: #F3E8F5;
+            background: #FAF4FA;
+            border: 1px solid rgba(142, 56, 144, 0.2);
+            margin-left: 2px;
+            flex-shrink: 0;
         }
 
         .tabs-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            width: 360px;
+            max-width: calc(100vw - 40px);
             background: #FFFFFF;
-            border: 2.5px solid #8E3890;
-            border-top: none;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            padding: 16px 20px;
-            margin-top: -6px;
-            box-shadow: 0 16px 36px rgba(142, 56, 144, 0.2);
-            animation: tabsSlideDown 0.22s ease-out;
+            border: 2px solid #8E3890;
+            border-radius: 16px;
+            padding: 10px;
+            box-shadow: 0 16px 36px rgba(142, 56, 144, 0.24);
+            animation: tabsSlideDown 0.18s ease-out;
+            z-index: 99999;
         }
 
         @keyframes tabsSlideDown {
             from {
                 opacity: 0;
-                transform: translateY(-8px);
+                transform: translateY(-6px);
             }
             to {
                 opacity: 1;
@@ -251,10 +232,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
+            margin-bottom: 8px;
+            padding: 4px 8px 8px 8px;
             border-bottom: 1.5px dashed rgba(142, 56, 144, 0.2);
-            font-size: 15px;
+            font-size: 13px;
             font-weight: 800;
             color: #8A658F;
         }
@@ -263,9 +244,9 @@
             background: #F3F4F6;
             color: #4B5563;
             border: 1px solid #D1D5DB;
-            border-radius: 8px;
-            padding: 4px 12px;
-            font-size: 13px;
+            border-radius: 6px;
+            padding: 3px 8px;
+            font-size: 12px;
             font-weight: 800;
             cursor: pointer;
             transition: all 0.15s;
@@ -279,19 +260,19 @@
         .tabs-grid-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px;
         }
 
         .tab-card-row {
             display: flex;
             align-items: center;
-            gap: 16px;
-            padding: 14px 18px;
-            border-radius: 14px;
-            border: 2px solid rgba(142, 56, 144, 0.18);
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1.5px solid rgba(142, 56, 144, 0.15);
             background: #FFFFFF;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             text-align: left;
             width: 100%;
             box-sizing: border-box;
@@ -301,27 +282,27 @@
         .tab-card-row:hover {
             background: #FAF4FA;
             border-color: #8E3890;
-            transform: translateX(4px);
-            box-shadow: 0 4px 14px rgba(142, 56, 144, 0.12);
+            transform: translateX(3px);
+            box-shadow: 0 2px 8px rgba(142, 56, 144, 0.1);
         }
 
         .tab-card-row.active {
             background: linear-gradient(135deg, rgba(142, 56, 144, 0.08), rgba(110, 34, 113, 0.12));
             border-color: #8E3890;
-            border-width: 2.5px;
-            box-shadow: 0 4px 14px rgba(142, 56, 144, 0.16);
+            border-width: 2px;
+            box-shadow: 0 2px 8px rgba(142, 56, 144, 0.14);
         }
 
         .tab-card-icon {
-            width: 44px;
-            height: 44px;
-            min-width: 44px;
-            border-radius: 12px;
+            width: 34px;
+            height: 34px;
+            min-width: 34px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            border: 1.5px solid;
+            font-size: 17px;
+            border: 1px solid;
             font-weight: 900;
         }
 
@@ -331,37 +312,42 @@
         }
 
         .tab-card-title {
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 900;
             color: #5B185D;
             line-height: 1.25;
-        }
-
-        .tab-card-sub {
-            font-size: 14px;
-            font-weight: 700;
-            color: #8A658F;
-            margin-left: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .tab-card-desc {
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
             color: #6B4E70;
-            margin-top: 3px;
-            line-height: 1.3;
+            margin-top: 1px;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .tab-card-badge {
             flex-shrink: 0;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 14px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
             font-weight: 900;
             background: #F3F4F6;
-            color: #4B5563;
-            border: 1.5px solid #E5E7EB;
+            color: #6B7280;
+            border: 1px solid #E5E7EB;
             transition: all 0.2s;
+        }
+
+        .tab-card-badge.active {
+            background: #DEF7EC;
+            color: #03543F;
+            border-color: #10B981;
         }
 
         .tab-card-badge.active {
@@ -594,85 +580,78 @@
     </header>
 
     <!-- ======================================================== -->
-    <!-- 🎛️ COLLAPSIBLE DROPDOWN TAB NAVIGATION (แถบเลื่อนลงมาเก็บเป็นแถบๆ) -->
+    <!-- 🎛️ COMPACT CORNER DROPDOWN TAB SELECTOR (เมนูมุมจอแบบกะทัดรัด) -->
     <!-- ======================================================== -->
-    <div class="tabs-nav-wrapper">
-        <div class="tabs-nav-trigger" id="tabs-nav-trigger" onclick="toggleTabsDropdown()">
-            <div class="nav-trigger-left">
+    <div style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: 16px;">
+        <div class="tabs-nav-wrapper">
+            <div class="tabs-nav-trigger" id="tabs-nav-trigger" onclick="toggleTabsDropdown()" title="คลิกเพื่อสลับแท็บเมนูตั้งค่า">
                 <div class="nav-active-icon-badge" id="nav-active-icon">⚡</div>
-                <div>
-                    <div style="font-size: 13px; font-weight: 800; color: #8A658F; text-transform: uppercase; letter-spacing: 0.5px;">
-                        📌 เมนูตั้งค่าที่กำลังใช้งาน (Active Tab)
-                    </div>
-                    <div class="nav-active-title" id="nav-active-title">
-                        1. วิเคราะห์จังหวะก้าว & ระบบเสียงเตือน (Cadence & Sound)
-                    </div>
+                <div class="nav-active-title" id="nav-active-title">
+                    1. วิเคราะห์จังหวะก้าว & ระบบเสียงเตือน (Cadence & Sound)
                 </div>
+                <div class="nav-trigger-arrow" id="nav-trigger-arrow">▼</div>
             </div>
-            <div class="nav-trigger-right">
-                <span class="nav-trigger-hint" id="nav-trigger-hint">คลิกเพื่อสลับเมนู</span>
-                <span class="nav-trigger-arrow" id="nav-trigger-arrow">▼</span>
-            </div>
-        </div>
 
-        <div class="tabs-dropdown-menu" id="tabs-dropdown-menu" style="display: none;">
-            <div class="tabs-dropdown-header-bar">
-                <span>📑 เลือกเมนูตั้งค่าที่ต้องการ (คลิกแถบเพื่อเปิดใช้งาน)</span>
-                <button type="button" class="btn-close-dropdown" onclick="toggleTabsDropdown(false)">✕ พับเก็บ</button>
-            </div>
-            <div class="tabs-grid-list">
-                <div class="tab-card-row tab-btn active" id="tab-nav-cadence" onclick="selectSettingsTab('cadence')">
-                    <div class="tab-card-icon" style="background: #FAF5FF; border-color: #D8B4FE; color: #7B247D;">⚡</div>
-                    <div class="tab-card-text">
-                        <div class="tab-card-title">1. วิเคราะห์จังหวะก้าว & ระบบเสียงเตือน <span class="tab-card-sub">(Cadence & Sound)</span></div>
-                        <div class="tab-card-desc">สปีดก้าวเฉลี่ยต่อคน, อัตราเร็ว, ประมาณเวลาจบพิธี (ETA), และเสียงเตือนบัณฑิต</div>
-                    </div>
-                    <div class="tab-card-badge active">กำลังใช้งาน ✅</div>
+            <!-- Floating Compact Dropdown at Corner -->
+            <div class="tabs-dropdown-menu" id="tabs-dropdown-menu" style="display: none;">
+                <div class="tabs-dropdown-header-bar">
+                    <span>📑 สลับเมนูตั้งค่า (คลิกเลือกแถบ)</span>
+                    <button type="button" class="btn-close-dropdown" onclick="toggleTabsDropdown(false)">✕ ปิด</button>
                 </div>
-
-                <div class="tab-card-row tab-btn" id="tab-nav-sessions" onclick="selectSettingsTab('sessions')">
-                    <div class="tab-card-icon" style="background: #EFF6FF; border-color: #93C5FD; color: #1D4ED8;">🎛️</div>
-                    <div class="tab-card-text">
-                        <div class="tab-card-title">2. จัดการรอบพิธี & เพิ่มสถาบัน <span class="tab-card-sub">(Sessions & Queue)</span></div>
-                        <div class="tab-card-desc">สลับรอบเช้า/บ่าย, เพิ่มคิวมหาวิทยาลัย, คณะ, กำหนดยอดเป้าหมาย และเวลาเริ่ม-จบ</div>
+                <div class="tabs-grid-list">
+                    <div class="tab-card-row tab-btn active" id="tab-nav-cadence" onclick="selectSettingsTab('cadence')">
+                        <div class="tab-card-icon" style="background: #FAF5FF; border-color: #D8B4FE; color: #7B247D;">⚡</div>
+                        <div class="tab-card-text">
+                            <div class="tab-card-title">1. จังหวะก้าว & ระบบเสียงเตือน</div>
+                            <div class="tab-card-desc">สปีดเฉลี่ย, เวลาจบ (ETA), เสียงเตือน</div>
+                        </div>
+                        <div class="tab-card-badge active">ใช้งานอยู่ ✅</div>
                     </div>
-                    <div class="tab-card-badge">เลือกแถบนี้ ➔</div>
-                </div>
 
-                <div class="tab-card-row tab-btn" id="tab-nav-obs" onclick="selectSettingsTab('obs')">
-                    <div class="tab-card-icon" style="background: #F0FDF4; border-color: #86EFAC; color: #15803D;">📺</div>
-                    <div class="tab-card-text">
-                        <div class="tab-card-title">3. ควบคุมตำแหน่ง OBS Overlay <span class="tab-card-sub">(OBS Placement)</span></div>
-                        <div class="tab-card-desc">คลิกลากป้ายอิสระบนจอ, ล็อคขอบจออัตโนมัติ, ปรับขนาด Zoom, และซิงค์ขึ้นสตรีมสด</div>
+                    <div class="tab-card-row tab-btn" id="tab-nav-sessions" onclick="selectSettingsTab('sessions')">
+                        <div class="tab-card-icon" style="background: #EFF6FF; border-color: #93C5FD; color: #1D4ED8;">🎛️</div>
+                        <div class="tab-card-text">
+                            <div class="tab-card-title">2. จัดการรอบพิธี & เพิ่มสถาบัน</div>
+                            <div class="tab-card-desc">สลับรอบเช้า/บ่าย, เพิ่มคิวมหาวิทยาลัย, เป้าหมาย</div>
+                        </div>
+                        <div class="tab-card-badge">เลือก ➔</div>
                     </div>
-                    <div class="tab-card-badge">เลือกแถบนี้ ➔</div>
-                </div>
 
-                <div class="tab-card-row tab-btn" id="tab-nav-ai" onclick="selectSettingsTab('ai')">
-                    <div class="tab-card-icon" style="background: #FFFBEB; border-color: #FDE68A; color: #B45309;">🎯</div>
-                    <div class="tab-card-text">
-                        <div class="tab-card-title">4. ปรับจูนความไว AI & พื้นที่ ROI <span class="tab-card-sub">(AI Tuning & Area)</span></div>
-                        <div class="tab-card-desc">ปรับความไวตรวจจับมือรับปริญญาบัตร, กรอบตรวจจับเฉพาะจุด, และหน่วงเวลานับซ้ำ</div>
+                    <div class="tab-card-row tab-btn" id="tab-nav-obs" onclick="selectSettingsTab('obs')">
+                        <div class="tab-card-icon" style="background: #F0FDF4; border-color: #86EFAC; color: #15803D;">📺</div>
+                        <div class="tab-card-text">
+                            <div class="tab-card-title">3. ควบคุมตำแหน่ง OBS Overlay</div>
+                            <div class="tab-card-desc">คลิกลากป้ายอิสระ, ล็อคขอบจอ, ซิงค์สตรีม</div>
+                        </div>
+                        <div class="tab-card-badge">เลือก ➔</div>
                     </div>
-                    <div class="tab-card-badge">เลือกแถบนี้ ➔</div>
-                </div>
 
-                <div class="tab-card-row tab-btn" id="tab-nav-report" onclick="selectSettingsTab('report')">
-                    <div class="tab-card-icon" style="background: #FDF2F8; border-color: #FBCFE8; color: #BE185D;">📊</div>
-                    <div class="tab-card-text">
-                        <div class="tab-card-title">5. รายงานสรุปพิธี & Export Excel <span class="tab-card-sub">(Report & Export)</span></div>
-                        <div class="tab-card-desc">สถิติบัณฑิตทั้งหมด, เวลาพักแถว, ไทม์ไลน์รายคน และส่งออกไฟล์ Excel/CSV</div>
+                    <div class="tab-card-row tab-btn" id="tab-nav-ai" onclick="selectSettingsTab('ai')">
+                        <div class="tab-card-icon" style="background: #FFFBEB; border-color: #FDE68A; color: #B45309;">🎯</div>
+                        <div class="tab-card-text">
+                            <div class="tab-card-title">4. ปรับจูนความไว AI & พื้นที่ ROI</div>
+                            <div class="tab-card-desc">ความไวตรวจจับมือรับปริญญาบัตร, กรอบ ROI</div>
+                        </div>
+                        <div class="tab-card-badge">เลือก ➔</div>
                     </div>
-                    <div class="tab-card-badge">เลือกแถบนี้ ➔</div>
-                </div>
 
-                <div class="tab-card-row tab-btn" id="tab-nav-accounts" onclick="selectSettingsTab('accounts')">
-                    <div class="tab-card-icon" style="background: #FAF5FF; border-color: #E9D5FF; color: #6E2271;">👥</div>
-                    <div class="tab-card-text">
-                        <div class="tab-card-title">6. จัดการบัญชีผู้ดูแล & เจ้าหน้าที่ <span class="tab-card-sub">(Admin & Operator Accounts)</span></div>
-                        <div class="tab-card-desc">เพิ่มบัญชีใหม่, ลบบัญชี, แก้ไข Username, กำหนดสิทธิ์ และเปลี่ยนรหัสผ่าน</div>
+                    <div class="tab-card-row tab-btn" id="tab-nav-report" onclick="selectSettingsTab('report')">
+                        <div class="tab-card-icon" style="background: #FDF2F8; border-color: #FBCFE8; color: #BE185D;">📊</div>
+                        <div class="tab-card-text">
+                            <div class="tab-card-title">5. รายงานสรุปพิธี & Export Excel</div>
+                            <div class="tab-card-desc">สถิติบัณฑิต, พักแถว, ส่งออก CSV</div>
+                        </div>
+                        <div class="tab-card-badge">เลือก ➔</div>
                     </div>
-                    <div class="tab-card-badge">เลือกแถบนี้ ➔</div>
+
+                    <div class="tab-card-row tab-btn" id="tab-nav-accounts" onclick="selectSettingsTab('accounts')">
+                        <div class="tab-card-icon" style="background: #FAF5FF; border-color: #E9D5FF; color: #6E2271;">👥</div>
+                        <div class="tab-card-text">
+                            <div class="tab-card-title">6. จัดการบัญชีผู้ดูแล & เจ้าหน้าที่</div>
+                            <div class="tab-card-desc">เพิ่ม/ลบบัญชี, แก้ไข Username, รหัสผ่าน</div>
+                        </div>
+                        <div class="tab-card-badge">เลือก ➔</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1516,8 +1495,6 @@
             const menu = document.getElementById('tabs-dropdown-menu');
             const arrow = document.getElementById('nav-trigger-arrow');
             const headerArrow = document.getElementById('header-dropdown-arrow');
-            const hint = document.getElementById('nav-trigger-hint');
-            const trigger = document.getElementById('tabs-nav-trigger');
             if (!menu) return;
 
             const isHidden = menu.style.display === 'none';
@@ -1527,20 +1504,10 @@
                 menu.style.display = 'block';
                 if (arrow) arrow.textContent = '▲';
                 if (headerArrow) headerArrow.textContent = '▲';
-                if (hint) hint.textContent = 'คลิกเพื่อพับเก็บ ▲';
-                if (trigger) {
-                    trigger.style.borderBottomLeftRadius = '0px';
-                    trigger.style.borderBottomRightRadius = '0px';
-                }
             } else {
                 menu.style.display = 'none';
                 if (arrow) arrow.textContent = '▼';
                 if (headerArrow) headerArrow.textContent = '▼';
-                if (hint) hint.textContent = 'คลิกเพื่อสลับเมนู ▾';
-                if (trigger) {
-                    trigger.style.borderBottomLeftRadius = '18px';
-                    trigger.style.borderBottomRightRadius = '18px';
-                }
             }
         }
 
@@ -1567,11 +1534,11 @@
                     const badge = card.querySelector('.tab-card-badge');
                     if (badge) {
                         if (tId === tabId) {
-                            badge.textContent = 'กำลังใช้งาน ✅';
+                            badge.textContent = 'ใช้งานอยู่ ✅';
                             badge.classList.add('active');
                             card.classList.add('active');
                         } else {
-                            badge.textContent = 'เลือกแถบนี้ ➔';
+                            badge.textContent = 'เลือก ➔';
                             badge.classList.remove('active');
                             card.classList.remove('active');
                         }
